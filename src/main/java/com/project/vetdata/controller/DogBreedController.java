@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/breeds")
 public class DogBreedController {
@@ -18,9 +20,21 @@ public class DogBreedController {
         this.dogBreedService = dogBreedService;
     }
 
+    @GetMapping
+    public ResponseEntity<List<DogBreed>> getAllDogBreeds() {
+        return ResponseEntity.ok(dogBreedService.getAllDogBreeds());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DogBreed> getDogBreedById(@PathVariable Long id) {
+        return dogBreedService.getDogBreedId(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @PostMapping
     public ResponseEntity<DogBreed> createDogBreed(@RequestBody DogBreed dogBreed) {
-        DogBreed newDogBreed = dogBreedService.createDogBreed(dogBreed);
-        return new ResponseEntity<>(newDogBreed, HttpStatus.CREATED);
+        DogBreed createdDogBreed = dogBreedService.createDogBreed(dogBreed);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdDogBreed);
     }
 }
