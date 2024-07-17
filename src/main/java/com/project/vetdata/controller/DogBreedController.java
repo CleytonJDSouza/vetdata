@@ -2,6 +2,7 @@ package com.project.vetdata.controller;
 
 import com.project.vetdata.model.DogBreed;
 import com.project.vetdata.service.DogBreedService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +34,7 @@ public class DogBreedController {
     }
 
     @PostMapping
-    public ResponseEntity<DogBreed> createDogBreed(@RequestBody DogBreed dogBreed) {
+    public ResponseEntity<DogBreed> createDogBreed(@Valid @RequestBody DogBreed dogBreed) {
         DogBreed createdDogBreed = dogBreedService.createDogBreed(dogBreed);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdDogBreed);
     }
