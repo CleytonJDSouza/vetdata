@@ -1,6 +1,5 @@
 package com.project.vetdata.exception;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -26,4 +25,3 @@ public class ErrorHandler {
         return ResponseEntity.badRequest().body(errors);
     }
 }
-

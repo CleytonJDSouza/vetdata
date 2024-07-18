@@ -30,18 +30,8 @@ public class DogBreedControllerTest {
 
     @Test
     public void shouldCreateDogBreed() throws Exception {
-        DogBreed dogBreed = DogBreed.builder()
-                .name("Bulldog")
-                .description("Friendly and courageous")
-                .lifeExpectancyMin(8)
-                .lifeExpectancyMax(10)
-                .maleWeightMin(20.0)
-                .maleWeightMax(25.0)
-                .femaleWeightMin(18.0)
-                .femaleWeightMax(23.0)
-                .hypoallergenic(false)
-                .size("Medium")
-                .build();
+        DogBreed dogBreed = new DogBreed(null, "Bulldog", "Amigavel e Corajoso", 8, 10,
+                20.0, 25.0, 18.0, 23.0, false, "Médio");
 
         Mockito.when(dogBreedService.createDogBreed(any(DogBreed.class))).thenReturn(dogBreed);
 
@@ -57,7 +47,25 @@ public class DogBreedControllerTest {
                 .andExpect(jsonPath("$.maleWeightMax").value(dogBreed.getMaleWeightMax()))
                 .andExpect(jsonPath("$.femaleWeightMin").value(dogBreed.getFemaleWeightMin()))
                 .andExpect(jsonPath("$.femaleWeightMax").value(dogBreed.getFemaleWeightMax()))
-                .andExpect(jsonPath("$.hypoallergenic").value(dogBreed.isHypoallergenic()))
+                .andExpect(jsonPath("$.hypoallergenic").value(dogBreed.getHypoallergenic()))
                 .andExpect(jsonPath("$.size").value(dogBreed.getSize()));
+    }
+
+    public void shouldReturnError() throws Exception {
+        DogBreed dogBreed = new DogBreed(null, null, null, -8, -10,
+                -20.0, -25.0, -18.0, -23.0, false, null);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/breeds")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dogBreed)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.name").value("Campo Obrigatório"))
+                .andExpect(jsonPath("$.lifeExpectancyMin").value("Campo deve ter valor maior que: 0"))
+                .andExpect(jsonPath("$.lifeExpectancyMax").value("Campo deve ter valor maior que: 0"))
+                .andExpect(jsonPath("$.maleWeightMin").value("Campo deve ter valor maior que: 0"))
+                .andExpect(jsonPath("$.maleWeightMax").value("Campo deve ter valor maior que: 0"))
+                .andExpect(jsonPath("$.femaleWeightMin").value("Campo deve ter valor maior que: 0"))
+                .andExpect(jsonPath("$.femaleWeightMax").value("Campo deve ter valor maior que: 0"))
+                .andExpect(jsonPath("$.size").value("Campo Obrigatório"));
     }
 }
