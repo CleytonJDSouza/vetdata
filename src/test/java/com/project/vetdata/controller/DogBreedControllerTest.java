@@ -12,6 +12,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.Optional;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -51,6 +53,7 @@ public class DogBreedControllerTest {
                 .andExpect(jsonPath("$.size").value(dogBreed.getSize()));
     }
 
+    @Test
     public void shouldReturnError() throws Exception {
         DogBreed dogBreed = new DogBreed(null, null, null, -8, -10,
                 -20.0, -25.0, -18.0, -23.0, false, null);
@@ -67,5 +70,29 @@ public class DogBreedControllerTest {
                 .andExpect(jsonPath("$.femaleWeightMin").value("Campo deve ter valor maior que: 0"))
                 .andExpect(jsonPath("$.femaleWeightMax").value("Campo deve ter valor maior que: 0"))
                 .andExpect(jsonPath("$.size").value("Campo Obrigatório"));
+    }
+
+    @Test
+    public void shouldReturnBreedById() throws Exception {
+        DogBreed dogBreed = new DogBreed(12345L, "Bulldog", "Amigavel e Corajoso", 8, 10,
+                20.0, 25.0, 18.0, 23.0, false, "Médio");
+
+        Mockito.when(dogBreedService.getDogBreedId(12345L)).thenReturn(Optional.of(dogBreed));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/breeds/12345")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(12345))
+                .andExpect(jsonPath("$.name").value("Bulldog"))
+                .andExpect(jsonPath("$.description").value("Amigavel e Corajoso"))
+                .andExpect(jsonPath("$.lifeExpectancyMin").value(8))
+                .andExpect(jsonPath("$.lifeExpectancyMax").value(10))
+                .andExpect(jsonPath("$.maleWeightMin").value(20.0))
+                .andExpect(jsonPath("$.maleWeightMax").value(25.0))
+                .andExpect(jsonPath("$.femaleWeightMin").value(18.0))
+                .andExpect(jsonPath("$.femaleWeightMax").value(23.0))
+                .andExpect(jsonPath("$.hypoallergenic").value(false))
+                .andExpect(jsonPath("$.size").value("Médio"));
+
     }
 }
