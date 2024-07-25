@@ -27,9 +27,19 @@ public class DogBreedController {
         this.dogBreedService = dogBreedService;
     }
 
+    @Operation(summary = "Buscar todas as raças")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Raça encontrada!",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = DogBreed.class)) }),
+            @ApiResponse(responseCode = "204", description = "Nenhuma raça encontrada!", content = @Content)
+    })
     @GetMapping
     public ResponseEntity<List<DogBreed>> getAllDogBreeds() {
-        return ResponseEntity.ok(dogBreedService.getAllDogBreeds());
+        List<DogBreed> dogBreeds = dogBreedService.getAllDogBreeds();
+        if (dogBreeds.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else { return  ResponseEntity.ok(dogBreeds); }
     }
 
     @Operation(summary = "Buscar Raça pelo Id")
@@ -62,9 +72,29 @@ public class DogBreedController {
         );
     }
 
+    @Operation(summary = "Criar uma nova raça")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Raça criada com sucesso!",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = DogBreed.class)) }),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos!", content = @Content)
+    })
     @PostMapping
     public ResponseEntity<DogBreed> createDogBreed(@Valid @RequestBody DogBreed dogBreed) {
         DogBreed createdDogBreed = dogBreedService.createDogBreed(dogBreed);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdDogBreed);
+    }
+
+    @Operation(summary = "Remover raça por ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Raça removida!"),
+            @ApiResponse(responseCode = "404", description = "Raça não encontrada!", content = @Content)
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteDogBreed(@PathVariable Long id) {
+        return dogBreedService.getDogBreedId(id)
+                .map(dogBreed -> {dogBreedService.deleteDogBreed(id);
+                    return new ResponseEntity<Void>(HttpStatus.NO_CONTENT); })
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }

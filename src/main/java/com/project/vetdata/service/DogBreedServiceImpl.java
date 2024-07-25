@@ -32,4 +32,7 @@ public class DogBreedServiceImpl implements DogBreedService {
     public DogBreed createDogBreed(DogBreed dogBreed) {
         return dogBreedRepository.save(dogBreed);
     }
+
+    @Override
+    public void deleteDogBreed(Long id) { dogBreedRepository.deleteById(id); }
 }
