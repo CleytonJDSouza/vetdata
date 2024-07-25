@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -94,5 +95,30 @@ public class DogBreedControllerTest {
                 .andExpect(jsonPath("$.hypoallergenic").value(false))
                 .andExpect(jsonPath("$.size").value("Médio"));
 
+    }
+
+    @Test
+    public void shouldReturnNotFound() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/breeds/56789")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+    @Test
+    public void shouldDeleteBreedId() throws Exception {
+        DogBreed dogBreed = new DogBreed(12345L, "Bulldog", "Amigavel e Corajoso", 8, 10,
+                20.0, 25.0, 18.0, 23.0, false, "Médio");
+
+        Mockito.when(dogBreedService.getDogBreedId(12345L)).thenReturn(Optional.of(dogBreed));
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/breeds/12345"))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void shouldDeleteBreedNotFound() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/breeds/56789"))
+                .andExpect(status().isNotFound());
     }
 }

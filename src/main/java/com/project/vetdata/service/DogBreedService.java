@@ -9,5 +9,5 @@ public interface DogBreedService {
         List<DogBreed> getAllDogBreeds();
         Optional<DogBreed> getDogBreedId(Long id);
         DogBreed createDogBreed(DogBreed dogBreed);
-
+        void deleteDogBreed(Long id);
 }
