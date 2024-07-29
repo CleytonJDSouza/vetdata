@@ -1,6 +1,7 @@
 package com.project.vetdata.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.vetdata.dto.DogBreedUpdateDTO;
 import com.project.vetdata.model.DogBreed;
 import com.project.vetdata.service.DogBreedService;
 import org.junit.jupiter.api.Test;
@@ -120,5 +121,43 @@ public class DogBreedControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/breeds/56789"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void shouldUpdateDogBreed() throws Exception {
+        DogBreed dogBreed = new DogBreed(12345L, "Bulldog", "Amigável e Corajoso", 8, 10,
+                20.0, 25.0, 18.0, 23.0, false, "Médio");
+
+        DogBreedUpdateDTO dogBreedUpdateDTO = new DogBreedUpdateDTO();
+        dogBreedUpdateDTO.setDescription("Leal e Protetor");
+        dogBreedUpdateDTO.setLifeExpectancyMin(9);
+        dogBreedUpdateDTO.setLifeExpectancyMax(12);
+        dogBreedUpdateDTO.setMaleWeightMin(22.0);
+        dogBreedUpdateDTO.setMaleWeightMax(28.0);
+        dogBreedUpdateDTO.setFemaleWeightMin(20.0);
+        dogBreedUpdateDTO.setFemaleWeightMax(26.0);
+        dogBreedUpdateDTO.setHypoallergenic(true);
+        dogBreedUpdateDTO.setSize("Small");
+
+        DogBreed updatedDogBreed = new DogBreed(12345L, "Bulldog", "Leal e Protetor", 9, 12,
+                22.0, 28.0, 20.0, 26.0, true, "Pequeno");
+
+        Mockito.when(dogBreedService.updateDogBreed(anyLong(), any(DogBreedUpdateDTO.class))).thenReturn(updatedDogBreed);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/breeds/12345")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dogBreedUpdateDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(12345))
+                .andExpect(jsonPath("$.name").value("Bulldog"))
+                .andExpect(jsonPath("$.description").value("Leal e Protetor"))
+                .andExpect(jsonPath("$.lifeExpectancyMin").value(9))
+                .andExpect(jsonPath("$.lifeExpectancyMax").value(12))
+                .andExpect(jsonPath("$.maleWeightMin").value(22.0))
+                .andExpect(jsonPath("$.maleWeightMax").value(28.0))
+                .andExpect(jsonPath("$.femaleWeightMin").value(20.0))
+                .andExpect(jsonPath("$.femaleWeightMax").value(26.0))
+                .andExpect(jsonPath("$.hypoallergenic").value(true))
+                .andExpect(jsonPath("$.size").value("Pequeno"));
     }
 }

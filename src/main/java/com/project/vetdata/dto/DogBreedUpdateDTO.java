@@ -1,60 +1,21 @@
-package com.project.vetdata.model;
+package com.project.vetdata.dto;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-
-@Entity
-@Table(name = "dog_breeds")
-public class DogBreed {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @NotBlank(message = "Campo Obrigatório")
-    private String name;
+public class DogBreedUpdateDTO {
 
     private String description;
-
-    @NotNull(message = "Campo Obrigatório")
-    @Min(value = 0, message = "Campo deve ter valor maior que: 0")
     private Integer lifeExpectancyMin;
-
-    @NotNull(message = "Campo Obrigatório")
-    @Min(value = 0, message = "Campo deve ter valor maior que: 0")
     private Integer lifeExpectancyMax;
-
-    @NotNull(message = "Campo Obrigatório")
-    @Min(value = 0, message = "Campo deve ter valor maior que: 0")
     private Double maleWeightMin;
-
-    @NotNull(message = "Campo Obrigatório")
-    @Min(value = 0, message = "Campo deve ter valor maior que: 0")
     private Double maleWeightMax;
-
-    @NotNull(message = "Campo Obrigatório")
-    @Min(value = 0, message = "Campo deve ter valor maior que: 0")
     private Double femaleWeightMin;
-
-    @NotNull(message = "Campo Obrigatório")
-    @Min(value = 0, message = "Campo deve ter valor maior que: 0")
     private Double femaleWeightMax;
-
-    @NotNull(message = "Campo Obrigatório")
     private Boolean hypoallergenic;
-
-    @NotBlank(message = "Campo Obrigatório")
     private String size;
 
-    public DogBreed() {
-    }
+    public DogBreedUpdateDTO() {}
 
-    public DogBreed(Long id, String name, String description, Integer lifeExpectancyMin, Integer lifeExpectancyMax, Double maleWeightMin, Double maleWeightMax, Double femaleWeightMin,
-                    Double femaleWeightMax, Boolean hypoallergenic, String size) {
-        this.id = id;
-        this.name = name;
+    public DogBreedUpdateDTO(String description, Integer lifeExpectancyMin, Integer lifeExpectancyMax, Double maleWeightMin, Double maleWeightMax, Double femaleWeightMin,
+                             Double femaleWeightMax, Boolean hypoallergenic, String size) {
         this.description = description;
         this.lifeExpectancyMin = lifeExpectancyMin;
         this.lifeExpectancyMax = lifeExpectancyMax;
@@ -64,14 +25,6 @@ public class DogBreed {
         this.femaleWeightMax = femaleWeightMax;
         this.hypoallergenic = hypoallergenic;
         this.size = size;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public String getDescription() {
@@ -101,7 +54,6 @@ public class DogBreed {
     public Double getFemaleWeightMax() {
         return femaleWeightMax;
     }
-
     public Boolean getHypoallergenic() {
         return hypoallergenic;
     }
@@ -122,16 +74,16 @@ public class DogBreed {
         this.lifeExpectancyMax = lifeExpectancyMax;
     }
 
-    public void setMaleWeightMin(Double maleWeightMin) {
-        this.maleWeightMin = maleWeightMin;
+    public void setFemaleWeightMin(Double femaleWeightMin) {
+        this.femaleWeightMin = femaleWeightMin;
     }
 
     public void setMaleWeightMax(Double maleWeightMax) {
         this.maleWeightMax = maleWeightMax;
     }
 
-    public void setFemaleWeightMin(Double femaleWeightMin) {
-        this.femaleWeightMin = femaleWeightMin;
+    public void setMaleWeightMin(Double maleWeightMin) {
+        this.maleWeightMin = maleWeightMin;
     }
 
     public void setFemaleWeightMax(Double femaleWeightMax) {
@@ -146,5 +98,3 @@ public class DogBreed {
         this.size = size;
     }
 }
-
-

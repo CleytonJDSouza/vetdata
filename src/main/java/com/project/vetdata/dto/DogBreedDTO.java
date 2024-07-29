@@ -14,6 +14,8 @@ public class DogBreedDTO {
     private Boolean hypoallergenic;
     private String size;
 
+    public DogBreedDTO(){}
+
     public DogBreedDTO(Long id, String name, String description, Integer lifeExpectancyMin, Integer lifeExpectancyMax, Double maleWeightMin, Double maleWeightMax,
                             Double femaleWeightMin, Double femaleWeightMax, Boolean hypoallergenic, String size) {
         this.id = id;
