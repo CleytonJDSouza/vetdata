@@ -5,6 +5,8 @@ import com.project.vetdata.exception.BreedNotFoundException;
 import com.project.vetdata.model.DogBreed;
 import com.project.vetdata.repository.DogBreedRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,8 +23,8 @@ public class DogBreedServiceImpl implements DogBreedService {
     }
 
     @Override
-    public List<DogBreed> getAllDogBreeds() {
-        return dogBreedRepository.findAll();
+    public Page<DogBreed> getAllDogBreeds(Pageable pageable) {
+        return dogBreedRepository.findAll(pageable);
     }
 
     @Override

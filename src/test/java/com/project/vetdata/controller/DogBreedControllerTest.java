@@ -9,10 +9,14 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.*;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import javax.print.attribute.standard.Media;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -159,5 +163,27 @@ public class DogBreedControllerTest {
                 .andExpect(jsonPath("$.femaleWeightMax").value(26.0))
                 .andExpect(jsonPath("$.hypoallergenic").value(true))
                 .andExpect(jsonPath("$.size").value("Pequeno"));
+    }
+
+    @Test
+    public void shouldReturnPageBreeds() throws Exception {
+        List<DogBreed> breeds = List.of(
+                new DogBreed(12345L, "Golden Retriever", "Amigável e inteligente", 10, 12, 29.0,
+                        34.0, 25.0, 32.0, false, "Grande"),
+                new DogBreed(67890L, "Labrador Retriever", "Raça popular conhecida por sua natureza amigável", 10,
+                        12, 29.0, 36.0, 25.0, 32.0, false, "Grande")
+        );
+        Pageable paging = PageRequest.of(0, 2, Sort.by("id"));
+        Page<DogBreed> pageBreeds = new PageImpl<>(breeds, paging, breeds.size());
+
+        Mockito.when(dogBreedService.getAllDogBreeds(Mockito.any(Pageable.class))).thenReturn(pageBreeds);
+
+            mockMvc.perform(MockMvcRequestBuilders.get("/breeds?page=0&qtdRecordsPage=2&sortBy=id")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.total").value(pageBreeds.getTotalElements()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.page").value(pageBreeds.getNumber()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].id").value(12345))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[1].id").value(67890));
     }
 }
