@@ -1,5 +1,6 @@
 package com.project.vetdata.service;
 
+import com.project.vetdata.dto.DogBreedUpdateDTO;
 import com.project.vetdata.model.DogBreed;
 
 import java.util.List;
@@ -10,4 +11,5 @@ public interface DogBreedService {
         Optional<DogBreed> getDogBreedId(Long id);
         DogBreed createDogBreed(DogBreed dogBreed);
         void deleteDogBreed(Long id);
+        DogBreed updateDogBreed(Long id, DogBreedUpdateDTO dogBreedUpdateDTO);
 }

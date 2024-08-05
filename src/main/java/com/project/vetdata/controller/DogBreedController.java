@@ -1,6 +1,7 @@
 package com.project.vetdata.controller;
 
 import com.project.vetdata.dto.DogBreedDTO;
+import com.project.vetdata.dto.DogBreedUpdateDTO;
 import com.project.vetdata.model.DogBreed;
 import com.project.vetdata.service.DogBreedService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -96,5 +97,19 @@ public class DogBreedController {
                 .map(dogBreed -> {dogBreedService.deleteDogBreed(id);
                     return new ResponseEntity<Void>(HttpStatus.NO_CONTENT); })
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @Operation(summary = "Atualizar uma raça existente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Raça Atualizada!",
+            content = { @Content(mediaType = "application/json",
+                        schema = @Schema(implementation = DogBreed.class))}),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos!", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Raça não encontrada!", content = @Content)
+    })
+    @PutMapping("/{id}")
+    public ResponseEntity<DogBreed> updateDogBreed(@PathVariable Long id, @Valid @RequestBody DogBreedUpdateDTO dogBreedUpdateDTO) {
+        DogBreed updateDogBreed = dogBreedService.updateDogBreed(id, dogBreedUpdateDTO);
+        return ResponseEntity.ok(updateDogBreed);
     }
 }
