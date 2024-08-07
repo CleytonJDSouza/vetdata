@@ -11,11 +11,17 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/breeds")
@@ -36,11 +42,25 @@ public class DogBreedController {
             @ApiResponse(responseCode = "204", description = "Nenhuma raça encontrada!", content = @Content)
     })
     @GetMapping
-    public ResponseEntity<List<DogBreed>> getAllDogBreeds() {
-        List<DogBreed> dogBreeds = dogBreedService.getAllDogBreeds();
-        if (dogBreeds.isEmpty()) {
+    public ResponseEntity<Map<String, Object>> getAllDogBreeds(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int qtdRecordsPage,
+            @RequestParam(defaultValue = "id") String sortBy
+    ) {
+        Pageable paging = PageRequest.of(page, qtdRecordsPage, Sort.by(sortBy));
+        Page<DogBreed> pageBreeds = dogBreedService.getAllDogBreeds(paging);
+
+        if (pageBreeds.isEmpty()) {
             return ResponseEntity.noContent().build();
-        } else { return  ResponseEntity.ok(dogBreeds); }
+        }
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("total", pageBreeds.getTotalElements());
+        response.put("qtdRescordsPage", pageBreeds.getSize());
+        response.put("page", pageBreeds.getNumber());
+        response.put("data", pageBreeds.getContent());
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @Operation(summary = "Buscar Raça pelo Id")
