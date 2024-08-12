@@ -1,14 +1,10 @@
-package com.project.vetdata.model;
+package com.project.vetdata.dto;
 
-import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
-@Entity
-@Table(name = "dog_breeds")
-public class DogBreed {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class DogBreedCreateDTO {
 
     private String name;
     private String description;
@@ -21,12 +17,10 @@ public class DogBreed {
     private Boolean hypoallergenic;
     private String size;
 
-    public DogBreed() {
-    }
+    public DogBreedCreateDTO() {}
 
-    public DogBreed(Long id, String name, String description, Integer lifeExpectancyMin, Integer lifeExpectancyMax, Double maleWeightMin, Double maleWeightMax, Double femaleWeightMin,
-                    Double femaleWeightMax, Boolean hypoallergenic, String size) {
-        this.id = id;
+    public DogBreedCreateDTO(String name, String description, Integer lifeExpectancyMin, Integer lifeExpectancyMax, Double maleWeightMin, Double maleWeightMax, Double femaleWeightMin,
+                             Double femaleWeightMax, Boolean hypoallergenic, String size) {
         this.name = name;
         this.description = description;
         this.lifeExpectancyMin = lifeExpectancyMin;
@@ -37,12 +31,9 @@ public class DogBreed {
         this.femaleWeightMax = femaleWeightMax;
         this.hypoallergenic = hypoallergenic;
         this.size = size;
-    }
+        }
 
-    public Long getId() {
-        return id;
-    }
-
+    @NotBlank(message = "Campo Obrigatório")
     public String getName() {
         return name;
     }
@@ -51,34 +42,48 @@ public class DogBreed {
         return description;
     }
 
+    @NotNull(message = "Campo Obrigatório")
+    @Min(value = 0, message = "Campo deve ter valor maior que: 0")
     public Integer getLifeExpectancyMin() {
         return lifeExpectancyMin;
     }
 
+    @NotNull(message = "Campo Obrigatório")
+    @Min(value = 0, message = "Campo deve ter valor maior que: 0")
     public Integer getLifeExpectancyMax() {
         return lifeExpectancyMax;
     }
 
+    @NotNull(message = "Campo Obrigatório")
+    @Min(value = 0, message = "Campo deve ter valor maior que: 0")
     public Double getMaleWeightMin() {
         return maleWeightMin;
     }
 
+    @NotNull(message = "Campo Obrigatório")
+    @Min(value = 0, message = "Campo deve ter valor maior que: 0")
     public Double getMaleWeightMax() {
         return maleWeightMax;
     }
 
+    @NotNull(message = "Campo Obrigatório")
+    @Min(value = 0, message = "Campo deve ter valor maior que: 0")
     public Double getFemaleWeightMin() {
         return femaleWeightMin;
     }
 
+    @NotNull(message = "Campo Obrigatório")
+    @Min(value = 0, message = "Campo deve ter valor maior que: 0")
     public Double getFemaleWeightMax() {
         return femaleWeightMax;
     }
 
+    @NotNull(message = "Campo Obrigatório")
     public Boolean getHypoallergenic() {
         return hypoallergenic;
     }
 
+    @NotBlank(message = "Campo Obrigatório")
     public String getSize() {
         return size;
     }
@@ -121,6 +126,6 @@ public class DogBreed {
     public void setSize(String size) {
         this.size = size;
     }
-}
 
+}
 

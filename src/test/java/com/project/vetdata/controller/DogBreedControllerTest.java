@@ -1,6 +1,7 @@
 package com.project.vetdata.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.vetdata.dto.DogBreedCreateDTO;
 import com.project.vetdata.dto.DogBreedUpdateDTO;
 import com.project.vetdata.model.DogBreed;
 import com.project.vetdata.service.DogBreedService;
@@ -15,7 +16,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import javax.print.attribute.standard.Media;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,10 +38,23 @@ public class DogBreedControllerTest {
 
     @Test
     public void shouldCreateDogBreed() throws Exception {
+        DogBreedCreateDTO dogBreedCreateDTO = new DogBreedCreateDTO();
+
+        dogBreedCreateDTO.setName("Bulldog");
+        dogBreedCreateDTO.setDescription("Amigavel e Corajoso");
+        dogBreedCreateDTO.setLifeExpectancyMin(8);
+        dogBreedCreateDTO.setLifeExpectancyMax(10);
+        dogBreedCreateDTO.setMaleWeightMin(20.0);
+        dogBreedCreateDTO.setMaleWeightMax(25.0);
+        dogBreedCreateDTO.setFemaleWeightMin(18.0);
+        dogBreedCreateDTO.setFemaleWeightMax(23.0);
+        dogBreedCreateDTO.setHypoallergenic(false);
+        dogBreedCreateDTO.setSize("Médio");
+
         DogBreed dogBreed = new DogBreed(null, "Bulldog", "Amigavel e Corajoso", 8, 10,
                 20.0, 25.0, 18.0, 23.0, false, "Médio");
 
-        Mockito.when(dogBreedService.createDogBreed(any(DogBreed.class))).thenReturn(dogBreed);
+        Mockito.when(dogBreedService.createDogBreed(any(DogBreedCreateDTO.class))).thenReturn(dogBreed);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/breeds")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -141,7 +154,7 @@ public class DogBreedControllerTest {
         dogBreedUpdateDTO.setFemaleWeightMin(20.0);
         dogBreedUpdateDTO.setFemaleWeightMax(26.0);
         dogBreedUpdateDTO.setHypoallergenic(true);
-        dogBreedUpdateDTO.setSize("Small");
+        dogBreedUpdateDTO.setSize("Pequeno");
 
         DogBreed updatedDogBreed = new DogBreed(12345L, "Bulldog", "Leal e Protetor", 9, 12,
                 22.0, 28.0, 20.0, 26.0, true, "Pequeno");
