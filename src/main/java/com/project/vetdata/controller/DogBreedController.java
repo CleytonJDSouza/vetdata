@@ -1,5 +1,6 @@
 package com.project.vetdata.controller;
 
+import com.project.vetdata.dto.DogBreedCreateDTO;
 import com.project.vetdata.dto.DogBreedDTO;
 import com.project.vetdata.dto.DogBreedUpdateDTO;
 import com.project.vetdata.model.DogBreed;
@@ -20,7 +21,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -101,8 +101,8 @@ public class DogBreedController {
             @ApiResponse(responseCode = "400", description = "Dados inválidos!", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<DogBreed> createDogBreed(@Valid @RequestBody DogBreed dogBreed) {
-        DogBreed createdDogBreed = dogBreedService.createDogBreed(dogBreed);
+    public ResponseEntity<DogBreed> createDogBreed(@Valid @RequestBody DogBreedCreateDTO dogBreedCreateDTO) {
+        DogBreed createdDogBreed = dogBreedService.createDogBreed(dogBreedCreateDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdDogBreed);
     }
 
