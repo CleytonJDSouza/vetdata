@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  mysql:
+    image: mysql:latest
+    container_name: vetdata_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: vetdata
+    volumes:
+      - vetdata_mysql_volume:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    networks:
+      - vetdata-network
+
+  vetdata-app:
+    build: .
+    container_name: vetdata_app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://vetdata_db:3306/vetdata
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      - mysql
+    networks:
+      - vetdata-network
+
+networks:
+  vetdata-network:
+
+volumes:
+  vetdata_mysql_volume:
