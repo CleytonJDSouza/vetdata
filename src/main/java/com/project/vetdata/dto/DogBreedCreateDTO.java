@@ -17,7 +17,8 @@ public class DogBreedCreateDTO {
     private Boolean hypoallergenic;
     private String size;
 
-    public DogBreedCreateDTO() {}
+    public  DogBreedCreateDTO() {
+    }
 
     public DogBreedCreateDTO(String name, String description, Integer lifeExpectancyMin, Integer lifeExpectancyMax, Double maleWeightMin, Double maleWeightMax, Double femaleWeightMin,
                              Double femaleWeightMax, Boolean hypoallergenic, String size) {
