@@ -12,8 +12,6 @@ public class DogBreedUpdateDTO {
     private Boolean hypoallergenic;
     private String size;
 
-    public DogBreedUpdateDTO() {}
-
     public DogBreedUpdateDTO(String description, Integer lifeExpectancyMin, Integer lifeExpectancyMax, Double maleWeightMin, Double maleWeightMax, Double femaleWeightMin,
                              Double femaleWeightMax, Boolean hypoallergenic, String size) {
         this.description = description;
@@ -25,6 +23,9 @@ public class DogBreedUpdateDTO {
         this.femaleWeightMax = femaleWeightMax;
         this.hypoallergenic = hypoallergenic;
         this.size = size;
+    }
+
+    public DogBreedUpdateDTO() {
     }
 
     public String getDescription() {

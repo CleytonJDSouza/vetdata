@@ -6,6 +6,7 @@ import com.project.vetdata.model.DogBreed;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface DogBreedService {
@@ -14,4 +15,5 @@ public interface DogBreedService {
         DogBreed createDogBreed(DogBreedCreateDTO dogBreedCreateDTO);
         void deleteDogBreed(Long id);
         DogBreed updateDogBreed(Long id, DogBreedUpdateDTO dogBreedUpdateDTO);
+        List<DogBreed> findByExternalApi(String idExternalApi);
 }

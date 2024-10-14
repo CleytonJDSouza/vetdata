@@ -35,22 +35,17 @@ public class DogBreedServiceImpl implements DogBreedService {
 
     @Override
     public DogBreed createDogBreed(DogBreedCreateDTO dogBreedCreateDTO) {
-        DogBreed newBreed = new DogBreed();
-        newBreed.setName(dogBreedCreateDTO.getName());
-        newBreed.setDescription(dogBreedCreateDTO.getDescription());
-        newBreed.setLifeExpectancyMin(dogBreedCreateDTO.getLifeExpectancyMin());
-        newBreed.setLifeExpectancyMax(dogBreedCreateDTO.getLifeExpectancyMax());
-        newBreed.setMaleWeightMin(dogBreedCreateDTO.getMaleWeightMin());
-        newBreed.setMaleWeightMax(dogBreedCreateDTO.getMaleWeightMax());
-        newBreed.setFemaleWeightMin(dogBreedCreateDTO.getFemaleWeightMin());
-        newBreed.setFemaleWeightMax(dogBreedCreateDTO.getFemaleWeightMax());
-        newBreed.setHypoallergenic(dogBreedCreateDTO.getHypoallergenic());
-        newBreed.setSize(dogBreedCreateDTO.getSize());
+        DogBreed newBreed = fromCreateDTO(dogBreedCreateDTO);
         return dogBreedRepository.save(newBreed);
     }
 
     @Override
     public void deleteDogBreed(Long id) { dogBreedRepository.deleteById(id); }
+
+    @Override
+    public List<DogBreed> findByExternalApi(String idExternalApi) {
+        return dogBreedRepository.findByIdExternalApi(idExternalApi);
+    }
 
     @Override
     public DogBreed updateDogBreed(Long id, DogBreedUpdateDTO dogBreedUpdateDTO) {
@@ -84,5 +79,21 @@ public class DogBreedServiceImpl implements DogBreedService {
             }
             return dogBreedRepository.save(existingBreed);
         }).orElseThrow(() -> new BreedNotFoundException("Raça não encontrada!" + id));
+    }
+
+    private DogBreed fromCreateDTO(DogBreedCreateDTO dto) {
+        DogBreed breed = new DogBreed();
+        breed.setName(dto.getName());
+        breed.setDescription(dto.getDescription());
+        breed.setLifeExpectancyMin(dto.getLifeExpectancyMin());
+        breed.setLifeExpectancyMax(dto.getLifeExpectancyMax());
+        breed.setMaleWeightMin(dto.getMaleWeightMin());
+        breed.setMaleWeightMax(dto.getMaleWeightMax());
+        breed.setFemaleWeightMin(dto.getFemaleWeightMin());
+        breed.setFemaleWeightMax(dto.getFemaleWeightMax());
+        breed.setHypoallergenic(dto.getHypoallergenic());
+        breed.setSize(dto.getSize());
+        breed.setIdExternalApi(null);
+        return breed;
     }
 }
