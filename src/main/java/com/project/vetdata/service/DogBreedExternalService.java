@@ -71,4 +71,33 @@ public class DogBreedExternalService {
                 dogBreed.getSize()
         );
     }
+
+    public static boolean checkForUpdates(DogBreed existingBreed, DogBreedExternalDTO newBreedDTO) {
+        return !areAttributesEqual(existingBreed, newBreedDTO.getAttributeDTO());
+    }
+
+    private static boolean areAttributesEqual(DogBreed existingBreed, AttributesDTO newAttributes) {
+        return existingBreed.getDescription().equals(newAttributes.getDescription()) &&
+                existingBreed.getLifeExpectancyMin().equals(newAttributes.getLife().getMin()) &&
+                existingBreed.getLifeExpectancyMax().equals(newAttributes.getLife().getMax()) &&
+                existingBreed.getMaleWeightMin().equals(newAttributes.getMaleWeightDTO().getMin()) &&
+                existingBreed.getMaleWeightMax().equals(newAttributes.getMaleWeightDTO().getMax()) &&
+                existingBreed.getFemaleWeightMin().equals(newAttributes.getFemaleWeightDTO().getMin()) &&
+                existingBreed.getFemaleWeightMax().equals(newAttributes.getFemaleWeightDTO().getMax()) &&
+                existingBreed.getHypoallergenic().equals(newAttributes.getHypoallergenic());
+    }
+
+    public static DogBreed updateBreedFromExternalDTO(DogBreed existingBreed, DogBreedExternalDTO newBreedDTO) {
+        AttributesDTO newAttributes = newBreedDTO.getAttributeDTO();
+        existingBreed.setDescription(newAttributes.getDescription());
+        existingBreed.setLifeExpectancyMin(newAttributes.getLife().getMin());
+        existingBreed.setLifeExpectancyMax(newAttributes.getLife().getMax());
+        existingBreed.setMaleWeightMin(newAttributes.getMaleWeightDTO().getMin());
+        existingBreed.setMaleWeightMax(newAttributes.getMaleWeightDTO().getMax());
+        existingBreed.setFemaleWeightMin(newAttributes.getFemaleWeightDTO().getMin());
+        existingBreed.setFemaleWeightMax(newAttributes.getFemaleWeightDTO().getMax());
+        existingBreed.setHypoallergenic(newAttributes.getHypoallergenic());
+
+        return existingBreed;
+    }
 }

@@ -8,6 +8,11 @@ public class FemaleWeightDTO {
     public FemaleWeightDTO() {
     }
 
+    public FemaleWeightDTO(Double min, Double max) {
+        this.min = min;
+        this.max = max;
+    }
+
     public Double getMax() {
         return max;
     }

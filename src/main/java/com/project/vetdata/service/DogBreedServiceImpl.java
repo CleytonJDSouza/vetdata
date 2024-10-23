@@ -43,7 +43,7 @@ public class DogBreedServiceImpl implements DogBreedService {
     public void deleteDogBreed(Long id) { dogBreedRepository.deleteById(id); }
 
     @Override
-    public List<DogBreed> findByExternalApi(String idExternalApi) {
+    public Optional<DogBreed> findByExternalApi(String idExternalApi) {
         return dogBreedRepository.findByIdExternalApi(idExternalApi);
     }
 
