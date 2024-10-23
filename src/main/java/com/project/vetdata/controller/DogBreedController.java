@@ -73,8 +73,12 @@ public class DogBreedController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getDogBreedById(@PathVariable Long id) {
         return dogBreedService.getDogBreedId(id)
-                .map(dogBreed -> ResponseEntity.ok(convertToDto(dogBreed)))
+                .map(this::convertToResponseEntity)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    private ResponseEntity<?> convertToResponseEntity(DogBreed dogBreed) {
+        return ResponseEntity.ok(convertToDto(dogBreed));
     }
 
     private DogBreedDTO convertToDto(DogBreed dogBreed) {
@@ -114,11 +118,13 @@ public class DogBreedController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteDogBreed(@PathVariable Long id) {
         return dogBreedService.getDogBreedId(id)
-                .map(dogBreed -> {
-                    dogBreedService.deleteDogBreed(id);
-                    return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
-                })
+                .map(this::handleDelete)
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    private ResponseEntity<Void> handleDelete (DogBreed dogBreed) {
+        dogBreedService.deleteDogBreed(dogBreed.getId());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Operation(summary = "Atualizar uma raça existente")
@@ -155,13 +161,13 @@ public class DogBreedController {
             }
 
             for (DogBreedExternalDTO breedDTO : breedsToImport) {
-                List<DogBreed> existingBreeds = dogBreedService.findByExternalApi(breedDTO.getIdExternalApi());
-                if (!existingBreeds.isEmpty()) {
-                    DogBreed existingBreed = existingBreeds.get(0);
-                    boolean needsUpdate = checkForUpdates(existingBreed, breedDTO);
+                Optional<DogBreed> existingBreeds = dogBreedService.findByExternalApi(breedDTO.getIdExternalApi());
+                if (existingBreeds.isPresent()) {
+                    DogBreed existingBreed = existingBreeds.get();
+                    boolean needsUpdate = DogBreedExternalService.checkForUpdates(existingBreed, breedDTO);
 
                     if(needsUpdate) {
-                        DogBreed updateBreed = updateBreedFromExternalDTO(existingBreed, breedDTO);
+                        DogBreed updateBreed = DogBreedExternalService.updateBreedFromExternalDTO(existingBreed, breedDTO);
                         DogBreedUpdateDTO updateDTO = dogBreedExternalService.convertToUpdateDTO(updateBreed);
                         dogBreedService.updateDogBreed(existingBreed.getId(), updateDTO);
                         updateCount++;
@@ -174,31 +180,5 @@ public class DogBreedController {
             pageNumber++;
         }
         return ResponseEntity.ok("Importação concluída. " + importedCount + " raças importadas, " + updateCount + " raças atualizadas.");
-    }
-
-    private boolean checkForUpdates(DogBreed existingBreed, DogBreedExternalDTO newBreedDTO) {
-        AttributesDTO newAttributes = newBreedDTO.getAttributeDTO();
-        return !existingBreed.getDescription().equals(newAttributes.getDescription()) ||
-                !existingBreed.getLifeExpectancyMin().equals(newAttributes.getLife().getMin()) ||
-                !existingBreed.getLifeExpectancyMax().equals(newAttributes.getLife().getMax()) ||
-                !existingBreed.getMaleWeightMin().equals(newAttributes.getMaleWeightDTO().getMin()) ||
-                !existingBreed.getMaleWeightMax().equals(newAttributes.getMaleWeightDTO().getMax()) ||
-                !existingBreed.getFemaleWeightMin().equals(newAttributes.getFemaleWeightDTO().getMin()) ||
-                !existingBreed.getFemaleWeightMax().equals(newAttributes.getFemaleWeightDTO().getMax()) ||
-                !existingBreed.getHypoallergenic().equals(newAttributes.getHypoallergenic());
-    }
-
-    private DogBreed updateBreedFromExternalDTO(DogBreed existingBreed, DogBreedExternalDTO newBreedDTO) {
-        AttributesDTO newAttributes = newBreedDTO.getAttributeDTO();
-        existingBreed.setDescription(newAttributes.getDescription());
-        existingBreed.setLifeExpectancyMin(newAttributes.getLife().getMin());
-        existingBreed.setLifeExpectancyMax(newAttributes.getLife().getMax());
-        existingBreed.setMaleWeightMin(newAttributes.getMaleWeightDTO().getMin());
-        existingBreed.setMaleWeightMax(newAttributes.getMaleWeightDTO().getMax());
-        existingBreed.setFemaleWeightMin(newAttributes.getFemaleWeightDTO().getMin());
-        existingBreed.setFemaleWeightMax(newAttributes.getFemaleWeightDTO().getMax());
-        existingBreed.setHypoallergenic(newAttributes.getHypoallergenic());
-
-        return existingBreed;
     }
 }
