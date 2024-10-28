@@ -5,7 +5,11 @@ import com.project.vetdata.dto.*;
 import com.project.vetdata.model.DogBreed;
 import com.project.vetdata.service.DogBreedExternalService;
 import com.project.vetdata.service.DogBreedService;
+import com.project.vetdata.service.DogBreedServiceImpl;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -15,11 +19,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.mockito.MockitoAnnotations;
 
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -27,6 +31,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(DogBreedController.class)
 public class DogBreedControllerTest {
+
+    @InjectMocks
+    private DogBreedServiceImpl dogBreedServiceImpl;
 
     @Autowired
     private MockMvc mockMvc;
@@ -37,9 +44,16 @@ public class DogBreedControllerTest {
     @MockBean
     private DogBreedExternalService dogBreedExternalService;
 
+    @Mock
+    private DogBreedController dogBreedController;
+
     @Autowired
     private ObjectMapper objectMapper;
 
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
     @Test
     public void shouldCreateDogBreed() throws Exception {
        DogBreedCreateDTO dogBreedCreateDTO = new DogBreedCreateDTO("Bulldog", "Amigavel e Corajoso", 8, 10, 20.0,
@@ -227,7 +241,7 @@ public class DogBreedControllerTest {
                 .thenReturn(dogBreedExternalDTOList)
                 .thenReturn(Collections.emptyList());
 
-        when(dogBreedService.findByExternalApi(dogBreedExternalDTO.getIdExternalApi())).thenReturn(Collections.emptyList());
+        when(dogBreedService.findByExternalApi(dogBreedExternalDTO.getIdExternalApi())).thenReturn(Optional.empty());
 
         doNothing().when(dogBreedExternalService).saveFromExternalAPI(any());
 
@@ -271,8 +285,7 @@ public class DogBreedControllerTest {
         updatedBreedDTO.getAttributeDTO().setHypoallergenic(true);
 
         when(dogBreedService.findByExternalApi("1"))
-                .thenReturn(Collections.singletonList(existingBreed))
-                .thenReturn(Collections.singletonList(existingBreed));
+                .thenReturn(Optional.of(existingBreed));
 
         when(dogBreedExternalService.getBreedsByPage(anyInt()))
                 .thenReturn(Collections.singletonList(updatedBreedDTO))
@@ -283,7 +296,7 @@ public class DogBreedControllerTest {
                 .andExpect(content().contentType(MediaType.TEXT_PLAIN_VALUE + ";charset=UTF-8"))
                 .andExpect(content().string("Importação concluída. 0 raças importadas, 1 raças atualizadas."));
 
-        DogBreed updatedBreedAfterUpdate = dogBreedService.findByExternalApi("1").get(0);
+        DogBreed updatedBreedAfterUpdate = dogBreedService.findByExternalApi("1").get();
         assertEquals("Amigável e inteligente e esperto", updatedBreedAfterUpdate.getDescription());
         assertEquals(11, updatedBreedAfterUpdate.getLifeExpectancyMin());
         assertEquals(13, updatedBreedAfterUpdate.getLifeExpectancyMax());

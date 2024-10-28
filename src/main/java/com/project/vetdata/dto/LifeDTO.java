@@ -8,6 +8,11 @@ public class LifeDTO {
     public LifeDTO() {
     }
 
+    public LifeDTO(Integer min, Integer max) {
+        this.min = min;
+        this.max = max;
+    }
+
     public Integer getMax() {
         return max;
     }

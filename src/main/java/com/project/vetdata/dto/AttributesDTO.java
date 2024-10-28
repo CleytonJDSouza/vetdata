@@ -3,6 +3,8 @@ package com.project.vetdata.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Objects;
+
 public class AttributesDTO {
 
     private String name;
@@ -15,7 +17,15 @@ public class AttributesDTO {
     private Boolean hypoallergenic;
 
     public AttributesDTO() {
+    }
 
+    public AttributesDTO(String name, String description, LifeDTO life, MaleWeightDTO maleWeightDTO, FemaleWeightDTO femaleWeightDTO, Boolean hypoallergenic) {
+        this.name = name;
+        this.description = description;
+        this.life = life;
+        this.maleWeightDTO = maleWeightDTO;
+        this.femaleWeightDTO = femaleWeightDTO;
+        this.hypoallergenic = hypoallergenic;
     }
 
     public String getName() {

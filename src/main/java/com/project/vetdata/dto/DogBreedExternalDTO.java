@@ -12,6 +12,10 @@ public class DogBreedExternalDTO {
     public DogBreedExternalDTO() {
     }
 
+    public DogBreedExternalDTO(AttributesDTO attributesDTO) {
+        this.attributesDTO = attributesDTO;
+    }
+
 
     public String getIdExternalApi() {
         return idExternalApi;
