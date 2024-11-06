@@ -56,7 +56,7 @@ public class DogBreedController {
 
         Map<String, Object> response = new HashMap<>();
         response.put("total", pageBreeds.getTotalElements());
-        response.put("qtdRescordsPage", pageBreeds.getSize());
+        response.put("qtdRecordsPage", pageBreeds.getSize());
         response.put("page", pageBreeds.getNumber());
         response.put("data", pageBreeds.getContent());
 

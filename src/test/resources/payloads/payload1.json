@@ -1,0 +1,180 @@
+{
+  "data": [
+    {
+      "id": "68f47c5a-5115-47cd-9849-e45d3c378f12",
+      "type": "breed",
+      "attributes": {
+        "name": "Tanjiro",
+        "description": "A loyal and powerful dog breed known for its courage and intelligence.",
+        "life": { "max": 20, "min": 15 },
+        "male_weight": { "max": 90, "min": 50 },
+        "female_weight": { "max": 70, "min": 45 },
+        "hypoallergenic": false
+      },
+      "relationships": {
+        "group": {
+          "data": { "id": "8000793f-a1ae-4ec4-8d55-ef83f1f644e5", "type": "group" }
+        }
+      }
+    },
+    {
+      "id": "4ddbe251-72af-495e-8e9d-869217e1d92a",
+      "type": "breed",
+      "attributes": {
+        "name": "Ana",
+        "description": "A hardworking and energetic breed known for its protective instincts.",
+        "life": { "max": 14, "min": 10 },
+        "male_weight": { "max": 40, "min": 30 },
+        "female_weight": { "max": 35, "min": 25 },
+        "hypoallergenic": false
+      },
+      "relationships": {
+        "group": {
+          "data": { "id": "b8e4e89d-057f-432a-9e58-0b85b29b693c", "type": "group" }
+        }
+      }
+    },
+    {
+      "id": "3f4c95f5-25d4-4b19-b27c-123f1e1c999a",
+      "type": "breed",
+      "attributes": {
+        "name": "Batatinha",
+        "description": "An independent breed, ideal for herding and guard duties.",
+        "life": { "max": 14, "min": 10 },
+        "male_weight": { "max": 40, "min": 30 },
+        "female_weight": { "max": 35, "min": 25 },
+        "hypoallergenic": false
+      },
+      "relationships": {
+        "group": {
+          "data": { "id": "b8e4e89d-057f-432a-9e58-0b85b29b693c", "type": "group" }
+        }
+      }
+    },
+    {
+      "id": "e1234567-89ab-4cde-f123-456789abcdef",
+      "type": "breed",
+      "attributes": {
+        "name": "Luciano",
+        "description": "Highly intelligent, with a dignified but energetic demeanor.",
+        "life": { "max": 14, "min": 10 },
+        "male_weight": { "max": 40, "min": 30 },
+        "female_weight": { "max": 35, "min": 25 },
+        "hypoallergenic": false
+      },
+      "relationships": {
+        "group": {
+          "data": { "id": "b8e4e89d-057f-432a-9e58-0b85b29b693c", "type": "group" }
+        }
+      }
+    },
+    {
+      "id": "abc12345-6789-0def-1234-567890abcdef",
+      "type": "breed",
+      "attributes": {
+        "name": "Zeze",
+        "description": "Brave and loyal, with an instinct to protect family and property.",
+        "life": { "max": 14, "min": 10 },
+        "male_weight": { "max": 40, "min": 30 },
+        "female_weight": { "max": 35, "min": 25 },
+        "hypoallergenic": false
+      },
+      "relationships": {
+        "group": {
+          "data": { "id": "b8e4e89d-057f-432a-9e58-0b85b29b693c", "type": "group" }
+        }
+      }
+    },
+    {
+      "id": "1234abcd-5678-90ef-1234-567890abcdef",
+      "type": "breed",
+      "attributes": {
+        "name": "Torresmo",
+        "description": "Known for its courage and independent nature.",
+        "life": { "max": 14, "min": 10 },
+        "male_weight": { "max": 40, "min": 30 },
+        "female_weight": { "max": 35, "min": 25 },
+        "hypoallergenic": false
+      },
+      "relationships": {
+        "group": {
+          "data": { "id": "b8e4e89d-057f-432a-9e58-0b85b29b693c", "type": "group" }
+        }
+      }
+    },
+    {
+      "id": "5678abcd-1234-90ef-5678-90abcdef1234",
+      "type": "breed",
+      "attributes": {
+        "name": "Goku",
+        "description": "A strong and courageous breed with excellent working capabilities.",
+        "life": { "max": 14, "min": 10 },
+        "male_weight": { "max": 40, "min": 30 },
+        "female_weight": { "max": 35, "min": 25 },
+        "hypoallergenic": false
+      },
+      "relationships": {
+        "group": {
+          "data": { "id": "b8e4e89d-057f-432a-9e58-0b85b29b693c", "type": "group" }
+        }
+      }
+    },
+    {
+      "id": "90abcdef-1234-5678-abcd-ef1234567890",
+      "type": "breed",
+      "attributes": {
+        "name": "Naruto",
+        "description": "Loyal and brave, with an independent streak.",
+        "life": { "max": 14, "min": 10 },
+        "male_weight": { "max": 40, "min": 30 },
+        "female_weight": { "max": 35, "min": 25 },
+        "hypoallergenic": false
+      },
+      "relationships": {
+        "group": {
+          "data": { "id": "b8e4e89d-057f-432a-9e58-0b85b29b693c", "type": "group" }
+        }
+      }
+    },
+    {
+      "id": "abc123ef-4567-890a-bcde-f123456789ab",
+      "type": "breed",
+      "attributes": {
+        "name": "Hiei",
+        "description": "A bold and intelligent breed with a protective nature.",
+        "life": { "max": 14, "min": 10 },
+        "male_weight": { "max": 40, "min": 30 },
+        "female_weight": { "max": 35, "min": 25 },
+        "hypoallergenic": false
+      },
+      "relationships": {
+        "group": {
+          "data": { "id": "b8e4e89d-057f-432a-9e58-0b85b29b693c", "type": "group" }
+        }
+      }
+    },
+    {
+      "id": "4ddbe251-72af-495e-8e9d-869217e1d92a",
+      "type": "breed",
+      "attributes": {
+        "name": "Yusuki",
+        "description": "The Bouvier des Flandres is a large and powerful breed...",
+        "life": { "max": 14, "min": 10 },
+        "male_weight": { "max": 40, "min": 30 },
+        "female_weight": { "max": 35, "min": 25 },
+        "hypoallergenic": false
+      },
+      "relationships": {
+        "group": {
+          "data": { "id": "b8e4e89d-057f-432a-9e58-0b85b29b693c", "type": "group" }
+        }
+      }
+    }
+  ],
+  "links": {
+    "self": "https://dogapi.dog/api/v2/breeds",
+    "current": "https://dogapi.dog/api/v2/breeds?page[number]=1",
+    "next": "https://dogapi.dog/api/v2/breeds?page[number]=2",
+    "last": "https://dogapi.dog/api/v2/breeds?page[number]=29"
+  }
+}

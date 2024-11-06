@@ -1,15 +1,20 @@
 package com.project.vetdata.service;
 
 import com.project.vetdata.dto.*;
+import com.project.vetdata.exception.ExternalAPIException;
 import com.project.vetdata.model.DogBreed;
 import com.project.vetdata.repository.DogBreedRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.function.Executable;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -103,7 +108,26 @@ public class DogBreedExternalServiceTest {
     }
 
     @Test
-    void given_DogBreedWithNoChanges_when_checkForUpdates_then_returnFalse() {
+    public void given_serviceUnavailable_when_getBreedsByPage_is_called_then_ExternalAPIException_is_thrown() {
+        int pageNumber = 1;
+        String url = apiUrl + "?page[number]=" + pageNumber;
+
+        HttpServerErrorException exception = new HttpServerErrorException(HttpStatus.SERVICE_UNAVAILABLE);
+        when(restTemplate.getForObject(url, DogBreedResponseDTO.class)).thenThrow(exception);
+
+        ExternalAPIException thrownException = assertThrows(ExternalAPIException.class, new Executable() {
+            @Override
+            public void execute() throws Throwable {
+                dogBreedExternalService.getBreedsByPage(pageNumber);
+            }
+        });
+
+        assertEquals("Erro durante a importação:", thrownException.getMessage());
+        verify(restTemplate, times(1)).getForObject(url, DogBreedResponseDTO.class);
+    }
+
+    @Test
+    public void given_DogBreedWithNoChanges_when_checkForUpdates_then_returnFalse() {
         DogBreed existingBreed = new DogBreed();
         existingBreed.setDescription("Companheiro");
         existingBreed.setLifeExpectancyMin(10);
@@ -130,7 +154,7 @@ public class DogBreedExternalServiceTest {
     }
 
     @Test
-    void given_DogBreedWithChanges_when_checkForUpdates_then_returnTrue() {
+    public void given_DogBreedWithChanges_when_checkForUpdates_then_returnTrue() {
         DogBreed existingBreed = new DogBreed();
         existingBreed.setDescription("Companheiro");
         existingBreed.setLifeExpectancyMin(10);
@@ -154,6 +178,27 @@ public class DogBreedExternalServiceTest {
         boolean result = DogBreedExternalService.checkForUpdates(existingBreed, newBreedDTO);
 
         assertTrue(result);
+    }
+
+    @Test
+    public void given_badRequest_when_getBreedsByPage_is_called_then_ExternalAPIException_is_thrown() {
+        int pageNumber = 1;
+        String url = apiUrl + "?page[number]=" + pageNumber;
+
+        String responseBody = "Parâmetros inválidos na requisição";
+        HttpClientErrorException exception = new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Bad Request", responseBody.getBytes(), null);
+
+        when(restTemplate.getForObject(url, DogBreedResponseDTO.class)).thenThrow(exception);
+
+        ExternalAPIException thrownException = assertThrows(ExternalAPIException.class, new Executable() {
+            @Override
+            public void execute() throws Throwable {
+                dogBreedExternalService.getBreedsByPage(pageNumber);
+            }
+        });
+
+        assertEquals("Erro durante a importação:", thrownException.getMessage());
+        verify(restTemplate, times(1)).getForObject(url, DogBreedResponseDTO.class);
     }
 
     public List<DogBreedExternalDTO> getFakeDogBreedExternalDTOList() {

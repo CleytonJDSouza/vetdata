@@ -1,5 +1,9 @@
 package com.project.vetdata.dto;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class DogBreedUpdateDTO {
 
     private String description;
@@ -32,33 +36,48 @@ public class DogBreedUpdateDTO {
         return description;
     }
 
+    @NotNull(message = "Campo Obrigatório")
+    @Min(value = 0, message = "Campo deve ter valor maior que: 0")
     public Integer getLifeExpectancyMin() {
         return lifeExpectancyMin;
     }
 
+    @NotNull(message = "Campo Obrigatório")
+    @Min(value = 0, message = "Campo deve ter valor maior que: 0")
     public Integer getLifeExpectancyMax() {
         return lifeExpectancyMax;
     }
 
+    @NotNull(message = "Campo Obrigatório")
+    @Min(value = 0, message = "Campo deve ter valor maior que: 0")
     public Double getMaleWeightMin() {
         return maleWeightMin;
     }
 
+    @NotNull(message = "Campo Obrigatório")
+    @Min(value = 0, message = "Campo deve ter valor maior que: 0")
     public Double getMaleWeightMax() {
         return maleWeightMax;
     }
 
+    @NotNull(message = "Campo Obrigatório")
+    @Min(value = 0, message = "Campo deve ter valor maior que: 0")
     public Double getFemaleWeightMin() {
         return femaleWeightMin;
     }
 
+    @NotNull(message = "Campo Obrigatório")
+    @Min(value = 0, message = "Campo deve ter valor maior que: 0")
     public Double getFemaleWeightMax() {
         return femaleWeightMax;
     }
+
+    @NotNull(message = "Campo Obrigatório")
     public Boolean getHypoallergenic() {
         return hypoallergenic;
     }
 
+    @NotBlank(message = "Campo Obrigatório")
     public String getSize() {
         return size;
     }

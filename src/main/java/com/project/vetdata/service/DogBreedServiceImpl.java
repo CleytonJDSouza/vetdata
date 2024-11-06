@@ -5,13 +5,16 @@ import com.project.vetdata.dto.DogBreedUpdateDTO;
 import com.project.vetdata.exception.BreedNotFoundException;
 import com.project.vetdata.model.DogBreed;
 import com.project.vetdata.repository.DogBreedRepository;
+import jakarta.validation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class DogBreedServiceImpl implements DogBreedService {
@@ -35,8 +38,8 @@ public class DogBreedServiceImpl implements DogBreedService {
 
     @Override
     public DogBreed createDogBreed(DogBreedCreateDTO dogBreedCreateDTO) {
-        DogBreed newBreed = fromCreateDTO(dogBreedCreateDTO);
-        return dogBreedRepository.save(newBreed);
+       DogBreed newDogBreed = fromCreateDTO(dogBreedCreateDTO);
+       return dogBreedRepository.save(newDogBreed);
     }
 
     @Override
