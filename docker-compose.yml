@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   mysql:
-    image: mysql:latest
+    image: mysql:8.3.0
     container_name: vetdata_db
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -15,7 +15,8 @@ services:
       - vetdata-network
 
   vetdata-app:
-    build: .
+    build:
+      context: .
     container_name: vetdata_app
     ports:
       - "8085:8080"

@@ -1,16 +1,19 @@
-FROM maven:3.9.9-amazoncorretto-21-debian
+FROM maven:3.9.9-amazoncorretto-21-debian AS builder
 
 WORKDIR /app
 
-COPY pom.xml ./
+COPY . ./
 
 RUN mvn dependency:go-offline -B
 
-COPY src ./src
+RUN mvn clean package
 
-RUN mvn clean install -Dmaven.test.skip=true
+# Fase de execução
+FROM amazoncorretto:21
 
-COPY target/vetdata-0.0.1-SNAPSHOT.jar /app/vetdata.jar
+WORKDIR /app
+
+COPY --from=builder /app/target/*.jar /app/vetdata.jar
 
 EXPOSE 8080
 
