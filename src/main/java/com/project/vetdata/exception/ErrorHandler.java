@@ -1,5 +1,6 @@
 package com.project.vetdata.exception;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -17,11 +18,22 @@ public class ErrorHandler {
     public ResponseEntity<Map<String, String>> handleValidationExceptions(
             MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
+        for (Object error : ex.getBindingResult().getAllErrors()) {
+            FieldError fieldError = (FieldError) error;
+            String fieldName = fieldError.getField();
+            String errorMessage = fieldError.getDefaultMessage();
             errors.put(fieldName, errorMessage);
-        });
+        }
         return ResponseEntity.badRequest().body(errors);
+    }
+
+    @ExceptionHandler(ExternalAPIException.class)
+    public ResponseEntity<String> handleExternalAPIException(ExternalAPIException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(BreedNotFoundException.class)
+    public ResponseEntity<String> handleBreedNotFoundException(BreedNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 }

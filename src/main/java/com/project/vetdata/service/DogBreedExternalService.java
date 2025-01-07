@@ -1,11 +1,15 @@
 package com.project.vetdata.service;
 
 import com.project.vetdata.dto.*;
+import com.project.vetdata.exception.ExternalAPIException;
 import com.project.vetdata.model.DogBreed;
 import com.project.vetdata.repository.DogBreedRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -26,6 +30,9 @@ public class DogBreedExternalService {
     }
 
     public void saveFromExternalAPI(List<DogBreedExternalDTO> externalDTOs) {
+        if (externalDTOs == null || externalDTOs.isEmpty()) {
+            return;
+        }
         for (DogBreedExternalDTO dto : externalDTOs) {
             DogBreed breed = fromExternalDTO(dto);
             dogBreedRepository.save(breed);
@@ -34,14 +41,19 @@ public class DogBreedExternalService {
 
     public List<DogBreedExternalDTO> getBreedsByPage(int pageNumber) {
         String url = apiUrl + "?page[number]=" + pageNumber;
-        DogBreedResponseDTO response = restTemplate.getForObject(url, DogBreedResponseDTO.class);
 
-        if (response != null && response.getData() != null) {
-            return response.getData();
+        try {
+            DogBreedResponseDTO response = restTemplate.getForObject(url, DogBreedResponseDTO.class);
+            if (response != null && response.getData() != null) {
+                return response.getData();
+            }
+            return new ArrayList<>();
+
+        } catch (Exception ex) {
+            throw new ExternalAPIException("Erro durante a importação:", ex);
+
         }
-        return new ArrayList<>();
     }
-
     public DogBreed fromExternalDTO(DogBreedExternalDTO dto) {
         DogBreed breed = new DogBreed();
         breed.setIdExternalApi(dto.getIdExternalApi());

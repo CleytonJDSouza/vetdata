@@ -16,38 +16,32 @@ public class DogBreed {
     @Column(name = "id_external_api")
     private String idExternalApi;
 
-    @NotBlank
+
     private String name;
 
     @Lob
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @NotNull
-    @Min(0)
+
     private Integer lifeExpectancyMin;
 
-    @NotNull
-    @Min(0)
+
     private Integer lifeExpectancyMax;
 
-    @NotNull
-    @Min(0)
+
     private Double maleWeightMin;
 
-    @NotNull
-    @Min(0)
+
     private Double maleWeightMax;
 
-    @NotNull
-    @Min(0)
+
     private Double femaleWeightMin;
 
-    @NotNull
-    @Min(0)
+
     private Double femaleWeightMax;
 
-    @NotNull
+
     private Boolean hypoallergenic;
 
     private String size;
