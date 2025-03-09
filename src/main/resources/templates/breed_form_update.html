@@ -48,12 +48,6 @@
             border: 2px solid red;
             background-color: #fff0f0;
         }
-
-        /* Quando o usuário corrige o erro, remove o destaque */
-        input.valid, select.valid, textarea.valid {
-            border: 2px solid green;
-            background-color: #f0fff0;
-        }
     </style>
 
     <!-- FAVICONS -->
@@ -93,7 +87,7 @@
     <div id="ribbon">
         <!-- breadcrumb -->
         <ol class="breadcrumb">
-            <li>Home</li><li>Forms</li><li>Cadastro de Raças</li>
+            <li>Home</li><li>Forms</li><li>Atualização de Raças</li>
         </ol>
         <!-- end breadcrumb -->
     </div>
@@ -108,7 +102,7 @@
                     <i class="fa-fw fa fa-pencil-square-o"></i>
                     Forms
                     <span>>
-				Form Raças
+				Form Atualização de Raça
 			</span>
                 </h1>
             </div>
@@ -124,7 +118,7 @@
                     <div class="jarviswidget" id="wid-id-1" data-widget-editbutton="false" data-widget-custombutton="false">
                         <header>
                             <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
-                            <h2>Cadastro de Raças </h2>
+                            <h2>Atualização de Raça </h2>
                         </header>
 
                         <!-- widget div-->
@@ -141,6 +135,7 @@
                                     <header>
                                         Identificação
                                     </header>
+                                    <input type="hidden" name="id" id="id" th:field="*{id}">
                                     <fieldset>
                                         <section>
                                             <label class="input"> <i class="icon-append fa fa-paw"></i>
@@ -232,9 +227,8 @@
                                     </fieldset>
                                     <footer>
                                         <button type="btn" class="btn btn-primary">
-                                            Cadastrar
+                                            Atualizar
                                         </button>
-                                        <button type="button" id="reset-form" class="btn btn-default">Limpar Form</button>
                                     </footer>
                                 </form>
                             </div>
@@ -338,12 +332,34 @@
 <script type="text/javascript">
     $(document).ready(function() {
         pageSetUp();
-        $("#name").focus();
+        $("#name").prop("disabled", true).css({
+            "background-color": "#e9ecef",  // Cinza claro
+            "color": "#6c757d",             // Cinza escuro para o texto
+            "cursor": "not-allowed",        // Cursor de bloqueado
+            "border": "1px solid #ced4da"   // Cor da borda
+        });
 
-        $("#reset-form").click(function() {
-            $("#breed-form").trigger("reset");
-            $("#breed-form").validate().resetForm();
-            $("#name").focus();
+        $("#description").focus();
+
+        let id = window.location.pathname.split("/").pop();
+
+        loadData(id);
+
+        $.ajax({
+            url: "/breeds/" + id,
+            type: "GET",
+            success: function (data) {
+                // Preenchendo o formulário com os dados recebidos da API
+                $('#id').val(data.id);
+                $('#name').val(data.name);
+                $('#description').val(data.description);
+                $('#lifeExpectancyMin').val(data.lifeExpectancyMin);
+                $('#lifeExpectancyMax').val(data.lifeExpectancyMax);
+                $('#hypoallergenic').prop("checked", data.hypoallergenic);
+            },
+            error: function (xhr, status, error) {
+                alert("Erro ao carregar os dados: " + xhr.responseText);
+            }
         });
 
         $.validator.addMethod("greaterThan", function(value, element, param) {
@@ -435,6 +451,7 @@
 
             submitHandler : function(form) {
                 var formData = {
+                    id: $("#id").val(),
                     name: $("#name").val(),
                     description: $("#description").val(),
                     lifeExpectancyMin: $("#lifeExpectancyMin").val(),
@@ -447,13 +464,13 @@
                     hypoallergenic: $("#hypoallergenic").is(":checked") // Para checkboxes
                 };
                 $.ajax({
-                    type: "POST",
-                    url: "/breeds",
-                    contentType: "application/json",
-                    data: JSON.stringify(formData),
+                    type: "PUT",
+                    url: "/breeds/"+formData.id,
+                    contentType: "application/json",  // IMPORTANTE: Enviar JSON
+                    data: JSON.stringify(formData),  // Converter para JSON
                     success: function (response) {
                         $.smallBox({
-                            title : "Raça cadastrada com sucesso !",
+                            title : "Raça atualizada com sucesso !",
                             color : "#739E73",
                             iconSmall : "fa fa-save",
                             timeout : 3000
@@ -470,7 +487,7 @@
                                 });
                             }
                             $.bigBox({
-                                title : "Erro ao tentar cadastrar uma nova raça !",
+                                title : "Erro ao tentar atualizar uma raça !",
                                 content : "Existem erros de validação no seu formulário. Verifique se logo abaixo aos campos não aparecem mensagens de erros.",
                                 color : "#C46A69",
                                 //timeout: 6000,
@@ -490,6 +507,30 @@
             }
         });
     })
+
+    function loadData(id) {
+        $.ajax({
+            url: "/breeds/" + id,
+            type: "GET",
+            success: function (data) {
+                // Preenchendo o formulário com os dados recebidos da API
+                $('#id').val(data.id);
+                $('#name').val(data.name);
+                $('#description').val(data.description);
+                $('#lifeExpectancyMin').val(data.lifeExpectancyMin);
+                $('#lifeExpectancyMax').val(data.lifeExpectancyMax);
+                $('#maleWeightMin').val(data.maleWeightMin);
+                $('#maleWeightMax').val(data.maleWeightMax);
+                $('#femaleWeightMin').val(data.femaleWeightMin);
+                $('#femaleWeightMax').val(data.femaleWeightMax);
+                $('#size').val(data.size);
+                $('#hypoallergenic').val(data.hypoallergenic.toString()); // Converte booleano para string
+            },
+            error: function (xhr, status, error) {
+                alert("Erro ao carregar os dados: " + xhr.responseText);
+            }
+        });
+    }
 </script>
 </body>
 </html>
