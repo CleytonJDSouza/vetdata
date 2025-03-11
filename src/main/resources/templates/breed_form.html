@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <!--<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">-->
+
+    <title>VetData</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <!-- Basic Styles -->
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/font-awesome.min.css">
+
+    <!-- SmartAdmin Styles : Caution! DO NOT change the order -->
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/smartadmin-production-plugins.min.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/smartadmin-production.min.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/smartadmin-skins.min.css">
+
+    <!-- SmartAdmin RTL Support  -->
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/smartadmin-rtl.min.css">
+
+    <!-- We recommend you use "your_style.css" to override SmartAdmin
+         specific styles this will also ensure you retrain your customization with each SmartAdmin update.
+    <link rel="stylesheet" type="text/css" media="screen" href="css/your_style.css"> -->
+
+    <style>
+        label.error {
+            color: red;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        /* Adiciona um fundo para destacar o erro */
+        label.error {
+            background-color: #ffecec;
+            border: 1px solid #f5aca6;
+            padding: 5px;
+            border-radius: 5px;
+            display: block;
+            margin-top: 5px;
+        }
+
+        /* Adiciona uma borda vermelha nos inputs com erro */
+        input.error, select.error, textarea.error {
+            border: 2px solid red;
+            background-color: #fff0f0;
+        }
+
+        /* Quando o usuário corrige o erro, remove o destaque */
+        input.valid, select.valid, textarea.valid {
+            border: 2px solid green;
+            background-color: #f0fff0;
+        }
+    </style>
+
+    <!-- FAVICONS -->
+    <link rel="shortcut icon" href="/img/favicon/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/img/favicon/favicon.ico" type="image/x-icon">
+
+    <!-- GOOGLE FONT -->
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700">
+
+    <!-- Specifying a Webpage Icon for Web Clip
+         Ref: https://developer.apple.com/library/ios/documentation/AppleApplications/Reference/SafariWebContent/ConfiguringWebApplications/ConfiguringWebApplications.html -->
+    <link rel="apple-touch-icon" href="/img/splash/sptouch-icon-iphone.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/img/splash/touch-icon-ipad.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/img/splash/touch-icon-iphone-retina.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/img/splash/touch-icon-ipad-retina.png">
+
+    <!-- iOS web-app metas : hides Safari UI Components and Changes Status Bar Appearance -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <!-- Startup image for web apps -->
+    <link rel="apple-touch-startup-image" href="/img/splash/ipad-landscape.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape)">
+    <link rel="apple-touch-startup-image" href="/img/splash/ipad-portrait.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait)">
+    <link rel="apple-touch-startup-image" href="/img/splash/iphone.png" media="screen and (max-device-width: 320px)">
+
+</head>
+
+<body class="smart-style-2">
+
+<div th:replace="~{fragments/header :: header}"></div>
+<aside th:replace="~{fragments/sidebar :: sidebar}"></aside>
+
+<!-- MAIN PANEL -->
+<div id="main" role="main">
+
+    <!-- RIBBON -->
+    <div id="ribbon">
+        <!-- breadcrumb -->
+        <ol class="breadcrumb">
+            <li>Home</li><li>Forms</li><li>Cadastro de Raças</li>
+        </ol>
+        <!-- end breadcrumb -->
+    </div>
+    <!-- END RIBBON -->
+
+    <!-- MAIN CONTENT -->
+    <div id="content">
+        <div class="row">
+            <div class="col-xs-12 col-sm-9 col-md-9 col-lg-9">
+                <h1 class="page-title txt-color-blueDark">
+                    <!-- PAGE HEADER -->
+                    <i class="fa-fw fa fa-pencil-square-o"></i>
+                    Forms
+                    <span>>
+				Form Raças
+			</span>
+                </h1>
+            </div>
+        </div>
+
+        <!-- widget grid -->
+        <section id="widget-grid" class="">
+            <!-- START ROW -->
+            <div class="row">
+                <!-- NEW COL START -->
+                <article class="col-sm-12 col-md-12 col-lg-12">
+                    <!-- Widget ID (each widget will need unique ID)-->
+                    <div class="jarviswidget" id="wid-id-1" data-widget-editbutton="false" data-widget-custombutton="false">
+                        <header>
+                            <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+                            <h2>Cadastro de Raças </h2>
+                        </header>
+
+                        <!-- widget div-->
+                        <div>
+                            <!-- widget edit box -->
+                            <div class="jarviswidget-editbox">
+                                <!-- This area used as dropdown edit box -->
+                            </div>
+                            <!-- end widget edit box -->
+
+                            <!-- widget content -->
+                            <div class="widget-body no-padding">
+                                <form id="breed-form" class="smart-form" novalidate="novalidate">
+                                    <header>
+                                        Identificação
+                                    </header>
+                                    <fieldset>
+                                        <section>
+                                            <label class="input"> <i class="icon-append fa fa-paw"></i>
+                                                <input type="text" name="name" id="name" placeholder="Nome da raça">
+                                                <b class="tooltip tooltip-bottom-right">Informe o nome da raça !</b> </label>
+                                        </section>
+
+                                        <section>
+                                            <label class="input">
+                                                <input type="text" name="description" id="description" placeholder="Descrição">
+                                                <b class="tooltip tooltip-bottom-right">Informe a descricão da raça !</b> </label>
+                                        </section>
+                                    </fieldset>
+
+                                    <header>
+                                        Expectativa de Vida
+                                    </header>
+                                    <fieldset>
+                                        <div class="row">
+                                            <section class="col col-6">
+                                                <label class="input">
+                                                    <input type="text" name="lifeExpectancyMin" id="lifeExpectancyMin" placeholder="Expectativa de vida mínima">
+                                                    <b class="tooltip tooltip-bottom-right">Informe a expectativa de vida mínima da raça !</b>
+                                                </label>
+                                            </section>
+                                            <section class="col col-6">
+                                                <label class="input">
+                                                    <input type="text" name="lifeExpectancyMax" id="lifeExpectancyMax" placeholder="Expectativa de vida máxima">
+                                                    <b class="tooltip tooltip-bottom-right">Informe a expectativa de vida máxima da raça !</b>
+                                                </label>
+                                            </section>
+                                        </div>
+                                    </fieldset>
+
+                                    <header>
+                                        Dimensões
+                                    </header>
+                                    <fieldset>
+                                        <div class="row">
+                                            <section class="col col-6">
+                                                <label class="input">
+                                                    <input type="text" name="maleWeightMin"  id="maleWeightMin" placeholder="Peso mínimo macho">
+                                                    <b class="tooltip tooltip-bottom-right">Informe o peso mínimo do macho !</b>
+                                                </label>
+                                            </section>
+                                            <section class="col col-6">
+                                                <label class="input">
+                                                    <input type="text" name="maleWeightMax"  id="maleWeightMax" placeholder="Peso máximo macho">
+                                                    <b class="tooltip tooltip-bottom-right">Informe o peso máximo do macho !</b>
+                                                </label>
+                                            </section>
+                                        </div>
+
+                                        <div class="row">
+                                            <section class="col col-6">
+                                                <label class="input">
+                                                    <input type="text" name="femaleWeightMin" id="femaleWeightMin" placeholder="Peso mínimo femea">
+                                                    <b class="tooltip tooltip-bottom-right">Informe o peso mínimo da fêmea !</b>
+                                                </label>
+                                            </section>
+                                            <section class="col col-6">
+                                                <label class="input">
+                                                    <input type="text" name="femaleWeightMax" id="femaleWeightMax" placeholder="Peso máximo fêmea">
+                                                    <b class="tooltip tooltip-bottom-right">Informe o peso máximo da fêmea !</b>
+                                                </label>
+                                            </section>
+                                        </div>
+                                        <div class="row">
+                                            <section class="col col-6">
+                                                <label class="input">
+                                                    <input type="text" name="size"  id="size" placeholder="Tamanho">
+                                                    <b class="tooltip tooltip-bottom-right">Informe o tamanho da raça !</b>
+                                                </label>
+                                            </section>
+                                        </div>
+                                    </fieldset>
+
+                                    <header>
+                                        Saúde
+                                    </header>
+                                    <fieldset>
+                                        <section class="col col-2">
+                                            <div class="row">
+                                                <label class="toggle">
+                                                    <input type="checkbox" name="hypoallergenic"  id="hypoallergenic" checked="checked">
+                                                    <i data-swchon-text="SIM" data-swchoff-text="NAO"></i> Hipoalergênico ?</label>
+                                            </div>
+                                        </section>
+                                    </fieldset>
+                                    <footer>
+                                        <button type="btn" class="btn btn-primary">
+                                            Cadastrar
+                                        </button>
+                                        <button type="button" id="reset-form" class="btn btn-default">Limpar Form</button>
+                                    </footer>
+                                </form>
+                            </div>
+                            <!-- end widget content -->
+                        </div>
+                        <!-- end widget div -->
+                    </div>
+                    <!-- end widget -->
+                </article>
+                <!-- END COL -->
+            </div>
+            <!-- END ROW -->
+        </section>
+        <!-- end widget grid -->
+    </div>
+    <!-- END MAIN CONTENT -->
+</div>
+<!-- END MAIN PANEL -->
+
+<!-- Importando o footer -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<!-- PACE LOADER - turn this on if you want ajax loading to show (caution: uses lots of memory on iDevices)-->
+<script data-pace-options='{ "restartOnRequestAfter": true }' src="/js/plugin/pace/pace.min.js"></script>
+
+<!-- Link to Google CDN's jQuery + jQueryUI; fall back to local -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script>
+    if (!window.jQuery) {
+        document.write('<script src="/js/libs/jquery-2.1.1.min.js"><\/script>');
+    }
+</script>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+<script>
+    if (!window.jQuery.ui) {
+        document.write('<script src="/js/libs/jquery-ui-1.10.3.min.js"><\/script>');
+    }
+</script>
+
+<!-- IMPORTANT: APP CONFIG -->
+<script src="/js/app.config.js"></script>
+
+<!-- JS TOUCH : include this plugin for mobile drag / drop touch events-->
+<script src="/js/plugin/jquery-touch/jquery.ui.touch-punch.min.js"></script>
+
+<!-- BOOTSTRAP JS -->
+<script src="/js/bootstrap/bootstrap.min.js"></script>
+
+<!-- CUSTOM NOTIFICATION -->
+<script src="/js/notification/SmartNotification.min.js"></script>
+
+<!-- JARVIS WIDGETS -->
+<script src="/js/smartwidgets/jarvis.widget.min.js"></script>
+
+<!-- EASY PIE CHARTS -->
+<script src="/js/plugin/easy-pie-chart/jquery.easy-pie-chart.min.js"></script>
+
+<!-- SPARKLINES -->
+<script src="/js/plugin/sparkline/jquery.sparkline.min.js"></script>
+
+<!-- JQUERY VALIDATE -->
+<script src="/js/plugin/jquery-validate/jquery.validate.min.js"></script>
+
+<!-- JQUERY MASKED INPUT -->
+<script src="/js/plugin/masked-input/jquery.maskedinput.min.js"></script>
+
+<!-- JQUERY SELECT2 INPUT -->
+<script src="/js/plugin/select2/select2.min.js"></script>
+
+<!-- JQUERY UI + Bootstrap Slider -->
+<script src="/js/plugin/bootstrap-slider/bootstrap-slider.min.js"></script>
+
+<!-- browser msie issue fix -->
+<script src="/js/plugin/msie-fix/jquery.mb.browser.min.js"></script>
+
+<!-- FastClick: For mobile devices -->
+<script src="/js/plugin/fastclick/fastclick.min.js"></script>
+
+<!--[if IE 8]>
+
+<h1>Your browser is out of date, please update your browser by going to www.microsoft.com/download</h1>
+
+<![endif]-->
+
+<!-- MAIN APP JS FILE -->
+<script src="/js/app.min.js"></script>
+
+<!-- ENHANCEMENT PLUGINS : NOT A REQUIREMENT -->
+<!-- Voice command : plugin -->
+<script src="/js/speech/voicecommand.min.js"></script>
+
+<!-- SmartChat UI : plugin -->
+<script src="/js/smart-chat-ui/smart.chat.ui.min.js"></script>
+<script src="/js/smart-chat-ui/smart.chat.manager.min.js"></script>
+
+<!-- PAGE RELATED PLUGIN(S) -->
+<script src="/js/plugin/jquery-form/jquery-form.min.js"></script>
+
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        pageSetUp();
+        $("#name").focus();
+
+        $("#reset-form").click(function() {
+            $("#breed-form").trigger("reset");
+            $("#breed-form").validate().resetForm();
+            $("#name").focus();
+        });
+
+        $.validator.addMethod("greaterThan", function(value, element, param) {
+            var minValue = $(param).val(); // Obtém o valor de lifeExpectancyMin
+            return this.optional(element) || (parseInt(value) > parseInt(minValue));
+        }, "O valor máximo deve ser maior ou igual ao valor mínimo");
+
+        $('#breed-form').validate({
+            // Rules for form validation
+            rules : {
+                name : {
+                    required : true
+                },
+                description : {
+                    required : true
+                },
+                lifeExpectancyMin : {
+                    required : true,
+                    digits : true
+                },
+                lifeExpectancyMax : {
+                    required : true,
+                    digits : true,
+                    greaterThan: "#lifeExpectancyMin"
+                },
+                maleWeightMin : {
+                    required : true,
+                    digits : true
+                },
+                maleWeightMax : {
+                    required : true,
+                    digits : true,
+                    greaterThan: "#maleWeightMin"
+                },
+                femaleWeightMin : {
+                    required : true,
+                    digits : true
+                },
+                femaleWeightMax : {
+                    required : true,
+                    digits : true,
+                    greaterThan: "#femaleWeightMin"
+                },
+                size : {
+                    required : true,
+                    digits : true
+                }
+            },
+            // Messages for form validation
+            messages : {
+                name : {
+                    required : 'Nome da raça é obrigatório !'
+                },
+                description : {
+                    required : 'Descrição da raça é obrigatória !'
+                },
+                lifeExpectancyMin : {
+                    required : 'A expectativa de vida mínima é obrigatória !',
+                    digits : 'Esse campo só aceita números !'
+                },
+                lifeExpectancyMax : {
+                    required : 'A expectativa de vida máxima é obrigatória !',
+                    digits : 'Esse campo só aceita números !',
+                    greaterThan: "A expectativa de vida máxima deve ser maior que à mínima."
+                },
+                maleWeightMin : {
+                    required : 'O peso mínimo do macho é obrigatório !',
+                    digits : 'Esse campo só aceita números !'
+                },
+                maleWeightMax : {
+                    required : 'O peso máximo do macho é obrigatório !',
+                    digits : 'Esse campo só aceita números !',
+                    greaterThan: "O peso máximo do macho deve ser maior que o peso mínimo !"
+                },
+                femaleWeightMin : {
+                    required : 'O peso mínimo da fêmea é obrigatório !',
+                    digits : 'Esse campo só aceita números !'
+                },
+                femaleWeightMax : {
+                    required : 'O peso máximo da fêmea é obrigatório !',
+                    digits : 'Esse campo só aceita números !',
+                    greaterThan: "O peso máximo da fêmea deve ser maior que o peso mínimo !"
+                },
+                size : {
+                    required : 'O tamanho da raça é obrigatório !',
+                    digits : 'Esse campo só aceita números !'
+                }
+            },
+
+            submitHandler : function(form) {
+                var formData = {
+                    name: $("#name").val(),
+                    description: $("#description").val(),
+                    lifeExpectancyMin: $("#lifeExpectancyMin").val(),
+                    lifeExpectancyMax: $("#lifeExpectancyMax").val(),
+                    maleWeightMin: $("#maleWeightMin").val(),
+                    maleWeightMax: $("#maleWeightMax").val(),
+                    femaleWeightMin: $("#femaleWeightMin").val(),
+                    femaleWeightMax: $("#femaleWeightMax").val(),
+                    size: $("#size").val(),
+                    hypoallergenic: $("#hypoallergenic").is(":checked") // Para checkboxes
+                };
+                $.ajax({
+                    type: "POST",
+                    url: "/breeds",
+                    contentType: "application/json",
+                    data: JSON.stringify(formData),
+                    success: function (response) {
+                        $.smallBox({
+                            title : "Raça cadastrada com sucesso !",
+                            color : "#739E73",
+                            iconSmall : "fa fa-save",
+                            timeout : 3000
+                        },function() {
+                            window.location.href = "/breeds-pages/list"
+                        });
+                    },
+                    error: function (xhr) {
+                        if (xhr.status === 400) {
+                            var errors = JSON.parse(xhr.responseText);
+                            for (var field in errors) {
+                                $("#breed-form").validate().showErrors({
+                                    [field]: errors[field]
+                                });
+                            }
+                            $.bigBox({
+                                title : "Erro ao tentar cadastrar uma nova raça !",
+                                content : "Existem erros de validação no seu formulário. Verifique se logo abaixo aos campos não aparecem mensagens de erros.",
+                                color : "#C46A69",
+                                //timeout: 6000,
+                                icon : "fa fa-warning shake animated",
+                                timeout : 10000
+                            });
+
+                            e.preventDefault();
+                        }
+                    }
+                });
+            },
+
+            // Do not change code below
+            errorPlacement : function(error, element) {
+                error.insertAfter(element.parent());
+            }
+        });
+    })
+</script>
+</body>
+</html>
