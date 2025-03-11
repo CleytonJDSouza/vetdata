@@ -7,8 +7,20 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: vetdata
+      MYSQL_USER: vetuser
+      MYSQL_PASSWORD: vetpass
     volumes:
       - vetdata_mysql_volume:/var/lib/mysql
+      - ./scripts/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    command: [ "sh", "-c", "
+            docker-entrypoint.sh mysqld & 
+            echo 'Aguardando MySQL iniciar...'; 
+            until mysql -uvetuser -pvetpass -h 127.0.0.1 -e 'SELECT 1' &> /dev/null; do
+              sleep 2;
+            done;
+            echo 'Executando schema.sql...';
+            mysql -uvetuser -pvetpass < /docker-entrypoint-initdb.d/schema.sql;
+            wait" ]
     ports:
       - "3307:3306"
     networks:
@@ -22,8 +34,8 @@ services:
       - "8085:8080"
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://vetdata_db:3306/vetdata
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_DATASOURCE_USERNAME: vetuser
+      SPRING_DATASOURCE_PASSWORD: vetpass
     depends_on:
       - mysql
     networks:
