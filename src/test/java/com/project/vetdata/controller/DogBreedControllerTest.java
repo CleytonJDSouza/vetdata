@@ -15,7 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -23,6 +25,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.*;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -44,7 +47,7 @@ public class DogBreedControllerTest {
     @MockBean
     private DogBreedExternalService dogBreedExternalService;
 
-    @Mock
+    @InjectMocks
     private DogBreedController dogBreedController;
 
     @Autowired
@@ -54,8 +57,9 @@ public class DogBreedControllerTest {
     public void setUp() {
         MockitoAnnotations.openMocks(this);
     }
+
     @Test
-    public void shouldCreateDogBreed() throws Exception {
+    public void given_validDogBreed_when_createDogBreed_then_returnsCreatedDogBreed() throws Exception {
        DogBreedCreateDTO dogBreedCreateDTO = new DogBreedCreateDTO("Bulldog", "Amigavel e Corajoso", 8, 10, 20.0,
                25.0, 18.0, 23.0, false,"Médio");
        DogBreed dogBreed = new DogBreed(null, null, "Bulldog", "Amigavel e Corajoso", 8, 10, 20.0,
@@ -80,7 +84,7 @@ public class DogBreedControllerTest {
     }
 
     @Test
-    public void shouldReturnError() throws Exception {
+    public void given_invalidDogBreed_when_createDogBreed_then_returnsBadRequest() throws Exception {
         DogBreedCreateDTO dogBreedCreateDTO = new DogBreedCreateDTO();
         dogBreedCreateDTO.setName(null);
         dogBreedCreateDTO.setDescription(null);
@@ -108,7 +112,7 @@ public class DogBreedControllerTest {
     }
 
     @Test
-    public void shouldReturnBreedById() throws Exception {
+    public void given_validDogBreedId_when_getBreedById_then_returnsDogBreed() throws Exception {
         DogBreed dogBreed = new DogBreed(12345L, null ,"Bulldog", "Amigavel e Corajoso", 8, 10,
                 20.0, 25.0, 18.0, 23.0, false, "Médio");
 
@@ -132,14 +136,15 @@ public class DogBreedControllerTest {
     }
 
     @Test
-    public void shouldReturnNotFound() throws Exception {
+    public void given_invalidDogBreedId_when_getBreedById_then_returnsNotFound() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders.get("/breeds/56789")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
+
     @Test
-    public void shouldDeleteBreedId() throws Exception {
+    public void given_dogBreedExists_when_deleteBreedById_then_returnsNoContent() throws Exception {
         DogBreed dogBreed = new DogBreed(12345L, null,"Bulldog", "Amigavel e Corajoso", 8, 10,
                 20.0, 25.0, 18.0, 23.0, false, "Médio");
 
@@ -150,14 +155,14 @@ public class DogBreedControllerTest {
     }
 
     @Test
-    public void shouldDeleteBreedNotFound() throws Exception {
+    public void given_dogBreedDoesNotExist_when_deleteBreedById_then_returnsNotFound() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/breeds/56789"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    public void shouldUpdateDogBreed() throws Exception {
+    public void given_dogBreedExistsAndIsUpdated_when_updateDogBreed_then_returnsUpdatedBreed() throws Exception {
         DogBreed dogBreed = new DogBreed(12345L, null,"Bulldog", "Amigável e Corajoso", 8, 10,
                 20.0, 25.0, 18.0, 23.0, false, "Médio");
 
@@ -195,7 +200,7 @@ public class DogBreedControllerTest {
     }
 
     @Test
-    public void shouldReturnPageBreeds() throws Exception {
+    public void given_pageRequestAndBreedsExist_when_getBreedsPage_then_returnsBreedsPage() throws Exception {
         List<DogBreed> breeds = List.of(
                 new DogBreed(12345L, null,"Golden Retriever", "Amigável e inteligente", 10, 12, 29.0,
                         34.0, 25.0, 32.0, false, "Grande"),
@@ -217,7 +222,7 @@ public class DogBreedControllerTest {
     }
 
     @Test
-    public void shouldImportBreeds() throws Exception {
+    public void given_breedsFromExternalAPI_when_importBreeds_then_returnsImportSummary() throws Exception {
         DogBreedExternalDTO dogBreedExternalDTO = new DogBreedExternalDTO();
         dogBreedExternalDTO.setIdExternalApi("1");
         dogBreedExternalDTO.setAttributeDTO(new AttributesDTO());
@@ -254,7 +259,44 @@ public class DogBreedControllerTest {
     }
 
     @Test
-    public void shouldUpgradeExistingBreed() throws Exception {
+    public void given_searchTerm_when_getAllDogBreeds_then_call_getBySearchTerm() throws Exception {
+        String searchTerm = "bulldog";
+        Pageable paging = PageRequest.of(0, 10, Sort.by("name"));
+        Page<DogBreed> pageBreeds = new PageImpl<>(List.of(new DogBreed()));
+
+        when(dogBreedService.getBySearchTerm(eq(searchTerm), eq(paging))).thenReturn(pageBreeds);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/breeds")
+                        .param("searchByTerm", searchTerm)
+                        .param("page", "0")
+                        .param("qtdRecordsPage", "10")
+                        .param("sortBy", "name")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.data.length()").value(1));
+
+        verify(dogBreedService).getBySearchTerm(eq(searchTerm), eq(paging));
+    }
+
+    @Test
+    public void given_no_dogBreeds_when_getAllDogBreeds_then_return_noContent() throws Exception {
+        Page<DogBreed> emptyPage = Page.empty();
+
+        when(dogBreedService.getAllDogBreeds(any(Pageable.class))).thenReturn(emptyPage);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/breeds")
+                        .param("page", "0")
+                        .param("qtdRecordsPage", "10")
+                        .param("sortBy", "name"))
+                .andExpect(status().isNoContent())
+                .andExpect(content().string(""));
+    }
+
+
+
+    @Test
+    public void given_existingBreedAndUpdatedBreedFromExternalAPI_when_upgradeExistingBreed_then_returnsUpgradeSummary() throws Exception {
         DogBreed existingBreed = new DogBreed();
         existingBreed.setId(1L);
         existingBreed.setName("Golden Retriever");

@@ -3,6 +3,7 @@ package com.project.vetdata.controller;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import com.github.tomakehurst.wiremock.http.Response;
 import com.project.vetdata.dto.DogBreedCreateDTO;
 import com.project.vetdata.dto.DogBreedUpdateDTO;
 import com.project.vetdata.model.DogBreed;

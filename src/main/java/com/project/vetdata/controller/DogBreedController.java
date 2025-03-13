@@ -45,10 +45,17 @@ public class DogBreedController {
     public ResponseEntity<Map<String, Object>> getAllDogBreeds(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int qtdRecordsPage,
-            @RequestParam(defaultValue = "id") String sortBy
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(required = false) String searchByTerm
     ) {
         Pageable paging = PageRequest.of(page, qtdRecordsPage, Sort.by(sortBy));
         Page<DogBreed> pageBreeds = dogBreedService.getAllDogBreeds(paging);
+
+        if (searchByTerm != null && !searchByTerm.isBlank()) {
+            pageBreeds = dogBreedService.getBySearchTerm(searchByTerm, paging);
+        } else {
+            pageBreeds = dogBreedService.getAllDogBreeds(paging);
+        }
 
         if (pageBreeds.isEmpty()) {
             return ResponseEntity.noContent().build();
