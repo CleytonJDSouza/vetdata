@@ -15,4 +15,5 @@ public interface DogBreedService {
         void deleteDogBreed(Long id);
         DogBreed updateDogBreed(Long id, DogBreedUpdateDTO dogBreedUpdateDTO);
         Optional<DogBreed> findByExternalApi(String idExternalApi);
+        Page<DogBreed> getBySearchTerm(String searchByTerm, Pageable pageable);
 }

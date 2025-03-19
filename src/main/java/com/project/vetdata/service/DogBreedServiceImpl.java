@@ -8,6 +8,8 @@ import com.project.vetdata.repository.DogBreedRepository;
 import jakarta.validation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -38,8 +40,8 @@ public class DogBreedServiceImpl implements DogBreedService {
 
     @Override
     public DogBreed createDogBreed(DogBreedCreateDTO dogBreedCreateDTO) {
-       DogBreed newDogBreed = fromCreateDTO(dogBreedCreateDTO);
-       return dogBreedRepository.save(newDogBreed);
+        DogBreed newDogBreed = fromCreateDTO(dogBreedCreateDTO);
+        return dogBreedRepository.save(newDogBreed);
     }
 
     @Override
@@ -82,6 +84,13 @@ public class DogBreedServiceImpl implements DogBreedService {
             }
             return dogBreedRepository.save(existingBreed);
         }).orElseThrow(() -> new BreedNotFoundException("Raça não encontrada!" + id));
+    }
+
+    @Override
+    public Page<DogBreed> getBySearchTerm(String searchByTerm, Pageable pageable) {
+        List<DogBreed> breeds = dogBreedRepository.searchByName(searchByTerm.toLowerCase());
+        PageRequest page = PageRequest.of(0, breeds.size());
+        return new PageImpl<>(breeds,page,breeds.size());
     }
 
     private DogBreed fromCreateDTO(DogBreedCreateDTO dto) {

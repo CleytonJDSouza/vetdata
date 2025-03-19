@@ -1,5 +1,6 @@
 package com.project.vetdata.service;
 
+import com.project.vetdata.controller.DogBreedController;
 import com.project.vetdata.dto.DogBreedCreateDTO;
 import com.project.vetdata.dto.DogBreedUpdateDTO;
 import com.project.vetdata.exception.BreedNotFoundException;
@@ -15,8 +16,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,6 +36,9 @@ public class DogBreedServiceImplTest {
 
     @InjectMocks
     private DogBreedServiceImpl dogBreedServiceImpl;
+
+    @InjectMocks
+    private DogBreedController dogBreedController;
 
     @Test
     public void given_dogBreeds_pre_registered_when_a_page_is_informed_then_the_breeds_are_returned() {
@@ -227,10 +235,40 @@ public class DogBreedServiceImplTest {
         assertEquals(existingBreed.getSize(), updatedBreed.getSize(), "O tamanho existente deve ser mantido");
     }
 
+    @Test
+    public void given_existing_initials_when_getBySearchTerm_is_called_then_matching_dogBreeds_are_returned() {
+        Pageable pageable = PageRequest.of(0, 5);
+        DogBreed labrador = getFakeDogBreed2();
+        DogBreed lhasa = getFakeDogBreed3();
+
+        when(dogBreedRepository.searchByName("l"))
+                .thenReturn(List.of(labrador, lhasa));
+
+        Page<DogBreed> result = dogBreedServiceImpl.getBySearchTerm("l", pageable);
+
+        assertNotNull(result, "O resultado não deve ser nulo");
+        assertFalse(result.isEmpty(), "O resultado não deve estar vazio");
+        assertEquals(2, result.getTotalElements(), "Deve haver 2 raças correspondentes");
+        verify(dogBreedRepository, times(1)).searchByName("l");
+    }
+
+
     public DogBreed getFakeDogBreed() {
         return new DogBreed(1L, "2", "Golden Retriever", "Amigável e inteligente e esperto",
                 10, 12, 30D, 34D, 25D, 29D,
-                false, "Meéio");
+                false, "Medio");
+    }
+
+    public DogBreed getFakeDogBreed2() {
+        return new DogBreed(2L, "3", "Labrador", "Amigável e inteligente e esperto",
+                10, 12, 30D, 34D, 25D, 29D,
+                false, "Medio");
+    }
+
+    public DogBreed getFakeDogBreed3() {
+        return new DogBreed(3L, "4", "Lhasa Apso", "Amigável e inteligente e esperto",
+                10, 12, 30D, 34D, 25D, 29D,
+                false, "Medio");
     }
 
     public DogBreedCreateDTO getFakeDogBreedCreateDTO() {

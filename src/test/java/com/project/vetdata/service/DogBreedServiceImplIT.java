@@ -209,10 +209,83 @@ public class DogBreedServiceImplIT {
         assertEquals(dogBreed.getFemaleWeightMin(), updatedDogBreed.getFemaleWeightMin());
     }
 
+    @Test
+    public void given_InitialsOfDogBreedName_when_getBySearchTerm_then_ReturnsMatchingDogBreeds() {
+        DogBreed labrador = getFakeDogBreed();
+        dogBreedRepository.save(labrador);
+
+        DogBreed lhasa = getFakeDogBreed2();
+        dogBreedRepository.save(lhasa);
+
+        DogBreed poodle = getFakeDogBreed3();
+        dogBreedRepository.save(poodle);
+
+        Pageable pageable = PageRequest.of(0,5);
+        Page<DogBreed> result = dogBreedService.getBySearchTerm("L", pageable);
+
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(2, result.getTotalElements());
+        assertThat(result.getContent()).extracting(DogBreed::getName).containsExactlyInAnyOrder("Labrador", "Lhasa Apso");
+    }
+
+    @Test
+    public void given_term_in_different_case_when_getBySearchTerm_then_returns_matching_DogBreeds() {
+        DogBreed labrador = getFakeDogBreed();
+        dogBreedRepository.save(labrador);
+
+        DogBreed lhasa = getFakeDogBreed2();
+        dogBreedRepository.save(lhasa);
+
+        DogBreed poodle = getFakeDogBreed3();
+        dogBreedRepository.save(poodle);
+
+        Pageable pageable = PageRequest.of(0, 5);
+        Page<DogBreed> result = dogBreedService.getBySearchTerm("l", pageable);
+
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(2, result.getTotalElements());
+        assertThat(result.getContent()).extracting(DogBreed::getName).containsExactly("Labrador", "Lhasa Apso");
+    }
+
+
     private DogBreed getFakeDogBreed() {
         DogBreed dogBreed = new DogBreed();
         dogBreed.setIdExternalApi("1");
         dogBreed.setName("Labrador");
+        dogBreed.setDescription("Leal e carinhoso");
+        dogBreed.setLifeExpectancyMin(12);
+        dogBreed.setLifeExpectancyMax(14);
+        dogBreed.setMaleWeightMin(30D);
+        dogBreed.setMaleWeightMax(36D);
+        dogBreed.setFemaleWeightMin(27D);
+        dogBreed.setFemaleWeightMax(33D);
+        dogBreed.setHypoallergenic(false);
+        dogBreed.setSize(null);
+        return dogBreed;
+    }
+
+    private DogBreed getFakeDogBreed2() {
+        DogBreed dogBreed = new DogBreed();
+        dogBreed.setIdExternalApi("2");
+        dogBreed.setName("Lhasa Apso");
+        dogBreed.setDescription("Leal e carinhoso");
+        dogBreed.setLifeExpectancyMin(12);
+        dogBreed.setLifeExpectancyMax(14);
+        dogBreed.setMaleWeightMin(30D);
+        dogBreed.setMaleWeightMax(36D);
+        dogBreed.setFemaleWeightMin(27D);
+        dogBreed.setFemaleWeightMax(33D);
+        dogBreed.setHypoallergenic(false);
+        dogBreed.setSize(null);
+        return dogBreed;
+    }
+
+    private DogBreed getFakeDogBreed3() {
+        DogBreed dogBreed = new DogBreed();
+        dogBreed.setIdExternalApi("3");
+        dogBreed.setName("Poodle");
         dogBreed.setDescription("Leal e carinhoso");
         dogBreed.setLifeExpectancyMin(12);
         dogBreed.setLifeExpectancyMax(14);
