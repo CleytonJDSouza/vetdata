@@ -15,11 +15,11 @@ services:
     command: [ "sh", "-c", "
             docker-entrypoint.sh mysqld & 
             echo 'Aguardando MySQL iniciar...'; 
-            until mysql -uvetuser -pvetpass -h 127.0.0.1 -e 'SELECT 1' &> /dev/null; do
+            until mysql -uroot -proot -h 127.0.0.1 -e 'SELECT 1' &> /dev/null; do
               sleep 2;
             done;
             echo 'Executando schema.sql...';
-            mysql -uvetuser -pvetpass < /docker-entrypoint-initdb.d/schema.sql;
+            mysql -uroot -proot < /docker-entrypoint-initdb.d/schema.sql;
             wait" ]
     ports:
       - "3307:3306"
