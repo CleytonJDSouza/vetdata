@@ -1,5 +1,11 @@
 CREATE DATABASE IF NOT EXISTS vetdata;
+
 USE vetdata;
+
+DROP USER IF EXISTS 'vetuser'@'%';
+CREATE USER  'vetuser'@'%' IDENTIFIED BY 'vetpass';
+GRANT ALL PRIVILEGES ON vetdata.* TO 'vetuser'@'%';
+FLUSH PRIVILEGES;
 
 CREATE TABLE IF NOT EXISTS post_operative (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -55,7 +61,7 @@ CREATE TABLE IF NOT EXISTS hospital_admission (
     date_return DATE,
     medical_evolution VARCHAR(20),
     treatment_next_steps TEXT,
-    health_record_id BIGINT UNSIGNED,
+    health_record_id BIGINT UNSIGNED NOT NULL,
     CONSTRAINT fk_health_record_id FOREIGN KEY (health_record_id)
 		REFERENCES health_record(id) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1421 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
