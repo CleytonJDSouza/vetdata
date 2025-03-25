@@ -3,7 +3,6 @@ package com.project.vetdata.controller;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-import com.github.tomakehurst.wiremock.http.Response;
 import com.project.vetdata.dto.DogBreedCreateDTO;
 import com.project.vetdata.dto.DogBreedUpdateDTO;
 import com.project.vetdata.model.DogBreed;
@@ -22,7 +21,6 @@ import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import javax.swing.text.html.Option;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -41,7 +39,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @Testcontainers
-public class DogBreedControllerIT {
+public class DogBreedRestControllerIT {
 
     @LocalServerPort
     private Integer port;

@@ -55,6 +55,9 @@ public class DogBreedServiceImpl implements DogBreedService {
     @Override
     public DogBreed updateDogBreed(Long id, DogBreedUpdateDTO dogBreedUpdateDTO) {
         return dogBreedRepository.findById(id).map(existingBreed -> {
+            if (dogBreedUpdateDTO.getName() != null) {
+                existingBreed.setName(dogBreedUpdateDTO.getName());
+            }
             if (dogBreedUpdateDTO.getDescription() != null) {
                 existingBreed.setDescription(dogBreedUpdateDTO.getDescription());
             }

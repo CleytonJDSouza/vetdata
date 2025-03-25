@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public class DogBreedUpdateDTO {
-
+    private String name;
     private String description;
     private Integer lifeExpectancyMin;
     private Integer lifeExpectancyMax;
@@ -16,8 +16,8 @@ public class DogBreedUpdateDTO {
     private Boolean hypoallergenic;
     private String size;
 
-    public DogBreedUpdateDTO(String description, Integer lifeExpectancyMin, Integer lifeExpectancyMax, Double maleWeightMin, Double maleWeightMax, Double femaleWeightMin,
-                             Double femaleWeightMax, Boolean hypoallergenic, String size) {
+    public DogBreedUpdateDTO(String name, String description, Integer lifeExpectancyMin, Integer lifeExpectancyMax, Double maleWeightMin, Double maleWeightMax, Double femaleWeightMin, Double femaleWeightMax, Boolean hypoallergenic, String size) {
+        this.name = name;
         this.description = description;
         this.lifeExpectancyMin = lifeExpectancyMin;
         this.lifeExpectancyMax = lifeExpectancyMax;
@@ -27,6 +27,15 @@ public class DogBreedUpdateDTO {
         this.femaleWeightMax = femaleWeightMax;
         this.hypoallergenic = hypoallergenic;
         this.size = size;
+    }
+
+    @NotBlank(message = "Campo Obrigatório")
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public DogBreedUpdateDTO() {

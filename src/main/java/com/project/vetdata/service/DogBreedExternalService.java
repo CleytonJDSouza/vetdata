@@ -72,6 +72,7 @@ public class DogBreedExternalService {
 
     public DogBreedUpdateDTO convertToUpdateDTO(DogBreed dogBreed) {
         return new DogBreedUpdateDTO(
+                dogBreed.getName(),
                 dogBreed.getDescription(),
                 dogBreed.getLifeExpectancyMin(),
                 dogBreed.getLifeExpectancyMax(),
