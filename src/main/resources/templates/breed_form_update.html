@@ -332,14 +332,8 @@
 <script type="text/javascript">
     $(document).ready(function() {
         pageSetUp();
-        $("#name").prop("disabled", true).css({
-            "background-color": "#e9ecef",  // Cinza claro
-            "color": "#6c757d",             // Cinza escuro para o texto
-            "cursor": "not-allowed",        // Cursor de bloqueado
-            "border": "1px solid #ced4da"   // Cor da borda
-        });
 
-        $("#description").focus();
+        $("#name").focus();
 
         let id = window.location.pathname.split("/").pop();
 

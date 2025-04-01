@@ -9,15 +9,13 @@ import com.project.vetdata.service.DogBreedServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.*;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -32,8 +30,8 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
-@WebMvcTest(DogBreedController.class)
-public class DogBreedControllerTest {
+@WebMvcTest(DogBreedRestController.class)
+public class DogBreedRestControllerTest {
 
     @InjectMocks
     private DogBreedServiceImpl dogBreedServiceImpl;
@@ -41,14 +39,14 @@ public class DogBreedControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private DogBreedService dogBreedService;
 
-    @MockBean
+    @MockitoBean
     private DogBreedExternalService dogBreedExternalService;
 
     @InjectMocks
-    private DogBreedController dogBreedController;
+    private DogBreedRestController dogBreedController;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -163,10 +161,9 @@ public class DogBreedControllerTest {
 
     @Test
     public void given_dogBreedExistsAndIsUpdated_when_updateDogBreed_then_returnsUpdatedBreed() throws Exception {
-        DogBreed dogBreed = new DogBreed(12345L, null,"Bulldog", "Amigável e Corajoso", 8, 10,
-                20.0, 25.0, 18.0, 23.0, false, "Médio");
 
         DogBreedUpdateDTO dogBreedUpdateDTO = new DogBreedUpdateDTO();
+        dogBreedUpdateDTO.setName("Bulldog");
         dogBreedUpdateDTO.setDescription("Leal e Protetor");
         dogBreedUpdateDTO.setLifeExpectancyMin(9);
         dogBreedUpdateDTO.setLifeExpectancyMax(12);

@@ -1,6 +1,6 @@
 package com.project.vetdata.service;
 
-import com.project.vetdata.controller.DogBreedController;
+import com.project.vetdata.controller.DogBreedRestController;
 import com.project.vetdata.dto.DogBreedCreateDTO;
 import com.project.vetdata.dto.DogBreedUpdateDTO;
 import com.project.vetdata.exception.BreedNotFoundException;
@@ -16,12 +16,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -38,7 +35,7 @@ public class DogBreedServiceImplTest {
     private DogBreedServiceImpl dogBreedServiceImpl;
 
     @InjectMocks
-    private DogBreedController dogBreedController;
+    private DogBreedRestController dogBreedController;
 
     @Test
     public void given_dogBreeds_pre_registered_when_a_page_is_informed_then_the_breeds_are_returned() {
