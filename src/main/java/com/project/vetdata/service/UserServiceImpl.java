@@ -6,6 +6,8 @@ import com.project.vetdata.model.User;
 import com.project.vetdata.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -30,5 +32,15 @@ public class UserServiceImpl implements UserService {
         user.setPassword(hashedPassword);
 
         return user;
+    }
+
+    @Override
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
+    }
+
+    @Override
+    public Optional<User> getUserById(Long id) {
+        return userRepository.findById(id);
     }
 }

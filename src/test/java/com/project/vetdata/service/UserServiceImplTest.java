@@ -1,5 +1,6 @@
 package com.project.vetdata.service;
 
+import com.project.vetdata.controller.UserController;
 import com.project.vetdata.dto.UserCreateDTO;
 import com.project.vetdata.model.User;
 import com.project.vetdata.repository.UserRepository;
@@ -10,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.password4j.Password;
+import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
 
@@ -22,6 +24,9 @@ public class UserServiceImplTest {
 
     @InjectMocks
     private UserServiceImpl userService;
+
+    @InjectMocks
+    private UserController userController;
 
     @Mock
     private UserRepository userRepository;
@@ -61,6 +66,25 @@ public class UserServiceImplTest {
     private void createUser() {
         userService.createUser(getFakeUserCreateDTO());
     }
+
+    @Test
+    public void given_valid_is_when_deleteUser_is_called_then_user_is_deleted() {
+        Long userId = 1L;
+
+        userService.deleteUser(userId);
+
+        verify(userRepository, times(1)).deleteById(userId);
+    }
+
+    @Test
+    public void given_invalid_id_when_deleteUser_the_no_exception_is_thrown_and_repository_is_called() {
+        Long invalidUserId = 999L;
+
+        userService.deleteUser(invalidUserId);
+
+        verify(userRepository, times(1)).deleteById(invalidUserId);
+    }
+
 
     private UserCreateDTO getFakeUserCreateDTO() {
         UserCreateDTO dto = new UserCreateDTO();

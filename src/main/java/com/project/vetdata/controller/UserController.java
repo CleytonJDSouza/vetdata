@@ -11,10 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
@@ -36,5 +33,22 @@ public class UserController {
     public ResponseEntity<User> createUser(@Valid @RequestBody UserCreateDTO userCreateDTO) {
         User createdUser = userService.createUser(userCreateDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
+    }
+
+    @Operation(summary = "Remover usuário por ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Usuário removido!"),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrada!", content = @Content)
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        return userService.getUserById(id)
+                .map(this::handleDelete)
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    private ResponseEntity<Void> handleDelete(User user)  {
+        userService.deleteUser(user.getId());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

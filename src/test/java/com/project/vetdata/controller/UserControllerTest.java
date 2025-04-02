@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -78,5 +79,28 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.name").value("Campo Obrigatório"))
                 .andExpect(jsonPath("$.email").value("Formato de email inválido"))
                 .andExpect(jsonPath("$.password").value("A senha deve conter pelo menos uma letra maiúscula, um número, um caractere especial (%&*) e ter no mínimo de 5 caracteres."));
+    }
+
+    @Test
+    public void given_existing_userId_when_deleteUser_then_returns_noContent() throws Exception {
+        Long userId = 1L;
+        User user = new User(userId, "Beatriz", "beatiz@vetdata.com", "Senha%1", LocalDateTime.now(), LocalDateTime.now());
+
+        when(userService.getUserById(userId)).thenReturn(Optional.of(user));
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/users/{id}", userId))
+                .andExpect(status().isNoContent());
+
+        verify(userService, times(1)).deleteUser(userId);
+    }
+
+    @Test
+    public void given_user_does_not_exist_when_deleteUser_then_returns_notFound() throws Exception {
+        Long invalidUserId = 999L;
+
+        when(userService.getUserById(invalidUserId)).thenReturn(Optional.empty());
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/users/{id}", invalidUserId))
+                .andExpect(status().isNotFound());
     }
 }
