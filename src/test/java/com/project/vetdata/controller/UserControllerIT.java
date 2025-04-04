@@ -21,6 +21,7 @@ import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -124,5 +125,51 @@ public class UserControllerIT {
 
         List<User> users = userRepository.findAll();
         assertTrue(users.isEmpty(), "Nenhuma raça pode estar salva");
+    }
+
+    @Test
+    public void given_valid_userId_when_deleteUser_then_returns_noContent() {
+        User user = new User();
+        user.setName("Beatriz");
+        user.setEmail("beatriz@vetdata.com");
+        user.setPassword(Password.hash("Senha%1").withBcrypt().getResult());
+        user.setCreatedDate(LocalDateTime.now());
+        user.setPasswordLastUpdatedDate(LocalDateTime.now());
+
+        user = userRepository.save(user);
+
+        given()
+                .pathParam("id", user.getId())
+                .when()
+                .delete("/users/{id}")
+                .then()
+                .statusCode(204);
+
+        Optional<User> optionalUser = userRepository.findById(user.getId());
+        assertTrue(optionalUser.isEmpty(), "O usuário ainda existe no banco de dados.");
+    }
+
+    @Test
+    public void given_invalid_userId_when_deleteUser_then_returns_notFound() {
+        User user = new User();
+        user.setName("Cleyton");
+        user.setEmail("cleyton@vetdata.com");
+        user.setPassword(Password.hash("Teste%123").withBcrypt().getResult());
+        user.setCreatedDate(LocalDateTime.now());
+        user.setPasswordLastUpdatedDate(LocalDateTime.now());
+
+        userRepository.save(user);
+
+        given()
+                .pathParam("id", 999L)
+                .when()
+                .delete("/users/{id}")
+                .then()
+                .statusCode(404);
+
+        User existingUser = userRepository.findById(user.getId()).orElse(null);
+        assertNotNull(existingUser, "O usuário deveria existir no banco de dados.");
+        assertEquals("Cleyton", existingUser.getName());
+        assertEquals("cleyton@vetdata.com", existingUser.getEmail());
     }
 }

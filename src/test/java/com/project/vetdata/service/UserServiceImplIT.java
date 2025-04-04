@@ -118,6 +118,31 @@ public class UserServiceImplIT {
 
     }
 
+    @Test
+    public void given_valid_id_when_deleteUser_then_user_is_deleted() {
+        UserCreateDTO userCreateDTO = getFakeUserCreateDTO();
+        User createUser = userService.createUser(userCreateDTO);
+
+        assertNotNull(createUser.getId(), "Confere se o usuário foi salvo");
+
+        Long userId = createUser.getId();
+        userService.deleteUser(userId);
+
+        Optional<User> deletedUser = userRepository.findById(userId);
+        assertFalse(deletedUser.isPresent(), "O usuário deve ter sido deletado");
+    }
+
+    @Test
+    public void given_invalid_id_when_deleteUser_then_no_user_is_deleted() {
+        Long invalidUserId = 999L;
+
+        try {
+            userService.deleteUser(invalidUserId);
+        } catch (Exception ex) {
+            fail("Não deve ter exceções");
+        }
+    }
+
     private UserCreateDTO getFakeUserCreateDTO() {
         UserCreateDTO userCreateDTO = new UserCreateDTO();
         userCreateDTO.setName("Beatriz");
