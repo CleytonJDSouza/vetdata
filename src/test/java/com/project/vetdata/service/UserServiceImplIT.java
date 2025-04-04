@@ -23,9 +23,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.project.vetdata.repository.UserRepository;
 import com.project.vetdata.service.UserServiceImpl;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -143,6 +145,32 @@ public class UserServiceImplIT {
         }
     }
 
+    @Test
+    public void given_no_users_when_getAllUsers_then_return_empty_list() {
+        List<User> result = userService.getAllUsers();
+
+        assertNotNull(result, "A lista não deve ser nula");
+        assertTrue(result.isEmpty(),"A lista deve estar vazia");
+    }
+
+    @Test
+    public void given_existing_users_when_getAllUsers_then_return_list_of_users() {
+        UserCreateDTO user1 = getFakeUserCreateDTO();
+        UserCreateDTO user2 = getFakeUserCreateDTO2();
+
+        userService.createUser(user1);
+        userService.createUser(user2);
+
+        List<User> result = userService.getAllUsers();
+
+        assertNotNull(result, "A lista retornar não deve ser nula");
+        assertEquals(2, result.size(),"Deve ter 2 usuários salvos");
+
+        List<String> names = result.stream().map(User::getName).toList();
+        assertTrue(names.contains("Beatriz"));
+        assertTrue(names.contains("Cleyton"));
+    }
+
     private UserCreateDTO getFakeUserCreateDTO() {
         UserCreateDTO userCreateDTO = new UserCreateDTO();
         userCreateDTO.setName("Beatriz");
@@ -154,7 +182,7 @@ public class UserServiceImplIT {
     private UserCreateDTO getFakeUserCreateDTO2() {
         UserCreateDTO userCreateDTO = new UserCreateDTO();
         userCreateDTO.setName("Cleyton");
-        userCreateDTO.setEmail("beatriz@vetdata.com");
+        userCreateDTO.setEmail("cleyton@vetdata.com");
         userCreateDTO.setPassword("Senha%2");
         return userCreateDTO;
     }
