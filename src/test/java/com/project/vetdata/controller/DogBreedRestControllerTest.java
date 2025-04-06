@@ -277,7 +277,7 @@ public class DogBreedRestControllerTest {
     }
 
     @Test
-    public void given_no_dogBreeds_when_getAllDogBreeds_then_return_noContent() throws Exception {
+    public void given_no_dogBreeds_when_getAllDogBreeds_then_return_ok() throws Exception {
         Page<DogBreed> emptyPage = Page.empty();
 
         when(dogBreedService.getAllDogBreeds(any(Pageable.class))).thenReturn(emptyPage);
@@ -286,8 +286,11 @@ public class DogBreedRestControllerTest {
                         .param("page", "0")
                         .param("qtdRecordsPage", "10")
                         .param("sortBy", "name"))
-                .andExpect(status().isNoContent())
-                .andExpect(content().string(""));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.total").value(0))
+                .andExpect(jsonPath("$.data").isEmpty())
+                .andExpect(jsonPath("$.page").value(0))
+                .andExpect(jsonPath("$.qtdRecordsPage").value(0));
     }
 
 

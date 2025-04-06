@@ -237,16 +237,20 @@ public class DogBreedServiceImplTest {
         Pageable pageable = PageRequest.of(0, 5);
         DogBreed labrador = getFakeDogBreed2();
         DogBreed lhasa = getFakeDogBreed3();
+        List<DogBreed> breeds = List.of(labrador, lhasa);
+        Page<DogBreed> expectedPage = new PageImpl<>(breeds, pageable, breeds.size());
 
-        when(dogBreedRepository.searchByName("l"))
-                .thenReturn(List.of(labrador, lhasa));
+        when(dogBreedRepository.searchByName(eq("l"), any(Pageable.class)))
+                .thenReturn(expectedPage);
 
         Page<DogBreed> result = dogBreedServiceImpl.getBySearchTerm("l", pageable);
 
         assertNotNull(result, "O resultado não deve ser nulo");
         assertFalse(result.isEmpty(), "O resultado não deve estar vazio");
         assertEquals(2, result.getTotalElements(), "Deve haver 2 raças correspondentes");
-        verify(dogBreedRepository, times(1)).searchByName("l");
+        assertEquals(breeds, result.getContent(), "O conteúdo deve corresponder às raças esperadas");
+
+        verify(dogBreedRepository, times(1)).searchByName(eq("l"), any(Pageable.class));
     }
 
 
