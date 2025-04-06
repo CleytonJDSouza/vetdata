@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -171,5 +171,48 @@ public class UserControllerIT {
         assertNotNull(existingUser, "O usuário deveria existir no banco de dados.");
         assertEquals("Cleyton", existingUser.getName());
         assertEquals("cleyton@vetdata.com", existingUser.getEmail());
+    }
+
+    @Test
+    public void given_users_exist_when_getAllUsers_then_returns_list() {
+        User user1 = new User();
+        user1.setName("Beatriz");
+        user1.setEmail("beatriz@vetdata.com");
+        user1.setPassword(Password.hash("Senha%1").withBcrypt().getResult());
+        user1.setCreatedDate(LocalDateTime.now());
+        user1.setPasswordLastUpdatedDate(LocalDateTime.now());
+
+        User user2 = new User();
+        user2.setName("Cleyton");
+        user2.setEmail("cleyton@vetdata.com");
+        user2.setPassword(Password.hash("Senha%2").withBcrypt().getResult());
+        user2.setCreatedDate(LocalDateTime.now());
+        user2.setPasswordLastUpdatedDate(LocalDateTime.now());
+
+        userRepository.saveAll(List.of(user1, user2));
+
+        given()
+                .when()
+                .get("/users")
+                .then()
+                .statusCode(200)
+                .body("$.size()", is(2))
+                .body("[0].name", equalTo("Beatriz"))
+                .body("[0].email", equalTo("beatriz@vetdata.com"))
+                .body("[1].name", equalTo("Cleyton"))
+                .body("[1].email", equalTo("cleyton@vetdata.com"));
+    }
+
+    @Test
+    public void given_noUsers_when_getAllUsers_then_returns_emptyList() {
+        userRepository.deleteAll();
+
+        given()
+                .when()
+                .get("/users")
+                .then()
+                .statusCode(200)
+                .body("", hasSize(0))
+                .body(equalTo("[]"));
     }
 }

@@ -11,9 +11,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.password4j.Password;
-import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -85,6 +86,30 @@ public class UserServiceImplTest {
         verify(userRepository, times(1)).deleteById(invalidUserId);
     }
 
+    @Test
+    public void given_users_exist_when_getAllUsers_is_called_then_return_list_of_users() {
+        List<User> mockUser = List.of(getFakeUser(), getFakeUser2());
+
+        when(userRepository.findAll()).thenReturn(mockUser);
+
+        List<User> result = userService.getAllUsers();
+
+        assertNotNull(result, "A lista não pode ser nula.");
+        assertEquals(2, result.size(), "A lista deve conter 2 usuários");
+        verify(userRepository, times(1)).findAll();
+    }
+
+    @Test
+    public void given_no_users_when_getAllUsers_is_called_then_return_empty_list() {
+        when(userRepository.findAll()).thenReturn(Collections.emptyList());
+
+        List<User> result = userService.getAllUsers();
+
+        assertNotNull(result, "A lista não deve ser nula.");
+        assertTrue(result.isEmpty(), "A lista deve estar vazia");
+        verify(userRepository, times(1)).findAll();
+    }
+
 
     private UserCreateDTO getFakeUserCreateDTO() {
         UserCreateDTO dto = new UserCreateDTO();
@@ -100,6 +125,19 @@ public class UserServiceImplTest {
         user.setEmail("beatriz@vetdata.com");
 
         String hashedPassword = Password.hash("Senha%1").withBcrypt().getResult();
+        user.setPassword(hashedPassword);
+
+        user.setCreatedDate(LocalDateTime.now());
+        user.setPasswordLastUpdatedDate(LocalDateTime.now());
+        return user;
+    }
+
+    private User getFakeUser2() {
+        User user = new User();
+        user.setName("Cleyton");
+        user.setEmail("cleyton@vetdata.com");
+
+        String hashedPassword = Password.hash("Senha%123").withBcrypt().getResult();
         user.setPassword(hashedPassword);
 
         user.setCreatedDate(LocalDateTime.now());

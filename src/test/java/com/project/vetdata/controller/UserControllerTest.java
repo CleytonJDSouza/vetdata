@@ -17,6 +17,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -102,5 +104,31 @@ public class UserControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/users/{id}", invalidUserId))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void given_users_exist_when_getAllUser_then_returns_list_of_users() throws Exception {
+        List<User> users = List.of(
+                new User(1L, "Beatriz", "beatriz@vetdata.com", "Senha%1", LocalDateTime.now(), LocalDateTime.now()),
+                new User(2L, "Cleyton", "cleyton@vetdata.com", "Senha%123", LocalDateTime.now(), LocalDateTime.now()));
+
+        when(userService.getAllUsers()).thenReturn(users);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/users"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(2))
+                .andExpect(jsonPath("$[0].name").value("Beatriz"))
+                .andExpect(jsonPath("$[0].email").value("beatriz@vetdata.com"))
+                .andExpect(jsonPath("$[1].name").value("Cleyton"))
+                .andExpect(jsonPath("$[1].email").value("cleyton@vetdata.com"));
+    }
+
+    @Test
+    public void given_no_users_when_getAllUsers_then_returns_empty_list() throws Exception {
+        when(userService.getAllUsers()).thenReturn(Collections.emptyList());
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/users"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(0));
     }
 }
