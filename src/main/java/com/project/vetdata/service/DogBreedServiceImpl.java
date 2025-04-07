@@ -91,9 +91,7 @@ public class DogBreedServiceImpl implements DogBreedService {
 
     @Override
     public Page<DogBreed> getBySearchTerm(String searchByTerm, Pageable pageable) {
-        List<DogBreed> breeds = dogBreedRepository.searchByName(searchByTerm.toLowerCase());
-        PageRequest page = PageRequest.of(0, breeds.size());
-        return new PageImpl<>(breeds,page,breeds.size());
+        return dogBreedRepository.searchByName(searchByTerm.toLowerCase(), pageable);
     }
 
     private DogBreed fromCreateDTO(DogBreedCreateDTO dto) {

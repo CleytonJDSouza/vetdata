@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -48,26 +49,19 @@ public class DogBreedRestController {
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(required = false) String searchByTerm
     ) {
-        Pageable paging = PageRequest.of(page, qtdRecordsPage, Sort.by(sortBy));
-        Page<DogBreed> pageBreeds = dogBreedService.getAllDogBreeds(paging);
+        Pageable pageable = PageRequest.of(page, qtdRecordsPage, Sort.by(sortBy));
+        Page<DogBreed> breedsPage = StringUtils.hasText(searchByTerm)
+                ? dogBreedService.getBySearchTerm(searchByTerm, pageable)
+                : dogBreedService.getAllDogBreeds(pageable);
 
-        if (searchByTerm != null && !searchByTerm.isBlank()) {
-            pageBreeds = dogBreedService.getBySearchTerm(searchByTerm, paging);
-        } else {
-            pageBreeds = dogBreedService.getAllDogBreeds(paging);
-        }
+        Map<String, Object> response = Map.of(
+                "total", breedsPage.getTotalElements(),
+                "qtdRecordsPage", breedsPage.getSize(),
+                "page", breedsPage.getNumber(),
+                "data", breedsPage.getContent()
+        );
 
-        if (pageBreeds.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("total", pageBreeds.getTotalElements());
-        response.put("qtdRecordsPage", pageBreeds.getSize());
-        response.put("page", pageBreeds.getNumber());
-        response.put("data", pageBreeds.getContent());
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "Buscar Raça pelo Id")

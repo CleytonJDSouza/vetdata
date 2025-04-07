@@ -367,6 +367,7 @@
                 const page = settings._iDisplayStart / settings._iDisplayLength; // Página atual
                 const qtdRecordsPage = settings._iDisplayLength; // Quantidade de registros por página
                 const sortBy = settings.aaSorting[0][0] == 0 ? 'name' : 'id'; // Defina o campo de ordenação, exemplo "name"
+                const searchTerm = data.search.value;
 
                 $.ajax({
                     url: "/breeds",
@@ -374,7 +375,8 @@
                     data: {
                         page: page,
                         qtdRecordsPage: qtdRecordsPage,
-                        sortBy: sortBy
+                        sortBy: sortBy,
+                        searchByTerm: searchTerm
                     },
                     success: function(response) {
                         // Passando os dados e informações de paginação para o DataTable
