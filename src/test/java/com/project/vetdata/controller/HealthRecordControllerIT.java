@@ -1,0 +1,156 @@
+package com.project.vetdata.controller;
+
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import com.project.vetdata.dto.HealthRecordCreateDTO;
+import com.project.vetdata.enums.DogSize;
+import com.project.vetdata.enums.Euthanasia;
+import com.project.vetdata.enums.Gender;
+import com.project.vetdata.model.DogBreed;
+import com.project.vetdata.model.HealthRecord;
+import com.project.vetdata.repository.DogBreedRepository;
+import com.project.vetdata.repository.HealthRecordRepository;
+import io.restassured.RestAssured;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Testcontainers
+public class HealthRecordControllerIT {
+
+    @LocalServerPort
+    private Integer port;
+
+    @Autowired
+    private HealthRecordRepository healthRecordRepository;
+
+    @Autowired
+    private DogBreedRepository dogBreedRepository;
+
+    private static final int WIREMOCK_PORT = 8082;
+
+    private static WireMockServer wireMockServer;
+
+    @Container
+    private static final MySQLContainer<?> mysqlContainer = new MySQLContainer<>("mysql:8.0.26");
+
+    @BeforeEach
+    void setUp() {
+        RestAssured.port = port;
+        healthRecordRepository.deleteAll();
+    }
+
+    @BeforeAll
+    static void beforeAll() {
+        mysqlContainer.start();
+        wireMockServer = new WireMockServer(WireMockConfiguration.options().port(WIREMOCK_PORT));
+        wireMockServer.start();
+        WireMock.configureFor("localhost", WIREMOCK_PORT);
+    }
+
+    @AfterAll
+    static void afterAll() {
+        mysqlContainer.stop();
+        wireMockServer.stop();
+    }
+
+    @DynamicPropertySource
+    static void configureProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", mysqlContainer::getJdbcUrl);
+        registry.add("spring.datasource.username", mysqlContainer::getUsername);
+        registry.add("spring.datasource.password", mysqlContainer::getPassword);
+    }
+
+    @Test
+    public void given_valid_healthRecordCreateDTO_when_create_healthRecord_then_returns_created() {
+        DogBreed dogBreed = new DogBreed(null, "2", "Pug", "Amigável e inteligente e esperto",
+                10, 12, 30D, 34D, 25D, 29D,
+                false, "Medio");
+        DogBreed savedBreed = dogBreedRepository.save(dogBreed);
+
+        HealthRecordCreateDTO dto = new HealthRecordCreateDTO();
+        dto.setCodPatient("P01");
+        dto.setTutor("Cleyton");
+        dto.setPatient("Torresmo");
+        dto.setBreedId(savedBreed.getId());
+        dto.setAge(5.0);
+        dto.setWeight(22.0);
+        dto.setColor("Bege");
+        dto.setSize(DogSize.MEDIUM);
+        dto.setGender(Gender.MALE);
+        dto.setDeath(false);
+        dto.setEuthanasia(Euthanasia.NO);
+        dto.setAdmission(LocalDate.of(2025, 1, 1));
+
+        Long createdId =
+                given()
+                        .contentType("application/json")
+                        .body(dto)
+                        .when()
+                        .post("/health-records")
+                        .then()
+                        .statusCode(201)
+                        .body("patient", equalTo(dto.getPatient()))
+                        .body("tutor", equalTo(dto.getTutor()))
+                        .body("codPatient", equalTo(dto.getCodPatient()))
+                        .extract()
+                        .jsonPath()
+                        .getLong("id");
+
+        Optional<HealthRecord> optional = healthRecordRepository.findById(createdId);
+        assertTrue(optional.isPresent(), "Prontuário não foi salvo no banco");
+
+        HealthRecord saved = optional.get();
+        assertEquals(dto.getPatient(), saved.getPatient());
+        assertEquals(dto.getTutor(), saved.getTutor());
+        assertEquals(dto.getGender(), saved.getGender());
+        assertEquals(dto.getCodPatient(), saved.getCodPatient());
+    }
+
+    @Test
+    public void given_invalid_healthRecordCreateDTO_when_create_healthRecord_then_returns_badRequest() {
+        HealthRecordCreateDTO dto = new HealthRecordCreateDTO();
+        dto.setCodPatient("");
+        dto.setTutor("");
+        dto.setPatient("");
+        dto.setBreedId(null);
+        dto.setAge(-5.0);
+        dto.setWeight(-22.0);
+        dto.setColor("");
+        dto.setSize(DogSize.MEDIUM);
+        dto.setGender(Gender.MALE);
+        dto.setDeath(null);
+        dto.setEuthanasia(Euthanasia.NO);
+        dto.setAdmission(null);
+
+        given()
+                .contentType("application/json")
+                .body(dto)
+                .when()
+                .post("/health-records")
+                .then()
+                .statusCode(400);
+
+        List<HealthRecord> records = healthRecordRepository.findAll();
+        assertTrue(records.isEmpty(), "Nenhum prontuário deve ser salvo no banco");
+    }
+}
