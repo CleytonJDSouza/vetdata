@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.project.vetdata.dto.HealthRecordCreateDTO;
+import com.project.vetdata.dto.HealthRecordUpdateDTO;
 import com.project.vetdata.enums.DogSize;
 import com.project.vetdata.enums.Euthanasia;
 import com.project.vetdata.enums.Gender;
@@ -152,5 +153,186 @@ public class HealthRecordControllerIT {
 
         List<HealthRecord> records = healthRecordRepository.findAll();
         assertTrue(records.isEmpty(), "Nenhum prontuário deve ser salvo no banco");
+    }
+
+    @Test
+    public void given_valid_healthRecordId_and_valid_data_when_updateHealthRecord_then_returns_updatedHealthRecord() {
+        DogBreed dogBreed = new DogBreed(null, "2", "Pug", "Amigável e inteligente e esperto",
+                10, 12, 30D, 34D, 25D, 29D, false, "Medio");
+        DogBreed savedBreed = dogBreedRepository.save(dogBreed);
+
+        HealthRecord record = new HealthRecord();
+        record.setCodPatient("P123");
+        record.setTutor("Aline");
+        record.setPatient("Nutella");
+        record.setBreed(savedBreed);
+        record.setAge(5.0);
+        record.setWeight(28.0);
+        record.setColor("Marrom");
+        record.setSize(DogSize.LARGE);
+        record.setGender(Gender.MALE);
+        record.setDeath(false);
+        record.setEuthanasia(Euthanasia.NO);
+        record.setAdmission(LocalDate.of(2025, 4, 11));
+        HealthRecord savedRecord = healthRecordRepository.save(record);
+
+        savedRecord.getBreed().getName();
+
+        HealthRecordUpdateDTO updateDTO = new HealthRecordUpdateDTO();
+        updateDTO.setCodPatient("P124");
+        updateDTO.setTutor("Andrea");
+        updateDTO.setPatient("Cacau");
+        updateDTO.setBreedId(savedBreed.getId());
+        updateDTO.setAge(6.0);
+        updateDTO.setWeight(29.0);
+        updateDTO.setColor("Bege");
+        updateDTO.setSize(DogSize.LARGE);
+        updateDTO.setGender(Gender.MALE);
+        updateDTO.setDeath(false);
+        updateDTO.setEuthanasia(Euthanasia.NO);
+        updateDTO.setAdmission(LocalDate.of(2025, 2, 1));
+
+        given()
+                .pathParam("id", savedRecord.getId())
+                .contentType("application/json")
+                .body(updateDTO)
+                .when()
+                .put("/health-records/{id}")
+                .then()
+                .statusCode(200)
+                .body("codPatient", equalTo("P124"))
+                .body("tutor", equalTo("Andrea"))
+                .body("patient", equalTo("Cacau"))
+                .body("color", equalTo("Bege"))
+                .body("age", equalTo(6.0F))
+                .body("weight", equalTo(29.0F));
+
+        Optional<HealthRecord> optional = healthRecordRepository.findById(savedRecord.getId());
+        assertTrue(optional.isPresent(), "O prontuário atualizado não foi encontrado.");
+
+        HealthRecord updated = optional.get();
+        assertEquals("P124", updated.getCodPatient());
+        assertEquals("Andrea", updated.getTutor());
+        assertEquals("Cacau", updated.getPatient());
+        assertEquals("Bege", updated.getColor());
+        assertEquals(6.0, updated.getAge());
+        assertEquals(29.0, updated.getWeight());
+        assertEquals(LocalDate.of(2025, 2, 1), updated.getAdmission());
+    }
+
+    @Test
+    public void given_invalid_id_when_updateHealthRecord_then_returns_badRequest() {
+        DogBreed dogBreed = new DogBreed(null, "2", "Pug", "Amigável e inteligente e esperto",
+                10, 12, 30D, 34D, 25D, 29D, false, "Medio");
+        DogBreed savedBreed = dogBreedRepository.save(dogBreed);
+
+        HealthRecord record = new HealthRecord();
+        record.setCodPatient("P123");
+        record.setTutor("Aline");
+        record.setPatient("Nutella");
+        record.setBreed(savedBreed);
+        record.setAge(5.0);
+        record.setWeight(28.0);
+        record.setColor("Marrom");
+        record.setSize(DogSize.LARGE);
+        record.setGender(Gender.MALE);
+        record.setDeath(false);
+        record.setEuthanasia(Euthanasia.NO);
+        record.setAdmission(LocalDate.of(2025, 4, 11));
+        HealthRecord savedRecord = healthRecordRepository.save(record);
+
+
+        HealthRecordUpdateDTO updateDTO = new HealthRecordUpdateDTO();
+        updateDTO.setCodPatient("P124");
+        updateDTO.setTutor("Andrea");
+        updateDTO.setPatient("Cacau");
+        updateDTO.setBreedId(savedBreed.getId());
+        updateDTO.setAge(6.0);
+        updateDTO.setWeight(29.0);
+        updateDTO.setColor("Bege");
+        updateDTO.setSize(DogSize.LARGE);
+        updateDTO.setGender(Gender.MALE);
+        updateDTO.setDeath(false);
+        updateDTO.setEuthanasia(Euthanasia.NO);
+        updateDTO.setAdmission(LocalDate.of(2025, 2, 1));
+
+        given()
+                .pathParam("id", "abc")
+                .contentType("application/json")
+                .body(updateDTO)
+                .when()
+                .put("/health-records/{id}")
+                .then()
+                .statusCode(400);
+
+        Optional<HealthRecord> optional = healthRecordRepository.findById(savedRecord.getId());
+        assertTrue(optional.isPresent(), "O prontuário original deve se manter.");
+
+        HealthRecord original = optional.get();
+        assertEquals("P123", original.getCodPatient());
+        assertEquals("Aline", original.getTutor());
+        assertEquals("Nutella", original.getPatient());
+        assertEquals("Marrom", original.getColor());
+        assertEquals(5.0, original.getAge());
+        assertEquals(28.0, original.getWeight());
+        assertEquals(LocalDate.of(2025, 4, 11), original.getAdmission());
+    }
+
+    @Test
+    public void given_non_existent_healthRecordId_when_updateHealthRecord_then_returns_notFound() {
+        DogBreed dogBreed = new DogBreed(null, "2", "Pug", "Amigável e inteligente e esperto",
+                10, 12, 30D, 34D, 25D, 29D, false, "Medio");
+        DogBreed savedBreed = dogBreedRepository.save(dogBreed);
+
+        HealthRecord record = new HealthRecord();
+        record.setCodPatient("P123");
+        record.setTutor("Aline");
+        record.setPatient("Nutella");
+        record.setBreed(savedBreed);
+        record.setAge(5.0);
+        record.setWeight(28.0);
+        record.setColor("Marrom");
+        record.setSize(DogSize.LARGE);
+        record.setGender(Gender.MALE);
+        record.setDeath(false);
+        record.setEuthanasia(Euthanasia.NO);
+        record.setAdmission(LocalDate.of(2025, 4, 11));
+        HealthRecord savedRecord = healthRecordRepository.save(record);
+
+
+        HealthRecordUpdateDTO updateDTO = new HealthRecordUpdateDTO();
+        updateDTO.setCodPatient("P124");
+        updateDTO.setTutor("Andrea");
+        updateDTO.setPatient("Cacau");
+        updateDTO.setBreedId(savedBreed.getId());
+        updateDTO.setAge(6.0);
+        updateDTO.setWeight(29.0);
+        updateDTO.setColor("Bege");
+        updateDTO.setSize(DogSize.LARGE);
+        updateDTO.setGender(Gender.MALE);
+        updateDTO.setDeath(false);
+        updateDTO.setEuthanasia(Euthanasia.NO);
+        updateDTO.setAdmission(LocalDate.of(2025, 2, 1));
+
+        given()
+                .pathParam("id", 999L)
+                .contentType("application/json")
+                .body(updateDTO)
+                .when()
+                .put("/health-records/{id}")
+                .then()
+                .statusCode(404);
+
+        Optional<HealthRecord> optional = healthRecordRepository.findById(savedRecord.getId());
+        assertTrue(optional.isPresent(), "O prontuário original deve se manter.");
+
+        HealthRecord original = optional.get();
+        assertEquals("P123", original.getCodPatient());
+        assertEquals("Aline", original.getTutor());
+        assertEquals("Nutella", original.getPatient());
+        assertEquals("Marrom", original.getColor());
+        assertEquals(5.0, original.getAge());
+        assertEquals(28.0, original.getWeight());
+        assertEquals(LocalDate.of(2025, 4, 11), original.getAdmission());
     }
 }

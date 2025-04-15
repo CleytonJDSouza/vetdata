@@ -1,6 +1,7 @@
 package com.project.vetdata.service;
 
 import com.project.vetdata.dto.HealthRecordCreateDTO;
+import com.project.vetdata.dto.HealthRecordUpdateDTO;
 import com.project.vetdata.enums.DogSize;
 import com.project.vetdata.enums.Euthanasia;
 import com.project.vetdata.enums.Gender;
@@ -20,7 +21,7 @@ import java.util.Optional;
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class HealthRecordServiceImplTest {
@@ -64,6 +65,78 @@ public class HealthRecordServiceImplTest {
         assertEquals("Raça " + dto.getBreedId() + " não encontrada", exception.getMessage());
     }
 
+    @Test
+    public void given_valid_id_and_healthRecordUpdateDTO_when_updateHealthRecord_is_called_then_healthRecord_is_updated_and_saved() {
+        Long id = 1L;
+        HealthRecord existingRecord = getFakeHealthRecord();
+        HealthRecordUpdateDTO updateDTO = getFakeHealthRecordUpdateDTO();
+        DogBreed breed = getFakeDogBreed();
+
+        when(healthRecordRepository.findById(id)).thenReturn(Optional.of(existingRecord));
+        when(dogBreedRepository.findById(updateDTO.getBreedId())).thenReturn(Optional.of(breed));
+        when(healthRecordRepository.save(any(HealthRecord.class))).thenReturn(existingRecord);
+
+        HealthRecord updateRecord = healthRecordService.updateHealthRecord(id, updateDTO);
+
+        verify(healthRecordRepository, times(1)).findById(id);
+        verify(dogBreedRepository, times(1)).findById(updateDTO.getBreedId());
+        verify(healthRecordRepository, times(1)).save(existingRecord);
+
+        assertEquals(updateDTO.getPatient(), updateRecord.getPatient());
+        assertEquals(updateDTO.getTutor(), updateRecord.getTutor());
+        assertEquals(updateDTO.getCodPatient(), updateRecord.getCodPatient());
+        assertEquals(updateDTO.getBreedId(), updateRecord.getBreed().getId());
+        assertEquals(updateDTO.getWeight(), updateRecord.getWeight());
+        assertEquals(updateDTO.getSize(), updateRecord.getSize());
+        assertEquals(updateDTO.getColor(), updateRecord.getColor());
+    }
+
+    @Test
+    public void given_invalid_id_when_updateHealthRecord_is_called_then_throws_exception() {
+        Long invalidId = 99L;
+        HealthRecordUpdateDTO updateDTO = getFakeHealthRecordUpdateDTO();
+
+        when(healthRecordRepository.findById(invalidId)).thenReturn(Optional.empty());
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                healthRecordService.updateHealthRecord(invalidId, updateDTO)
+        );
+
+        assertEquals("Prontuário não encontrado com ID: " + invalidId, exception.getMessage());
+    }
+
+    @Test
+    public void given_invalid_breedId_when_updateHealthRecord_is_called_then_throws_exception() {
+        Long id = 1L;
+        HealthRecord existingRecord = getFakeHealthRecord();
+        HealthRecordUpdateDTO updateDTO = getFakeHealthRecordUpdateDTO();
+
+        when(healthRecordRepository.findById(id)).thenReturn(Optional.of(existingRecord));
+        when(dogBreedRepository.findById(updateDTO.getBreedId())).thenReturn(Optional.empty());
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                healthRecordService.updateHealthRecord(id, updateDTO)
+        );
+
+        assertEquals("Raça " + updateDTO.getBreedId() + " não encontrada", exception.getMessage());
+    }
+
+    @Test
+    public void given_null_fields_when_updateHealthRecord_then_no_fields_are_updated() {
+        Long id = 1L;
+        HealthRecord existing = getFakeHealthRecord();
+
+        when(healthRecordRepository.findById(id)).thenReturn(Optional.of(existing));
+        when(healthRecordRepository.save(any(HealthRecord.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        HealthRecordUpdateDTO dto = new HealthRecordUpdateDTO();
+
+        HealthRecord updated = healthRecordService.updateHealthRecord(id, dto);
+
+        assertEquals(existing.getPatient(), updated.getPatient());
+        verify(healthRecordRepository).save(existing);
+    }
+
     private HealthRecordCreateDTO getFakeHealthRecordCreateDTO() {
         HealthRecordCreateDTO dto = new HealthRecordCreateDTO();
         dto.setCodPatient("P01");
@@ -104,5 +177,23 @@ public class HealthRecordServiceImplTest {
         record.setAdmission(LocalDate.of(2025, 1, 1));
 
         return record;
+    }
+
+    private HealthRecordUpdateDTO getFakeHealthRecordUpdateDTO() {
+        HealthRecordUpdateDTO dto = new HealthRecordUpdateDTO();
+        dto.setCodPatient("P02");
+        dto.setTutor("Andrea");
+        dto.setPatient("Cacau");
+        dto.setBreedId(1L);
+        dto.setAge(3.5);
+        dto.setWeight(18.0);
+        dto.setColor("Preto");
+        dto.setSize(DogSize.SMALL);
+        dto.setGender(Gender.FEMALE);
+        dto.setDeath(false);
+        dto.setEuthanasia(Euthanasia.NO);
+        dto.setAdmission(LocalDate.of(2025, 2, 1));
+
+        return dto;
     }
 }
