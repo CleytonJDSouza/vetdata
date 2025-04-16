@@ -1,6 +1,7 @@
 package com.project.vetdata.service;
 
 import com.project.vetdata.dto.HealthRecordCreateDTO;
+import com.project.vetdata.dto.HealthRecordUpdateDTO;
 import com.project.vetdata.model.DogBreed;
 import com.project.vetdata.model.HealthRecord;
 import com.project.vetdata.repository.DogBreedRepository;
@@ -42,5 +43,50 @@ public class HealthRecordServiceImpl implements HealthRecordService {
         record.setBreed(breed);
 
         return record;
+    }
+
+    public HealthRecord updateHealthRecord(Long id, HealthRecordUpdateDTO dto) {
+        return healthRecordRepository.findById(id).map(existingRecord -> {
+            if (dto.getAdmission() != null) {
+                existingRecord.setAdmission(dto.getAdmission());
+            }
+            if (dto.getAge() != null) {
+                existingRecord.setAge(dto.getAge());
+            }
+            if (dto.getCodPatient() != null) {
+                existingRecord.setCodPatient(dto.getCodPatient());
+            }
+            if (dto.getColor() != null) {
+                existingRecord.setColor(dto.getColor());
+            }
+            if (dto.getDeath() != null) {
+                existingRecord.setDeath(dto.getDeath());
+            }
+            if (dto.getEuthanasia() != null) {
+                existingRecord.setEuthanasia(dto.getEuthanasia());
+            }
+            if (dto.getGender() != null) {
+                existingRecord.setGender(dto.getGender());
+            }
+            if (dto.getPatient() != null) {
+                existingRecord.setPatient(dto.getPatient());
+            }
+            if (dto.getSize() != null) {
+                existingRecord.setSize(dto.getSize());
+            }
+            if (dto.getTutor() != null) {
+                existingRecord.setTutor(dto.getTutor());
+            }
+            if (dto.getWeight() != null) {
+                existingRecord.setWeight(dto.getWeight());
+            }
+            if (dto.getBreedId() != null) {
+                DogBreed breed = dogBreedRepository.findById(dto.getBreedId())
+                        .orElseThrow(() -> new IllegalArgumentException("Raça " + dto.getBreedId() + " não encontrada"));
+                existingRecord.setBreed(breed);
+            }
+
+            return healthRecordRepository.save(existingRecord);
+        }).orElseThrow(() -> new IllegalArgumentException("Prontuário não encontrado com ID: " + id));
     }
 }

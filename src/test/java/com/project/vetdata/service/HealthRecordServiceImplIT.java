@@ -3,6 +3,7 @@ package com.project.vetdata.service;
 
 
 import com.project.vetdata.dto.HealthRecordCreateDTO;
+import com.project.vetdata.dto.HealthRecordUpdateDTO;
 import com.project.vetdata.enums.DogSize;
 import com.project.vetdata.enums.Euthanasia;
 import com.project.vetdata.enums.Gender;
@@ -111,6 +112,75 @@ public class HealthRecordServiceImplIT {
                 .anyMatch(v -> v.getPropertyPath().toString().equals("patient"));
 
         assertTrue(hasPatientViolation, "Deve ter erro no campo 'patient'");
+    }
+
+    @Test
+    public void given_valid_updateDTO_when_updateHealthRecord_then_record_is_updated() {
+        DogBreed breed = dogBreedRepository.save(createFakeBreed());
+        HealthRecordCreateDTO createDTO = getFakeHealthRecordDTO(breed.getId());
+        HealthRecord original = healthRecordService.createHealthRecord(createDTO);
+
+        HealthRecordUpdateDTO updateDTO = new HealthRecordUpdateDTO();
+        updateDTO.setPatient("Nutella");
+        updateDTO.setTutor("Aline");
+        updateDTO.setWeight(27.3);
+        updateDTO.setAdmission(LocalDate.of(2025, 4, 10));
+        updateDTO.setBreedId(breed.getId());
+        updateDTO.setEuthanasia(Euthanasia.NO);
+        updateDTO.setGender(Gender.FEMALE);
+        updateDTO.setSize(DogSize.MEDIUM);
+
+        HealthRecord updated = healthRecordService.updateHealthRecord(original.getId(), updateDTO);
+
+        assertNotNull(updated);
+        assertEquals("Nutella", updated.getPatient());
+        assertEquals("Aline", updated.getTutor());
+        assertEquals(27.3, updated.getWeight());
+        assertEquals(LocalDate.of(2025, 4, 10), updated.getAdmission());
+    }
+
+    @Test
+    public void given_invalid_id_when_updateHealthRecord_then_throwsException() {
+        Long invalidId = 99L;
+
+        HealthRecordUpdateDTO updateDTO = new HealthRecordUpdateDTO();
+        updateDTO.setPatient("Nutella");
+        updateDTO.setTutor("Aline");
+        updateDTO.setWeight(27.3);
+        updateDTO.setAdmission(LocalDate.of(2025, 4, 10));
+        updateDTO.setBreedId(1L);
+        updateDTO.setEuthanasia(Euthanasia.NO);
+        updateDTO.setGender(Gender.FEMALE);
+        updateDTO.setSize(DogSize.MEDIUM);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            healthRecordService.updateHealthRecord(invalidId, updateDTO);
+        });
+
+        assertEquals("Prontuário não encontrado com ID: " + invalidId, exception.getMessage());
+    }
+
+    @Test
+    public void given_InvalidBreedId_when_updateHealthRecord_then_ThrowsException() {
+        DogBreed breed = dogBreedRepository.save(createFakeBreed());
+        HealthRecordCreateDTO createDTO = getFakeHealthRecordDTO(breed.getId());
+        HealthRecord saved = healthRecordService.createHealthRecord(createDTO);
+
+        Long invalidBreedId = 999L;
+
+        HealthRecordUpdateDTO dto = new HealthRecordUpdateDTO();
+        dto.setBreedId(invalidBreedId);
+        dto.setEuthanasia(Euthanasia.NO);
+        dto.setGender(Gender.FEMALE);
+        dto.setPatient("Ciri");
+        dto.setSize(DogSize.MEDIUM);
+        dto.setTutor("Cleyton");
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            healthRecordService.updateHealthRecord(saved.getId(), dto);
+        });
+
+        assertEquals("Raça " + invalidBreedId + " não encontrada", exception.getMessage());
     }
 
     private DogBreed createFakeBreed() {
