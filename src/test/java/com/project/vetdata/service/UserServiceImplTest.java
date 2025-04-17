@@ -57,7 +57,6 @@ public class UserServiceImplTest {
 
     @Test
     public void given_userCreateDTO_when_repository_fails_then_runtime_exception() {
-        UserCreateDTO createDTO = getFakeUserCreateDTO();
         when(userRepository.save(any(User.class))).thenThrow(new RuntimeException("Erro ao salvar o usuário"));
 
         RuntimeException exception = assertThrows(RuntimeException.class, this::createUser);
