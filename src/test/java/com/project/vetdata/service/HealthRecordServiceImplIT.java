@@ -20,6 +20,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MySQLContainer;
@@ -27,7 +30,9 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -183,6 +188,39 @@ public class HealthRecordServiceImplIT {
         assertEquals("Raça " + invalidBreedId + " não encontrada", exception.getMessage());
     }
 
+    @Test
+    public void given_existing_healthRecord_when_get_all_healthRecods_then_returns_page_results() {
+        DogBreed breed = dogBreedRepository.save(createFakeBreed());
+
+        healthRecordService.createHealthRecord(getFakeHealthRecordDTO(breed.getId()));
+        healthRecordService.createHealthRecord(getFakeHealthRecordDTO2(breed.getId()));
+
+        Pageable pageable = PageRequest.of(0,10);
+        Page<HealthRecord> result = healthRecordService.findAll(pageable);
+
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(2, result.getTotalElements());
+
+        List<String> patients = result.getContent().stream()
+                .map(HealthRecord::getPatient)
+                .collect(Collectors.toList());
+
+        assertTrue(patients.contains("Arya"));
+        assertTrue(patients.contains("Amora"));
+    }
+
+    @Test
+    public void give_no_healthRecord_in_database_when_get_all_healthRecord_then_returns_empty_page() {
+        Pageable pageable = PageRequest.of(0, 5);
+        Page<HealthRecord> result = healthRecordService.findAll(pageable);
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+        assertEquals(0, result.getTotalElements());
+    }
+
+
     private DogBreed createFakeBreed() {
         DogBreed breed = new DogBreed();
         breed.setName("Golden Retriever");
@@ -200,6 +238,23 @@ public class HealthRecordServiceImplIT {
     }
 
     private HealthRecordCreateDTO getFakeHealthRecordDTO(Long breedId) {
+        HealthRecordCreateDTO dto = new HealthRecordCreateDTO();
+        dto.setAdmission(LocalDate.of(2025, 8, 1));
+        dto.setAge(5.0);
+        dto.setCodPatient("C125");
+        dto.setColor("Branco");
+        dto.setDeath(false);
+        dto.setEuthanasia(Euthanasia.NO);
+        dto.setGender(Gender.FEMALE);
+        dto.setPatient("Arya");
+        dto.setSize(DogSize.SMALL);
+        dto.setTutor("Beatriz");
+        dto.setWeight(32.5);
+        dto.setBreedId(breedId);
+        return dto;
+    }
+
+    private HealthRecordCreateDTO getFakeHealthRecordDTO2(Long breedId) {
         HealthRecordCreateDTO dto = new HealthRecordCreateDTO();
         dto.setAdmission(LocalDate.of(2025, 4, 8));
         dto.setAge(5.0);

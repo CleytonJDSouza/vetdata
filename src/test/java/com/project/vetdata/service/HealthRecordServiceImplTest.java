@@ -14,12 +14,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.Optional;
 
 import static org.junit.Assert.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -135,6 +140,35 @@ public class HealthRecordServiceImplTest {
 
         assertEquals(existing.getPatient(), updated.getPatient());
         verify(healthRecordRepository).save(existing);
+    }
+
+    @Test
+    public void given_healthRecords_pre_registered_when_a_page_is_informed_then_the_records_are_returned() {
+        Pageable pageable = PageRequest.of(0, 10);
+        HealthRecord healthRecord = getFakeHealthRecord();
+        Page<HealthRecord> page = new PageImpl<>(Collections.singletonList(healthRecord));
+
+        when(healthRecordRepository.findAll(pageable)).thenReturn(page);
+
+        Page<HealthRecord> records = healthRecordService.findAll(pageable);
+
+        assertNotNull(records);
+        assertFalse(records.isEmpty(), "A página não deve estar vazia!");
+        assertEquals(1, records.getContent().size(), "Deve haver exatamente 1 registro na página");
+        assertEquals("Torresmo", records.getContent().get(0).getPatient());
+    }
+
+    @Test
+    public void given_no_healthRecord_when_a_page_is_requested_then_should_return_empty_page() {
+        Pageable pageable = PageRequest.of(0,10);
+        Page<HealthRecord> emptyPage = Page.empty();
+
+        when(healthRecordRepository.findAll(pageable)).thenReturn(emptyPage);
+
+        Page<HealthRecord> result = healthRecordService.findAll(pageable);
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty(), "A página deve estar vazia");
     }
 
     private HealthRecordCreateDTO getFakeHealthRecordCreateDTO() {

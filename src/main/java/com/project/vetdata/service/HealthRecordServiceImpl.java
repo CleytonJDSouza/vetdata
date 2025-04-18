@@ -6,6 +6,8 @@ import com.project.vetdata.model.DogBreed;
 import com.project.vetdata.model.HealthRecord;
 import com.project.vetdata.repository.DogBreedRepository;
 import com.project.vetdata.repository.HealthRecordRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -88,5 +90,15 @@ public class HealthRecordServiceImpl implements HealthRecordService {
 
             return healthRecordRepository.save(existingRecord);
         }).orElseThrow(() -> new IllegalArgumentException("Prontuário não encontrado com ID: " + id));
+    }
+
+    @Override
+    public Page<HealthRecord> findAll(Pageable pageable) {
+        return healthRecordRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<HealthRecord> searchByPatient(String search, Pageable pageable) {
+        return healthRecordRepository.searchByPatient(search, pageable);
     }
 }

@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -334,5 +335,82 @@ public class HealthRecordControllerIT {
         assertEquals(5.0, original.getAge());
         assertEquals(28.0, original.getWeight());
         assertEquals(LocalDate.of(2025, 4, 11), original.getAdmission());
+    }
+
+    @Test
+    public void given_healthRecordsInDatabase_when_getAllHealthRecords_then_returnsPagedList() {
+        DogBreed dogBreed = new DogBreed(null, "2", "Pug", "Amigável e inteligente e esperto",
+                10, 12, 30D, 34D, 25D, 29D, false, "Medio");
+        DogBreed savedBreed = dogBreedRepository.save(dogBreed);
+
+        HealthRecord record1 = new HealthRecord();
+        record1.setCodPatient("P123");
+        record1.setTutor("Aline");
+        record1.setPatient("Nutella");
+        record1.setBreed(savedBreed);
+        record1.setAge(5.0);
+        record1.setWeight(28.0);
+        record1.setColor("Marrom");
+        record1.setSize(DogSize.LARGE);
+        record1.setGender(Gender.MALE);
+        record1.setDeath(false);
+        record1.setEuthanasia(Euthanasia.NO);
+        record1.setAdmission(LocalDate.of(2025, 4, 11));
+        HealthRecord savedRecord1 = healthRecordRepository.save(record1);
+
+        HealthRecord record2 = new HealthRecord();
+        record2.setCodPatient("P456");
+        record2.setTutor("Andrea");
+        record2.setPatient("Cacau");
+        record2.setBreed(savedBreed);
+        record2.setAge(3.0);
+        record2.setWeight(26.5);
+        record2.setColor("Preto");
+        record2.setSize(DogSize.MEDIUM);
+        record2.setGender(Gender.FEMALE);
+        record2.setDeath(true);
+        record2.setEuthanasia(Euthanasia.YES);
+        record2.setAdmission(LocalDate.of(2025, 4, 10));
+        HealthRecord savedRecord2 = healthRecordRepository.save(record2);
+
+        when()
+                .get("/health-records?page=0&qtdRecordsPage=2&sortBy=codPatient")
+                .then()
+                .statusCode(200)
+                .body("data[0].codPatient", equalTo("P123"))
+                .body("data[0].tutor", equalTo("Aline"))
+                .body("data[0].patient", equalTo("Nutella"))
+                .body("data[0].breedName", equalTo("Pug"))
+                .body("data[0].age", equalTo(5.0F))
+                .body("data[0].weight", equalTo(28.0F))
+                .body("data[0].color", equalTo("Marrom"))
+                .body("data[0].size", equalTo("LARGE"))
+                .body("data[0].gender", equalTo("MALE"))
+                .body("data[0].death", equalTo(false))
+                .body("data[0].euthanasia", equalTo("NO"))
+                .body("data[0].admission", equalTo("2025-04-11"))
+
+                .body("data[1].codPatient", equalTo("P456"))
+                .body("data[1].tutor", equalTo("Andrea"))
+                .body("data[1].patient", equalTo("Cacau"))
+                .body("data[1].breedName", equalTo("Pug"))
+                .body("data[1].age", equalTo(3.0F))
+                .body("data[1].weight", equalTo(26.5F))
+                .body("data[1].color", equalTo("Preto"))
+                .body("data[1].size", equalTo("MEDIUM"))
+                .body("data[1].gender", equalTo("FEMALE"))
+                .body("data[1].death", equalTo(true))
+                .body("data[1].euthanasia", equalTo("YES"))
+                .body("data[1].admission", equalTo("2025-04-10"));
+    }
+
+    @Test
+    public void given_no_healthRecords_in_database_when_get_all_healthRecords_then_returns_noContent() {
+        healthRecordRepository.deleteAll();
+
+        when()
+                .get("/health-records")
+                .then()
+                .statusCode(204);
     }
 }

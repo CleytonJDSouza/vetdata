@@ -11,9 +11,19 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/health-records")
@@ -50,5 +60,47 @@ public class HealthRecordController {
     public ResponseEntity<HealthRecordResponseDTO> updateHealthRecord(@PathVariable Long id, @Valid @RequestBody HealthRecordUpdateDTO dto) {
         HealthRecord updated = healthRecordService.updateHealthRecord(id, dto);
         return ResponseEntity.ok(new HealthRecordResponseDTO(updated));
+    }
+
+    @Operation(summary = "Buscar todos os prontuários médicos")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Prontuários encontrados!",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = HealthRecord.class))}),
+            @ApiResponse(responseCode = "204", description = "Nenhum prontuário encontrado!", content = @Content)
+    })
+    @GetMapping
+    public ResponseEntity<Map<String, Object>> getAllHealthRecords(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int qtdRecordsPage,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(required = false) String search
+    ) {
+        Pageable paging = PageRequest.of(page, qtdRecordsPage, Sort.by(sortBy));
+        Page<HealthRecord> pageHealthRecords;
+
+        if (search != null && !search.isBlank()) {
+            pageHealthRecords = healthRecordService.searchByPatient(search, paging);
+        } else {
+            pageHealthRecords = healthRecordService.findAll(paging);
+        }
+
+        if (pageHealthRecords.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        List<HealthRecordResponseDTO> responseDTOs = pageHealthRecords
+                .getContent()
+                .stream()
+                .map(HealthRecordResponseDTO::new)
+                .collect(Collectors.toList());
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("total", pageHealthRecords.getTotalElements());
+        response.put("qtdRecordsPage", pageHealthRecords.getSize());
+        response.put("page", pageHealthRecords.getNumber());
+        response.put("data", responseDTOs);
+
+        return ResponseEntity.ok(response);
     }
 }
