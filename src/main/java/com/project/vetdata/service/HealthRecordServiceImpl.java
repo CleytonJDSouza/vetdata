@@ -10,6 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class HealthRecordServiceImpl implements HealthRecordService {
 
@@ -100,5 +102,15 @@ public class HealthRecordServiceImpl implements HealthRecordService {
     @Override
     public Page<HealthRecord> searchByPatient(String search, Pageable pageable) {
         return healthRecordRepository.searchByPatient(search, pageable);
+    }
+
+    @Override
+    public void deleteHealthRecord(Long id) {
+        healthRecordRepository.deleteById(id);
+    }
+
+    @Override
+    public Optional<HealthRecord> getHealthRecordById(Long id) {
+        return healthRecordRepository.findById(id);
     }
 }

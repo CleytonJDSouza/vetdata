@@ -31,6 +31,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -220,6 +221,31 @@ public class HealthRecordServiceImplIT {
         assertEquals(0, result.getTotalElements());
     }
 
+    @Test
+    public void given_valid_is_when_deleteHealthRecord_then_record_is_deleted() {
+        DogBreed breed = dogBreedRepository.save(createFakeBreed());
+        HealthRecordCreateDTO createDTO = getFakeHealthRecordDTO(breed.getId());
+        HealthRecord created = healthRecordService.createHealthRecord(createDTO);
+
+        assertNotNull(created.getId(), "Confere se o prontuário foi salvo");
+
+        Long id = created.getId();
+        healthRecordService.deleteHealthRecord(id);
+
+        Optional<HealthRecord> deleted = healthRecordRepository.findById(id);
+        assertFalse(deleted.isPresent(), "O prontuário deve ter sido deletado");
+    }
+
+    @Test
+    public void given_invalid_id_when_deleteHealthRecord_then_no_exception_thrown() {
+        Long invalidId = 999L;
+
+        try {
+            healthRecordService.deleteHealthRecord(invalidId);
+        } catch (Exception ex) {
+            fail("Não deve ter exceções");
+        }
+    }
 
     private DogBreed createFakeBreed() {
         DogBreed breed = new DogBreed();

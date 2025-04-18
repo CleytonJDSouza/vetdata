@@ -26,10 +26,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -256,5 +257,31 @@ public class HealthRecordControllerTest {
                 .andExpect(jsonPath("$.total").value(1))
                 .andExpect(jsonPath("$.data[0].id").value(3))
                 .andExpect(jsonPath("$.data[0].patient").value("Cacau"));
+    }
+
+    @Test
+    public void given_existing_healthRecordId_when_deleteHealthRecord_then_returns_noContent() throws Exception{
+        Long healthRecordId = 1L;
+        HealthRecord existingRecord = new HealthRecord(healthRecordId, LocalDate.of(2025, 2, 20),
+                4.0,"C357","Preto", false, Euthanasia.NO, Gender.MALE, "Nutella", DogSize.MEDIUM, "Clovis", 12.0,
+                new DogBreed(1L, "001", "Labrador", "Companheiro", 10, 12,
+                        25.0, 30.0, 22.0, 28.0, false, "Médio"));
+
+        when(healthRecordService.getHealthRecordById(healthRecordId)).thenReturn(Optional.of(existingRecord));
+
+        mockMvc.perform(delete("/health-records/{id}", healthRecordId))
+                .andExpect(status().isNoContent());
+
+        verify(healthRecordService,times(1)).deleteHealthRecord(healthRecordId);
+    }
+
+    @Test
+    public void given_nonexistent_healthRecordId_when_deleteHealthRecord_then_returns_notFound() throws Exception {
+        Long invalidId = 999L;
+
+        when(healthRecordService.getHealthRecordById(invalidId)).thenReturn(Optional.empty());
+
+        mockMvc.perform(delete("/health-records/{id}", invalidId))
+                .andExpect(status().isNotFound());
     }
 }

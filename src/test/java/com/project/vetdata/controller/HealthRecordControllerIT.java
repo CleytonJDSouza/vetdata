@@ -413,4 +413,70 @@ public class HealthRecordControllerIT {
                 .then()
                 .statusCode(204);
     }
+
+    @Test
+    public void given_existing_healthRecordId_when_deleteHealthRecord_then_returnsNoContent() {
+        DogBreed dogBreed = new DogBreed(null, "2", "Pug", "Amigável e inteligente e esperto",
+                10, 12, 30D, 34D, 25D, 29D, false, "Medio");
+        DogBreed savedBreed = dogBreedRepository.save(dogBreed);
+
+        HealthRecord record = new HealthRecord();
+        record.setCodPatient("P789");
+        record.setTutor("Aline");
+        record.setPatient("Cookie");
+        record.setBreed(savedBreed);
+        record.setAge(7.0);
+        record.setWeight(30.0);
+        record.setColor("Branco");
+        record.setSize(DogSize.SMALL);
+        record.setGender(Gender.FEMALE);
+        record.setDeath(false);
+        record.setEuthanasia(Euthanasia.NO);
+        record.setAdmission(LocalDate.of(2025, 3, 15));
+        HealthRecord savedRecord = healthRecordRepository.save(record);
+
+        given()
+                .pathParam("id", savedRecord.getId())
+                .when()
+                .delete("/health-records/{id}")
+                .then()
+                .statusCode(204);
+
+        Optional<HealthRecord> deleted = healthRecordRepository.findById(savedRecord.getId());
+        assertTrue(deleted.isEmpty(), "O prontuário deveria ter sido deletado do banco");
+    }
+
+    @Test
+    public void given_non_existing_healthRecordId_when_deleteHealthRecord_then_returns_notFound() {
+        DogBreed dogBreed = new DogBreed(null, "2", "Pug", "Amigável e inteligente e esperto",
+                10, 12, 30D, 34D, 25D, 29D, false, "Medio");
+        DogBreed savedBreed = dogBreedRepository.save(dogBreed);
+
+        HealthRecord record = new HealthRecord();
+        record.setCodPatient("P789");
+        record.setTutor("Aline");
+        record.setPatient("Cookie");
+        record.setBreed(savedBreed);
+        record.setAge(7.0);
+        record.setWeight(30.0);
+        record.setColor("Branco");
+        record.setSize(DogSize.SMALL);
+        record.setGender(Gender.FEMALE);
+        record.setDeath(false);
+        record.setEuthanasia(Euthanasia.NO);
+        record.setAdmission(LocalDate.of(2025, 3, 15));
+        HealthRecord savedRecord = healthRecordRepository.save(record);
+
+        given()
+                .pathParam("id", 99L)
+                .when()
+                .delete("/health-records/{id}")
+                .then()
+                .statusCode(404);
+
+        HealthRecord existingRecord = healthRecordRepository.findById(record.getId()).orElse(null);
+        assertNotNull(existingRecord, "O prontuário deveria existir no banco de dados.");
+        assertEquals("Cookie", existingRecord.getPatient());
+        assertEquals("Aline", existingRecord.getTutor());
+    }
 }
