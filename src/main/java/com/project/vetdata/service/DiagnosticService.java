@@ -4,6 +4,7 @@ import com.project.vetdata.dto.DiagnosticCreateDTO;
 import com.project.vetdata.mappers.MapperDTOToEntity;
 import com.project.vetdata.model.Diagnostic;
 import com.project.vetdata.repository.DiagnosticRepository;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public class DiagnosticService {
     private final DiagnosticRepository repository;
     private final MapperDTOToEntity<DiagnosticCreateDTO, Diagnostic> mapper;
 
-    public DiagnosticService(DiagnosticRepository repository, MapperDTOToEntity<DiagnosticCreateDTO, Diagnostic> mapper) {
+    public DiagnosticService(DiagnosticRepository repository, @Qualifier("diagnosticMapper") MapperDTOToEntity<DiagnosticCreateDTO, Diagnostic> mapper) {
         this.repository = repository;
         this.mapper = mapper;
     }

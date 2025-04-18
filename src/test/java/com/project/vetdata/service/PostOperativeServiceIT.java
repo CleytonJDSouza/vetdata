@@ -1,9 +1,9 @@
 package com.project.vetdata.service;
 
-import com.project.vetdata.dto.DiagnosticCreateDTO;
-import com.project.vetdata.model.Diagnostic;
-import com.project.vetdata.repository.DiagnosticRepository;
-import com.project.vetdata.templates.DiagnosticTemplate;
+import com.project.vetdata.dto.PostOperativeCreateDTO;
+import com.project.vetdata.model.PostOperative;
+import com.project.vetdata.repository.PostOperativeRepository;
+import com.project.vetdata.templates.PostOperativeTemplate;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
-public class DiagnosticServiceIT {
+public class PostOperativeServiceIT {
 
     @Container
     private static final MySQLContainer<?> mysqlContainer = new MySQLContainer<>("mysql:8.0.26");
@@ -52,10 +52,10 @@ public class DiagnosticServiceIT {
     }
 
     @Autowired
-    private DiagnosticService service;
+    private PostOperativeService service;
 
     @Autowired
-    private DiagnosticRepository repository;
+    private PostOperativeRepository repository;
 
     @BeforeEach
     public void setup(){
@@ -69,61 +69,60 @@ public class DiagnosticServiceIT {
     }
 
     @Test
-    public void given_valid_diagnosticCreateDTO_when_creteDiagnostic_then_returns_createdDiagnostic() {
-        DiagnosticCreateDTO dto = DiagnosticTemplate.getFakeDiagnosticCreateDTO();
-        Diagnostic cretedDiagnostic = service.createDiagnostic(dto);
+    public void given_valid_postOperativeCreateDTO_when_cretePostOperative_then_returns_createdPostOperative() {
+        PostOperativeCreateDTO dto = PostOperativeTemplate.getFakePostOperativeCreateDTO();
+        PostOperative cretedDiagnostic = service.createPostOperative(dto);
 
         assertNotNull(cretedDiagnostic);
         assertNotNull(cretedDiagnostic.getId());
         assertEquals(dto.getDescription(), cretedDiagnostic.getDescription());
-        assertEquals(dto.getObservation(), cretedDiagnostic.getObservation());
     }
 
     @Test
-    public void given_invalid_diagnosticCreateDTO_when_CreateDiagnostic_then_throws_constraintViolationException() {
-        DiagnosticCreateDTO invalidDiagnostic = DiagnosticTemplate.getFakeDiagnosticCreateDTOWithInvalidDescription();
+    public void given_invalid_postOperativeCreateDTO_when_CreatePostOperative_then_throws_constraintViolationException() {
+        PostOperativeCreateDTO invalidDiagnostic = PostOperativeTemplate.getFakePostOperativeCreateDTOWithInvalidDescription();
 
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
-        Set<ConstraintViolation<DiagnosticCreateDTO>> violations = validator.validate(invalidDiagnostic);
+        Set<ConstraintViolation<PostOperativeCreateDTO>> violations = validator.validate(invalidDiagnostic);
 
         assertFalse(violations.isEmpty(), "Deve chamar ConstraintViolationException");
     }
 
     @Test
-    public void given_valid_id_when_deleteDiagnostic_then_diagnostic_is_deleted() {
-        DiagnosticCreateDTO dto = DiagnosticTemplate.getFakeDiagnosticCreateDTO();
-        Diagnostic createDiagnostic = service.createDiagnostic(dto);
+    public void given_valid_id_when_deletePostOperative_then_postOperative_is_deleted() {
+        PostOperativeCreateDTO dto = PostOperativeTemplate.getFakePostOperativeCreateDTO();
+        PostOperative createDiagnostic = service.createPostOperative(dto);
 
         assertNotNull(createDiagnostic.getId(), "Conferir se o diagnóstico foi salvo");
 
         Long id = createDiagnostic.getId();
-        service.deleteDiagnostic(id);
+        service.deletePostOperative(id);
 
-        Optional<Diagnostic> deletedDiagnostic = service.getDiagnosticById(id);
+        Optional<PostOperative> deletedDiagnostic = service.getPostOperativeById(id);
         assertFalse(deletedDiagnostic.isPresent(), "O diagnóstico deve ter sido deletado");
     }
 
     @Test
-    public void given_no_diagnostics_when_getAllDiagnostics_then_return_empty_list() {
-        List<Diagnostic> result = service.getAllDiagnostics();
+    public void given_no_postOperative_when_getAllPostOperatives_then_return_empty_list() {
+        List<PostOperative> result = service.getAllPostOperatives();
 
         assertNotNull(result, "A lista não deve ser nula");
         assertTrue(result.isEmpty(),"A lista deve estar vazia");
     }
 
     @Test
-    public void given_existing_diagnostics_when_getAllDiagnostics_then_return_list_of_diagnostics() {
-        DiagnosticCreateDTO dto = DiagnosticTemplate.getFakeDiagnosticCreateDTO();
+    public void given_existing_postOperatives_when_getAllPostOperatives_then_return_list_of_postOperatives() {
+        PostOperativeCreateDTO dto = PostOperativeTemplate.getFakePostOperativeCreateDTO();
 
-        service.createDiagnostic(dto);
+        service.createPostOperative(dto);
 
-        List<Diagnostic> result = service.getAllDiagnostics();
+        List<PostOperative> result = service.getAllPostOperatives();
 
         assertNotNull(result, "A lista retornar não deve ser nula");
         assertEquals(1, result.size(),"Deve ter 2 diagnóstic salvos");
 
-        List<String> names = result.stream().map(Diagnostic::getDescription).toList();
-        assertTrue(names.contains("Cancer"));
+        List<String> names = result.stream().map(PostOperative::getDescription).toList();
+        assertTrue(names.contains("Fisioterapia"));
     }
 }
