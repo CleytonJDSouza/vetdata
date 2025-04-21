@@ -17,10 +17,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/diagnostics")
-public class DiagnosticController {
+public class DiagnosticRestController {
     private final DiagnosticService service;
 
-    public DiagnosticController(DiagnosticService service) {
+    public DiagnosticRestController(DiagnosticService service) {
         this.service = service;
     }
 

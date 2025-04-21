@@ -40,7 +40,7 @@ public class UserCreateDTO {
     }
 
     @NotBlank(message = "Campo Obrigatório")
-    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[%&*]).{5,}$", message = "A senha deve conter pelo menos uma letra maiúscula, um número, um caractere especial (%&*) e ter no mínimo de 5 caracteres.")
+    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[%&*@]).{5,}$", message = "A senha deve conter pelo menos uma letra maiúscula, um número, um caractere especial (%&*@) e ter no mínimo de 5 caracteres.")
     public String getPassword() {
         return password;
     }

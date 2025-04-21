@@ -3,13 +3,9 @@ package com.project.vetdata.controller;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-import com.project.vetdata.dto.DiagnosticCreateDTO;
 import com.project.vetdata.dto.PostOperativeCreateDTO;
-import com.project.vetdata.model.Diagnostic;
 import com.project.vetdata.model.PostOperative;
-import com.project.vetdata.repository.DiagnosticRepository;
 import com.project.vetdata.repository.PostOperativeRepository;
-import com.project.vetdata.templates.DiagnosticTemplate;
 import com.project.vetdata.templates.PostOperativeTemplate;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.AfterAll;
@@ -34,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
-public class PostOperativeControllerIT {
+public class PostOperativeRestControllerIT {
 
     @LocalServerPort
     private Integer port;

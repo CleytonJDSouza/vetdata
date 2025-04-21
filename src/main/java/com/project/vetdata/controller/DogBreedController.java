@@ -11,19 +11,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class DogBreedController {
 
     @GetMapping("form")
-    public String form(){
+    public String form(Model model){
+        model.addAttribute("menuAtivo", "breeds");
+        model.addAttribute("submenuAtivo", "form");
         return "breed_form";
     }
 
     @GetMapping("form_update/{id}")
     public String formUpdate(@PathVariable Long id, Model model){
-
         model.addAttribute("id", id);
+        model.addAttribute("menuAtivo", "breeds");
         return "breed_form_update";
     }
 
     @GetMapping("list")
-    public String list(){
+    public String list(Model model){
+        model.addAttribute("menuAtivo", "breeds");
+        model.addAttribute("submenuAtivo", "list");
+
         return "breed_list";
     }
 
