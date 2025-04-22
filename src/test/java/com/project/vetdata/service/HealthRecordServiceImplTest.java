@@ -171,6 +171,24 @@ public class HealthRecordServiceImplTest {
         assertTrue(result.isEmpty(), "A página deve estar vazia");
     }
 
+    @Test
+    public void given_valid_is_when_deleteHealthRecord_is_called_then_user_is_deleted() {
+        Long healthRecordId = 1L;
+
+        healthRecordService.deleteHealthRecord(healthRecordId);
+
+        verify(healthRecordRepository, times(1)).deleteById(healthRecordId);
+    }
+
+    @Test
+    public void given_invalid_id_when_deleteHealthRecord_the_no_exception_is_thrown_and_repository_is_called() {
+        Long invalidHealthRecordId = 999L;
+
+        healthRecordService.deleteHealthRecord(invalidHealthRecordId);
+
+        verify(healthRecordRepository, times(1)).deleteById(invalidHealthRecordId);
+    }
+
     private HealthRecordCreateDTO getFakeHealthRecordCreateDTO() {
         HealthRecordCreateDTO dto = new HealthRecordCreateDTO();
         dto.setCodPatient("P01");

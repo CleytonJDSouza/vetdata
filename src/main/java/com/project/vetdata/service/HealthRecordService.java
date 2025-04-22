@@ -6,9 +6,13 @@ import com.project.vetdata.model.HealthRecord;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Optional;
+
 public interface HealthRecordService {
     HealthRecord createHealthRecord(HealthRecordCreateDTO dto);
     HealthRecord updateHealthRecord(Long id, HealthRecordUpdateDTO dto);
     Page<HealthRecord> findAll(Pageable pageable);
     Page<HealthRecord> searchByPatient(String search, Pageable pageable);
+    void deleteHealthRecord(Long id);
+    Optional<HealthRecord> getHealthRecordById(Long id);
 }

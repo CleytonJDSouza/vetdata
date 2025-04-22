@@ -103,4 +103,21 @@ public class HealthRecordController {
 
         return ResponseEntity.ok(response);
     }
+
+    @Operation(summary = "Remover prontuário por ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Prontuário removido!"),
+            @ApiResponse(responseCode = "404", description = "Prontuário não encontrado!", content = @Content)
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteHealthRecord(@PathVariable Long id) {
+        return healthRecordService.getHealthRecordById(id)
+                .map(this::handleDelete)
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    private ResponseEntity<Void> handleDelete(HealthRecord record) {
+        healthRecordService.deleteHealthRecord(record.getId());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
