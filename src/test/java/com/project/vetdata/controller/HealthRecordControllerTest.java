@@ -284,4 +284,31 @@ public class HealthRecordControllerTest {
         mockMvc.perform(delete("/health-records/{id}", invalidId))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    public void given_existing_heathRecordId_when_getHealthRecordById_then_returns_record() throws Exception{
+        Long healthRecordId = 1L;
+        HealthRecord existingRecord = new HealthRecord(healthRecordId, LocalDate.of(2025, 2, 20),
+                4.0,"C357","Preto", false, Euthanasia.NO, Gender.MALE, "Nutella", DogSize.MEDIUM, "Clovis", 12.0,
+                new DogBreed(1L, "001", "Labrador", "Companheiro", 10, 12,
+                        25.0, 30.0, 22.0, 28.0, false, "Médio"));
+
+        when(healthRecordService.getHealthRecordById(healthRecordId)).thenReturn(Optional.of(existingRecord));
+
+        mockMvc.perform(get("/health-records/{id}", healthRecordId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(healthRecordId))
+                .andExpect(jsonPath("$.patient").value("Nutella"));
+
+    }
+
+    @Test
+    public void given_nonexistent_healthRecordId_when_getHealthRecordById_then_returns_notFound() throws Exception {
+        Long id = 999L;
+
+        when(healthRecordService.getHealthRecordById(id)).thenThrow(new EntityNotFoundException("Prontuário não encontrado"));
+
+        mockMvc.perform(get("/health-records/{id}", id))
+                .andExpect(status().isNotFound());
+    }
 }

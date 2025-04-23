@@ -247,6 +247,28 @@ public class HealthRecordServiceImplIT {
         }
     }
 
+    @Test
+    public void given_existing_healthRecord_when_getHealthRecordById_then_returns_heathRecord() {
+        DogBreed breed = dogBreedRepository.save(createFakeBreed());
+        HealthRecordCreateDTO createDTO = getFakeHealthRecordDTO(breed.getId());
+        HealthRecord created = healthRecordService.createHealthRecord(createDTO);
+
+        Optional<HealthRecord> result = healthRecordService.getHealthRecordById(created.getId());
+
+        assertThat(result).isPresent();
+        assertThat(result.get().getId()).isEqualTo(created.getId());
+        assertThat(result.get().getPatient()).isEqualTo(created.getPatient());
+    }
+
+    @Test
+    public void given_non_existing_healthRecord_when_getHealthRecordById_then_returns_empty_optional() {
+        Long nonExistenId = 99L;
+
+        Optional<HealthRecord> result = healthRecordService.getHealthRecordById(nonExistenId);
+
+        assertThat(result).isNotPresent();
+    }
+
     private DogBreed createFakeBreed() {
         DogBreed breed = new DogBreed();
         breed.setName("Golden Retriever");

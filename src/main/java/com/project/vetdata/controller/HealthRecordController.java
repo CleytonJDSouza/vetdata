@@ -120,4 +120,23 @@ public class HealthRecordController {
         healthRecordService.deleteHealthRecord(record.getId());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @Operation(summary = "Buscar prontuário pelo ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Prontuário encontrado!",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = HealthRecordResponseDTO.class))}),
+            @ApiResponse(responseCode = "400", description = "ID inválido!", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Prontuário não encontrado!", content = @Content)
+    })
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getHealthRecordById(@PathVariable Long id) {
+        return healthRecordService.getHealthRecordById(id)
+                .map(this::convertToResponseEntity)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    private ResponseEntity<?> convertToResponseEntity(HealthRecord record) {
+        return ResponseEntity.ok(new HealthRecordResponseDTO(record));
+    }
 }
