@@ -479,4 +479,53 @@ public class HealthRecordControllerIT {
         assertEquals("Cookie", existingRecord.getPatient());
         assertEquals("Aline", existingRecord.getTutor());
     }
+
+    @Test
+    public void given_valid_id_when_getHealthRecordById_then_returns_healthRecord() {
+        DogBreed dogBreed = new DogBreed(null, "2", "Pug", "Amigável e inteligente e esperto",
+                10, 12, 30D, 34D, 25D, 29D, false, "Medio");
+        DogBreed savedBreed = dogBreedRepository.save(dogBreed);
+
+        HealthRecord record = new HealthRecord();
+        record.setCodPatient("P789");
+        record.setTutor("Aline");
+        record.setPatient("Cookie");
+        record.setBreed(savedBreed);
+        record.setAge(7.0);
+        record.setWeight(30.0);
+        record.setColor("Branco");
+        record.setSize(DogSize.SMALL);
+        record.setGender(Gender.FEMALE);
+        record.setDeath(false);
+        record.setEuthanasia(Euthanasia.NO);
+        record.setAdmission(LocalDate.of(2025, 3, 15));
+        HealthRecord savedRecord = healthRecordRepository.save(record);
+
+        given()
+                .pathParam("id", savedRecord.getId())
+                .when()
+                .get("/health-records/{id}")
+                .then()
+                .statusCode(200)
+                .body("id", equalTo(savedRecord.getId().intValue()))
+                .body("patient", equalTo("Cookie"))
+                .body("tutor", equalTo("Aline"))
+                .body("codPatient", equalTo("P789"))
+                .body("breedId", equalTo(savedBreed.getId().intValue()))
+                .body("gender", equalTo("FEMALE"))
+                .body("size", equalTo("SMALL"))
+                .body("color", equalTo("Branco"))
+                .body("age", equalTo(7.0F))
+                .body("weight", equalTo(30.0F));
+    }
+
+    @Test
+    public void given_non_existent_id_when_getHealthRecordById_then_returns_notFound() {
+        given()
+                .pathParam("id", 99L)
+                .when()
+                .get("/health-records/{id}")
+                .then()
+                .statusCode(404);
+    }
 }

@@ -189,6 +189,30 @@ public class HealthRecordServiceImplTest {
         verify(healthRecordRepository, times(1)).deleteById(invalidHealthRecordId);
     }
 
+    @Test
+    public void given_valid_id_when_getHealthRecordById_is_called_then_healthRecord_is_returned() {
+        Long id = 1L;
+        HealthRecord record = getFakeHealthRecord();
+
+        when(healthRecordRepository.findById(id)).thenReturn(Optional.of(record));
+
+        Optional<HealthRecord> result = healthRecordService.getHealthRecordById(id);
+
+        assertTrue(result.isPresent(), "O protuário deve ser encontrado");
+        assertEquals(record.getPatient(), result.get().getPatient(), "O nome do paciente deve ser igual");
+    }
+
+    @Test
+    public void given_invalid_is_when_getHealthRecordById_is_called_optional_empty_is_returned() {
+        Long id = 99L;
+
+        when(healthRecordRepository.findById(id)).thenReturn(Optional.empty());
+
+        Optional<HealthRecord> result = healthRecordService.getHealthRecordById(id);
+
+        assertFalse(result.isPresent(), "O prontuário não deve ser encontrado");
+    }
+
     private HealthRecordCreateDTO getFakeHealthRecordCreateDTO() {
         HealthRecordCreateDTO dto = new HealthRecordCreateDTO();
         dto.setCodPatient("P01");
