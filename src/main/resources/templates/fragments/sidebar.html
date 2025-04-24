@@ -50,6 +50,9 @@
             <li th:class="${menuAtivo == 'users'} ? 'active'">
                 <a th:href="@{/users-pages/list}"><i class="fa fa-lg fa-fw  fa-user txt-color-blue"></i> <span class="menu-item-parent">Usuários</span></a>
             </li>
+            <li th:class="${menuAtivo == 'diagnostics'} ? 'active'">
+                <a th:href="@{/diagnostics-pages/list}"><i class="fa fa-lg fa-fw  fa-stethoscope txt-color-blue"></i> <span class="menu-item-parent">Diagnósticos</span></a>
+            </li>
         </ul>
 
     </nav>

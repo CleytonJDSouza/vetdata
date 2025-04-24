@@ -400,7 +400,7 @@
                     }),
                     success: function (response) {
                         $.smallBox({
-                            title : "Raça cadastrada com sucesso !",
+                            title : "Usuário cadastrado com sucesso !",
                             color : "#739E73",
                             iconSmall : "fa fa-save",
                             timeout : 9000
@@ -459,9 +459,8 @@
                                 color : "#739E73",
                                 iconSmall : "fa  fa-trash-o",
                                 timeout : 9000
-                            },function() {
-                                window.location.reload();
                             });
+                            table.ajax.reload();
                         },
                         error: function (xhr, status, error) {
                             $.bigBox({
