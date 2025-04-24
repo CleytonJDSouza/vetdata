@@ -24,7 +24,7 @@
 
     <style>
         /* Centralizar os ícones das colunas Editar e Excluir */
-        #dt_basic td:nth-child(3){
+        #dt_basic td:nth-child(2){
             text-align: center;
         }
 
@@ -84,7 +84,7 @@
     <div id="ribbon">
         <!-- breadcrumb -->
         <ol class="breadcrumb">
-            <li>Home</li><li>Tables</li><li>Diagnostics</li>
+            <li>Home</li><li>Tables</li><li>Post Operatives</li>
         </ol>
         <!-- end breadcrumb -->
     </div>
@@ -99,13 +99,13 @@
                     <i class="fa fa-table fa-fw "></i>
                     Tabelas
                     <span>>
-						Tabela de Diagnósticos
+						Tabela de Pós Operatórios
 					</span>
                 </h1>
             </div>
             <div class="col-xs-12 col-sm-5 col-md-5 col-lg-8">
                 <!-- Button trigger modal -->
-                <a href="#" id="import-users" class="btn btn-success btn-lg pull-right header-btn hidden-mobile" data-toggle="modal" data-target="#diagnosticsModal"><i class="fa fa-circle-arrow-up fa-lg"></i>Cadastrar Diagnóstico</a>
+                <a href="#" id="import-users" class="btn btn-success btn-lg pull-right header-btn hidden-mobile" data-toggle="modal" data-target="#postOperativesModal"><i class="fa fa-circle-arrow-up fa-lg"></i>Cadastrar Pós Operatório</a>
             </div>
         </div>
 
@@ -121,7 +121,7 @@
                     <div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false">
                         <header>
                             <span class="widget-icon"> <i class="fa fa-table"></i> </span>
-                            <h2>Tabela de Diagnósticos </h2>
+                            <h2>Tabela de Pós Operatórios </h2>
 
                         </header>
 
@@ -142,7 +142,6 @@
                                     <thead>
                                     <tr>
                                         <th data-class="expand">Descrição</th>
-                                        <th data-hide="phone">Observação</th>
                                         <th data-hide="phone,tablet" class="header-center">Excluir</th>
                                     </tr>
                                     </thead>
@@ -165,23 +164,20 @@
         <!-- end widget grid -->
 
         <!-- Modal -->
-        <div class="modal fade" id="diagnosticsModal" tabindex="-1" role="dialog" aria-labelledby="diagnosticsModalLabel" aria-hidden="true">
+        <div class="modal fade" id="postOperativesModal" tabindex="-1" role="dialog" aria-labelledby="postOperativesModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                             &times;
                         </button>
-                        <h4 class="modal-title" id="diagnosticsModalLabel">Cadastro de Diagnóstico</h4>
+                        <h4 class="modal-title" id="postOperativesModalLabel">Cadastro de Pós Operatórios</h4>
                     </div>
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <input type="text" class="form-control" placeholder="Descrição" id="description" required />
-                                </div>
-                                <div class="form-group">
-                                    <input type="text" class="form-control" placeholder="Observação" id="observation" required />
                                 </div>
                             </div>
                         </div>
@@ -190,7 +186,7 @@
                         <button type="button" class="btn btn-default" data-dismiss="modal">
                             Cancel
                         </button>
-                        <button type="button" class="btn btn-primary" id="btnCadastrarDiagnostico">
+                        <button type="button" class="btn btn-primary" id="btnCadastrarPosOperatorio">
                             Cadastrar
                         </button>
                     </div>
@@ -300,7 +296,7 @@
 
         pageSetUp();
 
-        $('#diagnosticsModal').on('shown.bs.modal', function () {
+        $('#postOperativesModal').on('shown.bs.modal', function () {
             $('#description').trigger('focus');
         });
 
@@ -337,7 +333,7 @@
             },
             "ajax": function(data, callback, settings) {
                 $.ajax({
-                    url: "/diagnostics",
+                    url: "/post-operatives",
                     type: "GET",
                     success: function(response) {
                         callback({
@@ -348,7 +344,6 @@
             },
             "columns": [
                 { "data": "description", "title": "Descrição" },
-                { "data": "observation", "title": "Observação" },
                 {
                     "data": "id",
                     "render": function(data) {
@@ -361,30 +356,27 @@
         });
         /* END BASIC */
 
-        $('#btnCadastrarDiagnostico').on('click', function () {
+        $('#btnCadastrarPosOperatorio').on('click', function () {
             if (isValid()) {
                 const descricao = $('#description').val();
-                const observacao = $('#observation').val();
 
                 $.ajax({
-                    url: '/diagnostics',
+                    url: '/post-operatives',
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify({
                         description: descricao,
-                        observation: observacao
                     }),
                     success: function (response) {
                         $.smallBox({
-                            title : "Diagnóstico cadastrado com sucesso !",
+                            title : "Pós Operatório cadastrado com sucesso !",
                             color : "#739E73",
                             iconSmall : "fa fa-save",
                             timeout : 9000
                         });
-                         $('#diagnosticsModal').modal('hide');
+                         $('#postOperativesModal').modal('hide');
                          table.ajax.reload();
                          $('#description').val('');
-                         $('#observation').val('');
                     },
                     error: function (xhr, status, error) {
                         let conteudoErro = "Erro desconhecido.";
@@ -403,7 +395,7 @@
                         }
 
                         $.bigBox({
-                            title : "Erro ao cadastrar diagnóstico !",
+                            title : "Erro ao cadastrar Pós Operatório !",
                             content : conteudoErro,
                             color : "#C46A69",
                             //timeout: 6000,
@@ -420,26 +412,26 @@
             e.preventDefault();
             let id = $(this).data('id');
             $.SmartMessageBox({
-                title : "<i class=\"fa fa-trash-o txt-color-red\"></i> <span class=\"txt-color-red\"><strong>Exlusão de um Diagnóstico !</strong></span>",
+                title : "<i class=\"fa fa-trash-o txt-color-red\"></i> <span class=\"txt-color-red\"><strong>Exlusão de um Pós Operatório !</strong></span>",
                 content : "Deseja excluir este registro ?",
                 buttons : '[Não][Sim]'
             }, function(ButtonPressed) {
                 if (ButtonPressed === "Sim") {
                     $.ajax({
-                        url: "/diagnostics/" + id,
+                        url: "/post-operatives/" + id,
                         type: "DELETE",
                         success: function (response) {
                             $.smallBox({
-                                title : "Diagnóstico excluido com sucesso !",
+                                title : "Pós Operatório excluido com sucesso !",
                                 color : "#739E73",
                                 iconSmall : "fa  fa-trash-o",
-                                timeout : 6000
+                                timeout : 9000
                             });
                             table.ajax.reload();
                         },
                         error: function (xhr, status, error) {
                             $.bigBox({
-                                title : "Erro ao tentar excluir um diagnóstico !",
+                                title : "Erro ao tentar excluir um Pós Operatório!",
                                 content : "Erro ao tentar excluir: " + xhr.responseText,
                                 color : "#C46A69",
                                 icon : "fa fa-warning shake animated",
@@ -466,13 +458,14 @@
 
         if (!isValid) {
             $.bigBox({
-                title : "Erro ao cadastrar diagnóstico !",
+                title : "Erro ao cadastrar Pós Operatório !",
                 content : mensagensErro.join("\n"),
                 color : "#C46A69",
                 //timeout: 6000,
                 icon : "fa fa-warning shake animated",
             });
         }
+
         return isValid;
     }
 

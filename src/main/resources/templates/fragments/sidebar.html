@@ -53,6 +53,9 @@
             <li th:class="${menuAtivo == 'diagnostics'} ? 'active'">
                 <a th:href="@{/diagnostics-pages/list}"><i class="fa fa-lg fa-fw  fa-stethoscope txt-color-blue"></i> <span class="menu-item-parent">Diagnósticos</span></a>
             </li>
+            <li th:class="${menuAtivo == 'post-operatives'} ? 'active'">
+                <a th:href="@{/post-operatives-pages/list}"><i class="fa fa-lg fa-fw  fa-medkit txt-color-blue"></i> <span class="menu-item-parent">Pós Operatórios</span></a>
+            </li>
         </ul>
 
     </nav>
