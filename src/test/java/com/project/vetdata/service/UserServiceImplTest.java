@@ -1,6 +1,6 @@
 package com.project.vetdata.service;
 
-import com.project.vetdata.controller.UserController;
+import com.project.vetdata.controller.UserRestController;
 import com.project.vetdata.dto.UserCreateDTO;
 import com.project.vetdata.model.User;
 import com.project.vetdata.repository.UserRepository;
@@ -27,7 +27,7 @@ public class UserServiceImplTest {
     private UserServiceImpl userService;
 
     @InjectMocks
-    private UserController userController;
+    private UserRestController userController;
 
     @Mock
     private UserRepository userRepository;

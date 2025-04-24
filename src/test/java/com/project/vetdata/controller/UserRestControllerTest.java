@@ -25,9 +25,9 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(UserController.class)
+@WebMvcTest(UserRestController.class)
 @ActiveProfiles("test")
-public class UserControllerTest {
+public class UserRestControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -38,7 +38,7 @@ public class UserControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private UserController userController;
+    private UserRestController userController;
 
     public void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -79,7 +79,7 @@ public class UserControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.name").value("Campo Obrigatório"))
                 .andExpect(jsonPath("$.email").value("Formato de email inválido"))
-                .andExpect(jsonPath("$.password").value("A senha deve conter pelo menos uma letra maiúscula, um número, um caractere especial (%&*) e ter no mínimo de 5 caracteres."));
+                .andExpect(jsonPath("$.password").value("A senha deve conter pelo menos uma letra maiúscula, um número, um caractere especial (%&*@) e ter no mínimo de 5 caracteres."));
     }
 
     @Test

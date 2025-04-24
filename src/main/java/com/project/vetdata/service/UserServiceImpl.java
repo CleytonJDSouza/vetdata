@@ -2,6 +2,7 @@ package com.project.vetdata.service;
 
 import com.password4j.Password;
 import com.project.vetdata.dto.UserCreateDTO;
+import com.project.vetdata.model.DogBreed;
 import com.project.vetdata.model.User;
 import com.project.vetdata.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User createUser(UserCreateDTO userCreateDTO) {
+    public User createUser(UserCreateDTO userCreateDTO) throws IllegalArgumentException {
+        userRepository.findByEmail(userCreateDTO.getEmail())
+                .ifPresent((e)->{
+                    throw new IllegalArgumentException("Email " +userCreateDTO.getEmail() + " já cadastrado !");
+        });
+
         User user = fromCreateDTO(userCreateDTO);
         return userRepository.save(user);
     }
