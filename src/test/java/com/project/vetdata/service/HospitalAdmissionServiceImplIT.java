@@ -1,0 +1,205 @@
+package com.project.vetdata.service;
+
+import com.project.vetdata.dto.HealthRecordCreateDTO;
+import com.project.vetdata.dto.HospitalAdmissionCreateDTO;
+import com.project.vetdata.dto.HospitalAdmissionResponseDTO;
+import com.project.vetdata.enums.DogSize;
+import com.project.vetdata.enums.Euthanasia;
+import com.project.vetdata.enums.Gender;
+import com.project.vetdata.model.*;
+import com.project.vetdata.repository.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Testcontainers
+public class HospitalAdmissionServiceImplIT {
+
+    @Container
+    private static final MySQLContainer<?> mysqlContainer = new MySQLContainer<>("mysql:8.0.26");
+
+    @Autowired
+    private HospitalAdmissionServiceImpl hospitalAdmissionService;
+
+    @Autowired
+    private HealthRecordRepository healthRecordRepository;
+
+    @Autowired
+    private HospitalAdmissionRepository hospitalAdmissionRepository;
+
+    @Autowired
+    private PostOperativeRepository postOperativeRepository;
+
+    @Autowired
+    private DiagnosticRepository diagnosticRepository;
+
+    @Autowired
+    private DogBreedRepository dogBreedRepository;
+
+    @BeforeAll
+    static void beforeAll() {
+        mysqlContainer.start();
+    }
+
+    @AfterAll
+    static void afterAll() {
+        mysqlContainer.stop();
+    }
+
+    @DynamicPropertySource
+    static void configureProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", mysqlContainer::getJdbcUrl);
+        registry.add("spring.datasource.username", mysqlContainer::getUsername);
+        registry.add("spring.datasource.password", mysqlContainer::getPassword);
+    }
+
+    @Test
+    void connectionEstablished() {
+        assertThat(mysqlContainer.isCreated()).isTrue();
+        assertThat(mysqlContainer.isRunning()).isTrue();
+    }
+
+    @Test
+    public void given_validDTO_when_createHospitalAdmission_then_admission_is_created() {
+        DogBreed breed = dogBreedRepository.save(createFakeBreed());
+        HealthRecord healthRecord = healthRecordRepository.save(createFakeHealthRecord(breed));
+        PostOperative postOperative = postOperativeRepository.save(createFakePostOperative());
+        Diagnostic diagnostic = diagnosticRepository.save(createFakeDiagnostic());
+
+        HospitalAdmissionCreateDTO dto = getFakeHospitalAdmissionDTO(healthRecord.getId(), List.of(postOperative.getId()), List.of(diagnostic.getId()));
+
+        HospitalAdmissionResponseDTO admission = hospitalAdmissionService.createHospitalAdmission(dto);
+
+        assertNotNull(admission.getId());
+        assertEquals(dto.getReasonHospitalization(), admission.getReasonHospitalization());
+        assertEquals(dto.getHealthRecordId(), admission.getHealthRecordId());
+        assertNotNull(admission.getPostOperativeIds());
+        assertEquals(1, admission.getPostOperativeIds().size());
+        assertNotNull(admission.getDiagnosticIds());
+        assertEquals(1, admission.getDiagnosticIds().size());
+    }
+
+
+    @Test
+    public void given_invalid_healthRecordId_when_createHospitalAdmission_then_throws_exception() {
+        HospitalAdmissionCreateDTO dto = getFakeHospitalAdmissionDTO(99L, List.of(), List.of());
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            hospitalAdmissionService.createHospitalAdmission(dto);
+        });
+
+        assertEquals("Prontuário com ID 99 não encontrado", exception.getMessage());
+    }
+
+    @Test
+    public void given_invalid_postOperativeId_when_createHospitalAdmission_then_throws_exception() {
+        DogBreed breed = dogBreedRepository.save(createFakeBreed());
+        HealthRecord healthRecord = healthRecordRepository.save(createFakeHealthRecord(breed));
+        Diagnostic diagnostic = diagnosticRepository.save(createFakeDiagnostic());
+
+        HospitalAdmissionCreateDTO dto = getFakeHospitalAdmissionDTO(
+                healthRecord.getId(),
+                List.of(99L),
+                List.of(diagnostic.getId())
+        );
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            hospitalAdmissionService.createHospitalAdmission(dto);
+        });
+
+        assertEquals("Pós Operatório não encontrado", exception.getMessage());
+    }
+
+    @Test
+    public void given_invalid_diagnosticId_when_createHospitalAdmission_then_throws_exception() {
+        DogBreed breed = dogBreedRepository.save(createFakeBreed());
+        HealthRecord healthRecord = healthRecordRepository.save(createFakeHealthRecord(breed));
+        PostOperative postOperative = postOperativeRepository.save(createFakePostOperative());
+
+        HospitalAdmissionCreateDTO dto = getFakeHospitalAdmissionDTO(
+                healthRecord.getId(),
+                List.of(postOperative.getId()),
+                List.of(99L)
+        );
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            hospitalAdmissionService.createHospitalAdmission(dto);
+        });
+
+        assertEquals("Diagnóstico não encontrado", exception.getMessage());
+    }
+
+    private DogBreed createFakeBreed() {
+        DogBreed breed = new DogBreed();
+        breed.setName("Pug");
+        breed.setIdExternalApi("pug123");
+        breed.setDescription("Pequeno e simpático");
+        breed.setLifeExpectancyMin(10);
+        breed.setLifeExpectancyMax(14);
+        breed.setMaleWeightMin(6.0);
+        breed.setMaleWeightMax(8.0);
+        breed.setFemaleWeightMin(6.0);
+        breed.setFemaleWeightMax(8.0);
+        breed.setSize("Pequeno");
+        breed.setHypoallergenic(false);
+        return breed;
+    }
+
+    private PostOperative createFakePostOperative() {
+        PostOperative postOperative = new PostOperative();
+        postOperative.setDescription("Fisioterapia");
+        return postOperative;
+    }
+
+    private Diagnostic createFakeDiagnostic() {
+        Diagnostic diagnostic = new Diagnostic();
+        diagnostic.setDescription("Cancer");
+        return diagnostic;
+    }
+
+    private HealthRecord createFakeHealthRecord(DogBreed breed) {
+        HealthRecord record = new HealthRecord();
+        record.setAdmission(LocalDate.of(2025, 8, 1));
+        record.setAge(5.0);
+        record.setCodPatient("C125");
+        record.setColor("Branco");
+        record.setDeath(false);
+        record.setEuthanasia(Euthanasia.NO);
+        record.setGender(Gender.FEMALE);
+        record.setPatient("Arya");
+        record.setSize(DogSize.SMALL);
+        record.setTutor("Beatriz");
+        record.setWeight(32.5);
+        record.setBreed(breed);
+        return record;
+    }
+
+    private HospitalAdmissionCreateDTO getFakeHospitalAdmissionDTO(Long healthRecordId, List<Long> postOperativeIds, List<Long> diagnosticIds) {
+        HospitalAdmissionCreateDTO dto = new HospitalAdmissionCreateDTO();
+        dto.setDate(LocalDate.of(2025, 4, 10));
+        dto.setReasonHospitalization("Infecção grave");
+        dto.setDateMedicalDischarge(LocalDate.of(2025, 4, 20));
+        dto.setDateReturns(LocalDate.of(2025, 5, 1));
+        dto.setMedicalEvolution("Teste");
+        dto.setTreatmentNextSteps("Repouso e medicação");
+        dto.setHealthRecordId(healthRecordId);
+        dto.setPostOperativeIds(new HashSet<>(postOperativeIds));
+        dto.setDiagnosticIds(new HashSet<>(diagnosticIds));
+        return dto;
+    }
+}
