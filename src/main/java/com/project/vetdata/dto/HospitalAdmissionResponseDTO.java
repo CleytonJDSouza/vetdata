@@ -73,6 +73,10 @@ public class HospitalAdmissionResponseDTO {
         return postOperativeIds;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public void setDate(LocalDate date) {
         this.date = date;
     }
@@ -108,4 +112,5 @@ public class HospitalAdmissionResponseDTO {
     public void setPostOperativeIds(Set<Long> postOperativeIds) {
         this.postOperativeIds = postOperativeIds;
     }
+
 }

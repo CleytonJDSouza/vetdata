@@ -3,6 +3,7 @@ package com.project.vetdata.service;
 import com.project.vetdata.dto.HealthRecordCreateDTO;
 import com.project.vetdata.dto.HospitalAdmissionCreateDTO;
 import com.project.vetdata.dto.HospitalAdmissionResponseDTO;
+import com.project.vetdata.dto.HospitalAdmissionUpdateDTO;
 import com.project.vetdata.enums.DogSize;
 import com.project.vetdata.enums.Euthanasia;
 import com.project.vetdata.enums.Gender;
@@ -22,6 +23,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -142,6 +144,71 @@ public class HospitalAdmissionServiceImplIT {
         });
 
         assertEquals("Diagnóstico não encontrado", exception.getMessage());
+    }
+
+    @Test
+    public void given_valid_updateDTO_when_updateHospitalAdmission_then_admission_is_updated() {
+        DogBreed breed = dogBreedRepository.save(createFakeBreed());
+        HealthRecord healthRecord = healthRecordRepository.save(createFakeHealthRecord(breed));
+        PostOperative postOperative = postOperativeRepository.save(createFakePostOperative());
+        Diagnostic diagnostic = diagnosticRepository.save((createFakeDiagnostic()));
+
+        HospitalAdmissionCreateDTO createDTO = getFakeHospitalAdmissionDTO(
+                healthRecord.getId(),
+                List.of(postOperative.getId()),
+                List.of(diagnostic.getId()));
+
+        HospitalAdmissionResponseDTO createdAdmission = hospitalAdmissionService.createHospitalAdmission(createDTO);
+
+        PostOperative newPostOperative = postOperativeRepository.save(createFakePostOperative());
+        newPostOperative.setDescription("Reabilitação");
+        Diagnostic newDiagnostic = diagnosticRepository.save(createFakeDiagnostic());
+        newDiagnostic.setDescription("Alergia");
+
+        HospitalAdmissionUpdateDTO updateDTO = new HospitalAdmissionUpdateDTO();
+        updateDTO.setDate(LocalDate.of(2025, 7, 1));
+        updateDTO.setReasonHospitalization("Cancer");
+        updateDTO.setDateMedicalDischarge(LocalDate.of(2025, 9, 1));
+        updateDTO.setDateReturns(LocalDate.of(2025, 1, 1));
+        updateDTO.setMedicalEvolution("Evoluindo bem");
+        updateDTO.setTreatmentNextSteps("Continuar tratamento");
+        updateDTO.setDiagnosticIds(Set.of(newDiagnostic.getId()));
+        updateDTO.setPostOperativeIds(Set.of(newPostOperative.getId()));
+
+        HospitalAdmissionResponseDTO updatedAdmission = hospitalAdmissionService.updateHospitalAdmission(createdAdmission.getId(), updateDTO);
+
+        assertNotNull(updatedAdmission);
+        assertEquals("Cancer", updatedAdmission.getReasonHospitalization());
+        assertEquals(LocalDate.of(2025, 7, 1), updatedAdmission.getDate());
+        assertEquals(LocalDate.of(2025, 9, 1), updatedAdmission.getDateMedicalDischarge());
+        assertEquals(LocalDate.of(2025, 1, 1), updatedAdmission.getDateReturns());
+        assertEquals("Evoluindo bem", updatedAdmission.getMedicalEvolution());
+        assertEquals("Continuar tratamento", updatedAdmission.getTreatmentNextSteps());
+        assertEquals(1, updatedAdmission.getDiagnosticIds().size());
+        assertTrue(updatedAdmission.getDiagnosticIds().contains(newDiagnostic.getId()));
+        assertEquals(1, updatedAdmission.getPostOperativeIds().size());
+        assertTrue(updatedAdmission.getPostOperativeIds().contains(newPostOperative.getId()));
+    }
+
+    @Test
+    public void given_invalid_id_when_updateHospitalAdmission_then_throws_exception() {
+        Long invalidId = 99L;
+
+        HospitalAdmissionUpdateDTO updateDTO = new HospitalAdmissionUpdateDTO();
+        updateDTO.setDate(LocalDate.of(2025, 7, 1));
+        updateDTO.setReasonHospitalization("Cancer");
+        updateDTO.setDateMedicalDischarge(LocalDate.of(2025, 9, 1));
+        updateDTO.setDateReturns(LocalDate.of(2025, 1, 1));
+        updateDTO.setMedicalEvolution("Evoluindo bem");
+        updateDTO.setTreatmentNextSteps("Continuar tratamento");
+        updateDTO.setDiagnosticIds(Set.of());
+        updateDTO.setPostOperativeIds(Set.of());
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            hospitalAdmissionService.updateHospitalAdmission(invalidId, updateDTO);
+        });
+
+        assertEquals("Internação com ID " + invalidId + " não encontrada", exception.getMessage());
     }
 
     private DogBreed createFakeBreed() {

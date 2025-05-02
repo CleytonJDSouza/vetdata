@@ -2,6 +2,7 @@ package com.project.vetdata.service;
 
 import com.project.vetdata.dto.HospitalAdmissionCreateDTO;
 import com.project.vetdata.dto.HospitalAdmissionResponseDTO;
+import com.project.vetdata.dto.HospitalAdmissionUpdateDTO;
 import com.project.vetdata.enums.DogSize;
 import com.project.vetdata.enums.Euthanasia;
 import com.project.vetdata.enums.Gender;
@@ -24,7 +25,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -104,6 +105,97 @@ public class HospitalAdmissionServiceImplTest {
         assertEquals("Pós Operatório não encontrado", exception.getMessage());
     }
 
+    @Test
+    public void given_valid_id_and_updateDTO_when_updateHospitalAdmission_then_admission_is_updated() {
+        Long id = 1L;
+        HospitalAdmissionUpdateDTO dto = new HospitalAdmissionUpdateDTO();
+        dto.setReasonHospitalization("Atualizando");
+        dto.setDate(LocalDate.of(2025, 7, 4));
+        dto.setDateMedicalDischarge(LocalDate.of(2025, 9, 15));
+        dto.setDateReturns(LocalDate.of(2025, 10, 15));
+        dto.setMedicalEvolution("Estável");
+        dto.setTreatmentNextSteps("Fisioterapia");
+        dto.setDiagnosticIds(Set.of(1L));
+        dto.setPostOperativeIds(Set.of(1L));
+
+        HospitalAdmission existingAdmission = getFakeHospitalAdmission();
+        existingAdmission.setHealthRecord(getFakeHealthRecord());
+
+        Diagnostic diagnostic = getFakeDiagnostic();
+        PostOperative postOperative = getFakePostOperative();
+
+        when(hospitalAdmissionRepository.findById(id)).thenReturn(Optional.of(existingAdmission));
+        when(diagnosticRepository.findAllById(dto.getDiagnosticIds())).thenReturn(List.of(diagnostic));
+        when(postOperativeRepository.findAllById(dto.getPostOperativeIds())).thenReturn(List.of(postOperative));
+        when(hospitalAdmissionRepository.save(any(HospitalAdmission.class))).thenReturn(existingAdmission);
+
+        HospitalAdmissionResponseDTO response = hospitalAdmissionService.updateHospitalAdmission(id, dto);
+
+        verify(hospitalAdmissionRepository).findById(id);
+        verify(hospitalAdmissionRepository).save(existingAdmission);
+
+        assertEquals(dto.getReasonHospitalization(), response.getReasonHospitalization());
+        assertEquals(dto.getDate(), response.getDate());
+        assertEquals(dto.getDateMedicalDischarge(), response.getDateMedicalDischarge());
+        assertEquals(dto.getDateReturns(), response.getDateReturns());
+        assertEquals(dto.getMedicalEvolution(), response.getMedicalEvolution());
+        assertEquals(dto.getTreatmentNextSteps(), response.getTreatmentNextSteps());
+    }
+
+    @Test
+    public void given_invalid_id_when_updateHospitalAdmission_then_throws_exception() {
+        Long invalidId = 99L;
+        HospitalAdmissionUpdateDTO dto = new HospitalAdmissionUpdateDTO();
+        dto.setDiagnosticIds(Set.of(1L));
+        dto.setPostOperativeIds(Set.of(1L));
+
+        when(hospitalAdmissionRepository.findById(invalidId)).thenReturn(Optional.empty());
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> hospitalAdmissionService.updateHospitalAdmission(invalidId, dto));
+
+        assertEquals("Internação com ID " + invalidId + " não encontrada", exception.getMessage());
+    }
+
+    @Test
+    public void given_invalid_diagnosticId_when_updateHospitalAdmission_then_throws_exception() {
+        Long id = 1L;
+        HospitalAdmissionUpdateDTO dto = new HospitalAdmissionUpdateDTO();
+        dto.setDiagnosticIds(Set.of(99L));
+        dto.setPostOperativeIds(Set.of(1L));
+
+        HospitalAdmission existingAdmission = getFakeHospitalAdmission();
+        existingAdmission.setHealthRecord(getFakeHealthRecord());
+
+        when(hospitalAdmissionRepository.findById(id)).thenReturn(Optional.of(existingAdmission));
+        when(diagnosticRepository.findAllById(dto.getDiagnosticIds())).thenReturn(Collections.emptyList());
+        when(postOperativeRepository.findAllById(dto.getPostOperativeIds())).thenReturn(List.of(getFakePostOperative()));
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> hospitalAdmissionService.updateHospitalAdmission(id, dto));
+
+        assertEquals("Diagnóstico não foi encontrado", exception.getMessage());
+    }
+
+    @Test
+    public void given_invalid_postOperativeId_when_updateHospitalAdmission_then_throws_exception() {
+        Long id = 1L;
+        HospitalAdmissionUpdateDTO dto = new HospitalAdmissionUpdateDTO();
+        dto.setDiagnosticIds(Set.of(1L));
+        dto.setPostOperativeIds(Set.of(88L));
+
+        HospitalAdmission existingAdmission = getFakeHospitalAdmission();
+        existingAdmission.setHealthRecord(getFakeHealthRecord());
+
+        when(hospitalAdmissionRepository.findById(id)).thenReturn(Optional.of(existingAdmission));
+        when(postOperativeRepository.findAllById(dto.getPostOperativeIds())).thenReturn(Collections.emptyList());
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> hospitalAdmissionService.updateHospitalAdmission(id, dto));
+
+        assertEquals("Pós Operatório não foi encontrado", exception.getMessage());
+    }
+
     private HospitalAdmissionCreateDTO getFakeHospitalAdmissionDTO() {
         HospitalAdmissionCreateDTO dto = new HospitalAdmissionCreateDTO();
         dto.setDate(LocalDate.of(2025, 4, 24));
@@ -145,7 +237,6 @@ public class HospitalAdmissionServiceImplTest {
 
         return record;
     }
-
 
     public DogBreed getFakeDogBreed() {
         return new DogBreed(1L, "2", "Golden Retriever", "Amigável e inteligente e esperto",

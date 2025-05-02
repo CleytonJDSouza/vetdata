@@ -1,6 +1,7 @@
 package com.project.vetdata.service;
 
 import com.project.vetdata.dto.HospitalAdmissionResponseDTO;
+import com.project.vetdata.dto.HospitalAdmissionUpdateDTO;
 import com.project.vetdata.model.Diagnostic;
 import com.project.vetdata.dto.HospitalAdmissionCreateDTO;
 import com.project.vetdata.model.HealthRecord;
@@ -95,4 +96,54 @@ public class HospitalAdmissionServiceImpl implements HospitalAdmissionService {
                             : new HashSet<>()
             );
         }
+
+    @Override
+    public HospitalAdmissionResponseDTO updateHospitalAdmission(Long id, HospitalAdmissionUpdateDTO dto) {
+        HospitalAdmission existing = hospitalAdmissionRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Internação com ID " + id + " não encontrada"));
+
+        if (dto.getDate() != null) {
+            existing.setDate(dto.getDate());
+        }
+        if (dto.getReasonHospitalization() != null) {
+            existing.setReasonHospitalization(dto.getReasonHospitalization());
+        }
+        if (dto.getDateMedicalDischarge() != null) {
+            existing.setDateMedicalDischarge(dto.getDateMedicalDischarge());
+        }
+        if (dto.getDateReturns() != null) {
+            existing.setDateReturns(dto.getDateReturns());
+        }
+        if (dto.getMedicalEvolution() != null) {
+            existing.setMedicalEvolution(dto.getMedicalEvolution());
+        }
+        if (dto.getTreatmentNextSteps() != null) {
+            existing.setTreatmentNextSteps(dto.getTreatmentNextSteps());
+        }
+
+        if (dto.getHealthRecordId() != null) {
+            HealthRecord healthRecord = healthRecordRepository.findById(dto.getHealthRecordId())
+                    .orElseThrow(() -> new IllegalArgumentException("Prontuário com ID " + dto.getHealthRecordId() + " não encontrado"));
+            existing.setHealthRecord(healthRecord);
+        }
+
+        if (dto.getPostOperativeIds() != null) {
+            Set<PostOperative> postOperatives = new HashSet<>(postOperativeRepository.findAllById(dto.getPostOperativeIds()));
+            if (postOperatives.size() != dto.getPostOperativeIds().size()) {
+                throw new IllegalArgumentException("Pós Operatório não foi encontrado");
+            }
+            existing.setPostOperatives(postOperatives);
+        }
+
+        if (dto.getDiagnosticIds() != null) {
+            Set<Diagnostic> diagnostics = new HashSet<>(diagnosticRepository.findAllById(dto.getDiagnosticIds()));
+            if (diagnostics.size() != dto.getDiagnosticIds().size()) {
+                throw new IllegalArgumentException("Diagnóstico não foi encontrado");
+            }
+            existing.setDiagnostics(diagnostics);
+        }
+
+        HospitalAdmission updated = hospitalAdmissionRepository.save(existing);
+        return mapToResponse(updated);
+    }
 }

@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.project.vetdata.dto.HospitalAdmissionCreateDTO;
+import com.project.vetdata.dto.HospitalAdmissionUpdateDTO;
 import com.project.vetdata.enums.DogSize;
 import com.project.vetdata.enums.Euthanasia;
 import com.project.vetdata.enums.Gender;
@@ -169,5 +170,123 @@ public class HospitalAdmissionControllerIT {
 
         List<HospitalAdmission> admissions = hospitalAdmissionRepository.findAll();
         assertTrue(admissions.isEmpty(), "Nenhuma internação deve ser salva.");
+    }
+
+    @Test
+    public void given_valid_hospitalAdmissionId_and_data_valid_updateHospitalAdmission_then_returns_updateAdmission() {
+        DogBreed dogBreed = new DogBreed(null, "1", "Pug", "Amigável", 10, 12, 30D, 34D, 25D,
+                29D, false, "Grande");
+        DogBreed savedBreed = dogBreedRepository.save(dogBreed);
+
+        HealthRecord healthRecord = new HealthRecord(null, LocalDate.of(2025, 1, 16), 4.0, "P01", "Preto", false, Euthanasia.NO, Gender.MALE,
+                "Torresmo", DogSize.LARGE, "Beatriz", 20.0, savedBreed);
+        HealthRecord savedHealthRecord = healthRecordRepository.save(healthRecord);
+
+        Diagnostic diagnostic = new Diagnostic("Fratura", "teste");
+        Diagnostic savedDiagnostic = diagnosticRepository.save(diagnostic);
+
+        PostOperative postOperative = new PostOperative("teste");
+        PostOperative savedPostOperative = postOperativeRepository.save(postOperative);
+
+        HospitalAdmission admission = new HospitalAdmission();
+        admission.setDate(LocalDate.of(2025, 7, 16));
+        admission.setReasonHospitalization("Tratamento");
+        admission.setDateMedicalDischarge(LocalDate.of(2025, 5, 10));
+        admission.setDateReturns(LocalDate.of(2025, 6, 16));
+        admission.setMedicalEvolution("Recuperando");
+        admission.setTreatmentNextSteps("Retorno");
+        admission.setHealthRecord(savedHealthRecord);
+        admission.setDiagnostics(Set.of(savedDiagnostic));
+        admission.setPostOperatives(Set.of(savedPostOperative));
+
+        HospitalAdmission savedAdmission = hospitalAdmissionRepository.save(admission);
+
+        HospitalAdmissionUpdateDTO updateDTO = new HospitalAdmissionUpdateDTO();
+        updateDTO.setDate(LocalDate.of(2025, 5, 1));
+        updateDTO.setReasonHospitalization("Reabilitação");
+        updateDTO.setMedicalEvolution("Melhora");
+        updateDTO.setTreatmentNextSteps("Fisioterapia");
+        updateDTO.setDateMedicalDischarge(LocalDate.of(2025, 5, 15));
+        updateDTO.setDateReturns(LocalDate.of(2025, 6, 15));
+        updateDTO.setHealthRecordId(savedHealthRecord.getId());
+        updateDTO.setPostOperativeIds(Set.of(savedPostOperative.getId()));
+        updateDTO.setDiagnosticIds(Set.of(savedDiagnostic.getId()));
+
+        given()
+                .pathParam("id", savedAdmission.getId())
+                .contentType("application/json")
+                .body(updateDTO)
+                .when()
+                .put("/hospital-admission/{id}")
+                .then()
+                .statusCode(200)
+                .body("reasonHospitalization", equalTo("Reabilitação"))
+                .body("medicalEvolution", equalTo("Melhora"))
+                .body("treatmentNextSteps", equalTo("Fisioterapia"))
+                .body("date", equalTo("2025-05-01"))
+                .body("dateMedicalDischarge", equalTo("2025-05-15"))
+                .body("dateReturns", equalTo("2025-06-15"));
+
+        Optional<HospitalAdmission> optional = hospitalAdmissionRepository.findWithRelationsById(savedAdmission.getId());
+        assertTrue(optional.isPresent(), "A internação hospitalar atualizada não foi encontrada.");
+
+        HospitalAdmission updatedAdmission = optional.get();
+        assertEquals(LocalDate.of(2025, 5, 1), updatedAdmission.getDate());
+        assertEquals("Reabilitação", updatedAdmission.getReasonHospitalization());
+        assertEquals("Melhora", updatedAdmission.getMedicalEvolution());
+        assertEquals("Fisioterapia", updatedAdmission.getTreatmentNextSteps());
+        assertEquals(LocalDate.of(2025, 5, 15), updatedAdmission.getDateMedicalDischarge());
+        assertEquals(LocalDate.of(2025, 6, 15), updatedAdmission.getDateReturns());
+        assertEquals(1, updatedAdmission.getPostOperatives().size());
+        assertEquals(1, updatedAdmission.getDiagnostics().size());
+    }
+
+    @Test
+    public void given_invalid_hospitalAdmissionId_and_invalid_data_when_updateHospitalAdmission_then_returns_badRequest() {
+        DogBreed dogBreed = new DogBreed(null, "1", "Pug", "Amigável", 10, 12, 30D, 34D, 25D,
+                29D, false, "Grande");
+        DogBreed savedBreed = dogBreedRepository.save(dogBreed);
+
+        HealthRecord healthRecord = new HealthRecord(null, LocalDate.of(2025, 1, 16), 4.0, "P01", "Preto", false, Euthanasia.NO, Gender.MALE,
+                "Torresmo", DogSize.LARGE, "Beatriz", 20.0, savedBreed);
+        HealthRecord savedHealthRecord = healthRecordRepository.save(healthRecord);
+
+        Diagnostic diagnostic = new Diagnostic("Fratura", "teste");
+        Diagnostic savedDiagnostic = diagnosticRepository.save(diagnostic);
+
+        PostOperative postOperative = new PostOperative("teste");
+        PostOperative savedPostOperative = postOperativeRepository.save(postOperative);
+
+        HospitalAdmission admission = new HospitalAdmission();
+        admission.setDate(LocalDate.of(2025, 7, 16));
+        admission.setReasonHospitalization("Tratamento");
+        admission.setDateMedicalDischarge(LocalDate.of(2025, 5, 10));
+        admission.setDateReturns(LocalDate.of(2025, 6, 16));
+        admission.setMedicalEvolution("Recuperando");
+        admission.setTreatmentNextSteps("Retorno");
+        admission.setHealthRecord(savedHealthRecord);
+        admission.setDiagnostics(Set.of(savedDiagnostic));
+        admission.setPostOperatives(Set.of(savedPostOperative));
+
+        HospitalAdmission savedAdmission = hospitalAdmissionRepository.save(admission);
+
+        HospitalAdmissionUpdateDTO invalidUpdateDTO = new HospitalAdmissionUpdateDTO();
+        invalidUpdateDTO.setDate(null);
+        invalidUpdateDTO.setReasonHospitalization("");
+        invalidUpdateDTO.setMedicalEvolution("");
+        invalidUpdateDTO.setTreatmentNextSteps("");
+        invalidUpdateDTO.setDateMedicalDischarge(null);
+        invalidUpdateDTO.setDateReturns(null);
+        invalidUpdateDTO.setPostOperativeIds(null);
+        invalidUpdateDTO.setDiagnosticIds(null);
+
+        given()
+                .pathParam("id", savedAdmission.getId())
+                .contentType("application/json")
+                .body(invalidUpdateDTO)
+                .when()
+                .put("/hospital-admission/{id}")
+                .then()
+                .statusCode(400);
     }
 }

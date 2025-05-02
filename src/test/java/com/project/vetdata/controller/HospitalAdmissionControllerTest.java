@@ -3,7 +3,7 @@ package com.project.vetdata.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.vetdata.dto.HospitalAdmissionCreateDTO;
 import com.project.vetdata.dto.HospitalAdmissionResponseDTO;
-import com.project.vetdata.model.HospitalAdmission;
+import com.project.vetdata.dto.HospitalAdmissionUpdateDTO;
 import com.project.vetdata.service.HospitalAdmissionService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -88,5 +89,68 @@ public class HospitalAdmissionControllerTest {
                 .andExpect(jsonPath("$.reasonHospitalization").value("Motivo da internação é obrigatório"))
                 .andExpect(jsonPath("$.dateMedicalDischarge").value("Data de alta médica é obrigatória"))
                 .andExpect(jsonPath("$.healthRecordId").value("ID do prontuário é obrigatório"));
+    }
+
+    @Test
+    public void given_hospitalAdmission_exists_and_is_updated_when_updateHospitalAdmission_then_returns_updateAdmission() throws Exception {
+        HospitalAdmissionUpdateDTO updateDTO = new HospitalAdmissionUpdateDTO();
+        updateDTO.setDate(LocalDate.of(2025, 6, 12));
+        updateDTO.setReasonHospitalization("Câncer");
+        updateDTO.setDateMedicalDischarge(LocalDate.of(2025, 7, 12));
+        updateDTO.setDateReturns(LocalDate.of(2025, 8, 12));
+        updateDTO.setMedicalEvolution("Melhora");
+        updateDTO.setTreatmentNextSteps("Retorno");
+        updateDTO.setPostOperativeIds(Set.of(1L, 2L));
+        updateDTO.setDiagnosticIds(Set.of(3L));
+        updateDTO.setHealthRecordId(1L);
+
+        HospitalAdmissionResponseDTO updatedAdmission = new HospitalAdmissionResponseDTO();
+        updatedAdmission.setId(123L);
+        updatedAdmission.setDate(updateDTO.getDate());
+        updatedAdmission.setReasonHospitalization(updateDTO.getReasonHospitalization());
+        updatedAdmission.setDateMedicalDischarge(updateDTO.getDateMedicalDischarge());
+        updatedAdmission.setDateReturns(updateDTO.getDateReturns());
+        updatedAdmission.setMedicalEvolution(updateDTO.getMedicalEvolution());
+        updatedAdmission.setTreatmentNextSteps(updateDTO.getTreatmentNextSteps());
+
+        when(hospitalAdmissionService.updateHospitalAdmission(eq(123L), any(HospitalAdmissionUpdateDTO.class)))
+                .thenReturn(updatedAdmission);
+
+        mockMvc.perform(put("/hospital-admission/123")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(123))
+                .andExpect(jsonPath("$.reasonHospitalization").value("Câncer"))
+                .andExpect(jsonPath("$.medicalEvolution").value("Melhora"))
+                .andExpect(jsonPath("$.treatmentNextSteps").value("Retorno"))
+                .andExpect(jsonPath("$.date").value("2025-06-12"))
+                .andExpect(jsonPath("$.dateMedicalDischarge").value("2025-07-12"))
+                .andExpect(jsonPath("$.dateReturns").value("2025-08-12"));
+    }
+
+    @Test
+    public void given_invalid_hospitalAdmission_when_updateHospitalAdmission_then_returns_badRequest() throws Exception {
+        HospitalAdmissionUpdateDTO updateDTO = new HospitalAdmissionUpdateDTO();
+        updateDTO.setDate(null);
+        updateDTO.setReasonHospitalization("");
+        updateDTO.setDateMedicalDischarge(null);
+        updateDTO.setDateReturns(null);
+        updateDTO.setMedicalEvolution("");
+        updateDTO.setTreatmentNextSteps("");
+        updateDTO.setPostOperativeIds(null);
+        updateDTO.setDiagnosticIds(null);
+
+        mockMvc.perform(put("/hospital-admission/123")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDTO)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.date").value("Campo Obrigatório"))
+                .andExpect(jsonPath("$.reasonHospitalization").value("Campo Obrigatório"))
+                .andExpect(jsonPath("$.medicalEvolution").value("Campo Obrigatório"))
+                .andExpect(jsonPath("$.treatmentNextSteps").value("Campo Obrigatório"))
+                .andExpect(jsonPath("$.postOperativeIds").value("Campo Obrigatório"))
+                .andExpect(jsonPath("$.diagnosticIds").value("Campo Obrigatório"));
+
     }
 }
