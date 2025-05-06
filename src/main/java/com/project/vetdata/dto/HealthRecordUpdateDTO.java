@@ -12,7 +12,6 @@ import java.time.LocalDate;
 
 public class HealthRecordUpdateDTO {
 
-    private LocalDate admission;
     private Double age;
     private String codPatient;
     private String color;
@@ -28,9 +27,8 @@ public class HealthRecordUpdateDTO {
     public HealthRecordUpdateDTO() {
     }
 
-    public HealthRecordUpdateDTO(LocalDate admission, Double age, String codPatient, String color, Boolean death, Euthanasia euthanasia, Gender gender, String patient,
+    public HealthRecordUpdateDTO(Double age, String codPatient, String color, Boolean death, Euthanasia euthanasia, Gender gender, String patient,
                                  DogSize size, String tutor, Double weight, Long breedId) {
-        this.admission = admission;
         this.age = age;
         this.codPatient = codPatient;
         this.color = color;
@@ -42,12 +40,6 @@ public class HealthRecordUpdateDTO {
         this.tutor = tutor;
         this.weight = weight;
         this.breedId = breedId;
-    }
-
-    @NotNull(message = "Campo Obrigatório")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    public LocalDate getAdmission() {
-        return admission;
     }
 
     @Min(value = 0, message = "Campo deve ser maior que 0")
@@ -100,10 +92,6 @@ public class HealthRecordUpdateDTO {
     @NotNull(message = "Campo Obrigatório")
     public Long getBreedId() {
         return breedId;
-    }
-
-    public void setAdmission(LocalDate admission) {
-        this.admission = admission;
     }
 
     public void setAge(Double age) {

@@ -226,7 +226,6 @@ public class HealthRecordServiceImplTest {
         dto.setGender(Gender.MALE);
         dto.setDeath(null);
         dto.setEuthanasia(Euthanasia.NO);
-        dto.setAdmission(LocalDate.of(2025,1,1));
 
         return dto;
     }
@@ -250,7 +249,6 @@ public class HealthRecordServiceImplTest {
         record.setGender(Gender.MALE);
         record.setDeath(null);
         record.setEuthanasia(Euthanasia.NO);
-        record.setAdmission(LocalDate.of(2025, 1, 1));
 
         return record;
     }
@@ -268,7 +266,6 @@ public class HealthRecordServiceImplTest {
         dto.setGender(Gender.FEMALE);
         dto.setDeath(false);
         dto.setEuthanasia(Euthanasia.NO);
-        dto.setAdmission(LocalDate.of(2025, 2, 1));
 
         return dto;
     }

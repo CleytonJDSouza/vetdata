@@ -101,7 +101,6 @@ public class HealthRecordControllerIT {
         dto.setGender(Gender.MALE);
         dto.setDeath(false);
         dto.setEuthanasia(Euthanasia.NO);
-        dto.setAdmission(LocalDate.of(2025, 1, 1));
 
         Long createdId =
                 given()
@@ -142,7 +141,6 @@ public class HealthRecordControllerIT {
         dto.setGender(Gender.MALE);
         dto.setDeath(null);
         dto.setEuthanasia(Euthanasia.NO);
-        dto.setAdmission(null);
 
         given()
                 .contentType("application/json")
@@ -174,7 +172,6 @@ public class HealthRecordControllerIT {
         record.setGender(Gender.MALE);
         record.setDeath(false);
         record.setEuthanasia(Euthanasia.NO);
-        record.setAdmission(LocalDate.of(2025, 4, 11));
         HealthRecord savedRecord = healthRecordRepository.save(record);
 
         savedRecord.getBreed().getName();
@@ -191,7 +188,6 @@ public class HealthRecordControllerIT {
         updateDTO.setGender(Gender.MALE);
         updateDTO.setDeath(false);
         updateDTO.setEuthanasia(Euthanasia.NO);
-        updateDTO.setAdmission(LocalDate.of(2025, 2, 1));
 
         given()
                 .pathParam("id", savedRecord.getId())
@@ -218,7 +214,6 @@ public class HealthRecordControllerIT {
         assertEquals("Bege", updated.getColor());
         assertEquals(6.0, updated.getAge());
         assertEquals(29.0, updated.getWeight());
-        assertEquals(LocalDate.of(2025, 2, 1), updated.getAdmission());
     }
 
     @Test
@@ -239,7 +234,6 @@ public class HealthRecordControllerIT {
         record.setGender(Gender.MALE);
         record.setDeath(false);
         record.setEuthanasia(Euthanasia.NO);
-        record.setAdmission(LocalDate.of(2025, 4, 11));
         HealthRecord savedRecord = healthRecordRepository.save(record);
 
 
@@ -255,7 +249,6 @@ public class HealthRecordControllerIT {
         updateDTO.setGender(Gender.MALE);
         updateDTO.setDeath(false);
         updateDTO.setEuthanasia(Euthanasia.NO);
-        updateDTO.setAdmission(LocalDate.of(2025, 2, 1));
 
         given()
                 .pathParam("id", "abc")
@@ -276,7 +269,6 @@ public class HealthRecordControllerIT {
         assertEquals("Marrom", original.getColor());
         assertEquals(5.0, original.getAge());
         assertEquals(28.0, original.getWeight());
-        assertEquals(LocalDate.of(2025, 4, 11), original.getAdmission());
     }
 
     @Test
@@ -297,7 +289,6 @@ public class HealthRecordControllerIT {
         record.setGender(Gender.MALE);
         record.setDeath(false);
         record.setEuthanasia(Euthanasia.NO);
-        record.setAdmission(LocalDate.of(2025, 4, 11));
         HealthRecord savedRecord = healthRecordRepository.save(record);
 
 
@@ -313,7 +304,6 @@ public class HealthRecordControllerIT {
         updateDTO.setGender(Gender.MALE);
         updateDTO.setDeath(false);
         updateDTO.setEuthanasia(Euthanasia.NO);
-        updateDTO.setAdmission(LocalDate.of(2025, 2, 1));
 
         given()
                 .pathParam("id", 999L)
@@ -334,7 +324,6 @@ public class HealthRecordControllerIT {
         assertEquals("Marrom", original.getColor());
         assertEquals(5.0, original.getAge());
         assertEquals(28.0, original.getWeight());
-        assertEquals(LocalDate.of(2025, 4, 11), original.getAdmission());
     }
 
     @Test
@@ -355,7 +344,6 @@ public class HealthRecordControllerIT {
         record1.setGender(Gender.MALE);
         record1.setDeath(false);
         record1.setEuthanasia(Euthanasia.NO);
-        record1.setAdmission(LocalDate.of(2025, 4, 11));
         HealthRecord savedRecord1 = healthRecordRepository.save(record1);
 
         HealthRecord record2 = new HealthRecord();
@@ -370,7 +358,6 @@ public class HealthRecordControllerIT {
         record2.setGender(Gender.FEMALE);
         record2.setDeath(true);
         record2.setEuthanasia(Euthanasia.YES);
-        record2.setAdmission(LocalDate.of(2025, 4, 10));
         HealthRecord savedRecord2 = healthRecordRepository.save(record2);
 
         when()
@@ -432,7 +419,6 @@ public class HealthRecordControllerIT {
         record.setGender(Gender.FEMALE);
         record.setDeath(false);
         record.setEuthanasia(Euthanasia.NO);
-        record.setAdmission(LocalDate.of(2025, 3, 15));
         HealthRecord savedRecord = healthRecordRepository.save(record);
 
         given()
@@ -464,7 +450,6 @@ public class HealthRecordControllerIT {
         record.setGender(Gender.FEMALE);
         record.setDeath(false);
         record.setEuthanasia(Euthanasia.NO);
-        record.setAdmission(LocalDate.of(2025, 3, 15));
         HealthRecord savedRecord = healthRecordRepository.save(record);
 
         given()
@@ -498,7 +483,6 @@ public class HealthRecordControllerIT {
         record.setGender(Gender.FEMALE);
         record.setDeath(false);
         record.setEuthanasia(Euthanasia.NO);
-        record.setAdmission(LocalDate.of(2025, 3, 15));
         HealthRecord savedRecord = healthRecordRepository.save(record);
 
         given()

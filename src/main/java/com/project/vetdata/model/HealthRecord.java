@@ -17,8 +17,6 @@ public class HealthRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDate admission;
-
     private Double age;
 
     @Column(name = "cod_patient")
@@ -50,11 +48,10 @@ public class HealthRecord {
     public HealthRecord() {
     }
 
-    public HealthRecord(Long id, LocalDate admission, Double age, String codPatient, String color, boolean death,
+    public HealthRecord(Long id, Double age, String codPatient, String color, boolean death,
                         Euthanasia euthanasia, Gender gender, String patient, DogSize size, String tutor,
                         Double weight, DogBreed breed) {
         this.id = id;
-        this.admission = admission;
         this.age = age;
         this.codPatient = codPatient;
         this.color = color;
@@ -72,9 +69,6 @@ public class HealthRecord {
         return id;
     }
 
-    public LocalDate getAdmission() {
-        return admission;
-    }
 
     public Double getAge() {
         return age;
@@ -118,10 +112,6 @@ public class HealthRecord {
 
     public DogBreed getBreed() {
         return breed;
-    }
-
-    public void setAdmission(LocalDate admission) {
-        this.admission = admission;
     }
 
     public void setAge(Double age) {
