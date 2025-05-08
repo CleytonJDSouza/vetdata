@@ -56,8 +56,18 @@
             <li th:class="${menuAtivo == 'post-operatives'} ? 'active'">
                 <a th:href="@{/post-operatives-pages/list}"><i class="fa fa-lg fa-fw  fa-medkit txt-color-blue"></i> <span class="menu-item-parent">Pós Operatórios</span></a>
             </li>
+            <li th:class="${menuAtivo == 'health-record'} ? 'active open' : 'top-menu-invisible'">
+                <a href="#"><i class="fa fa-lg fa-fw  fa-h-square txt-color-blue"></i> <span class="menu-item-parent">Prontuário</span></a>
+                <ul>
+                    <li th:class="${submenuHRAtivo == 'list'} ? 'active'">
+                        <a th:href="@{/health-records/list}" title="Listar"><i class="fa fa-lg fa-fw  fa-list"></i> <span class="menu-item-parent">Listar</span></a>
+                    </li>
+                    <li th:class="${submenuHRAtivo == 'form'} ? 'active'">
+                        <a th:href="@{/health-records/form}" title="Novo Prontuário"><i class="fa fa-lg fa-fw  fa-save"></i> <span class="menu-item-parent">Cadastrar</span></a>
+                    </li>
+                </ul>
+            </li>
         </ul>
-
     </nav>
 
     <span class="minifyme" data-action="minifyMenu">

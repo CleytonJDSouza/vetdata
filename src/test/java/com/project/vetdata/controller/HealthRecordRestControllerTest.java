@@ -1,7 +1,6 @@
 package com.project.vetdata.controller;
 
 import com.project.vetdata.dto.HealthRecordCreateDTO;
-import com.project.vetdata.dto.HealthRecordResponseDTO;
 import com.project.vetdata.dto.HealthRecordUpdateDTO;
 import com.project.vetdata.enums.DogSize;
 import com.project.vetdata.enums.Euthanasia;
@@ -35,9 +34,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(HealthRecordController.class)
+@WebMvcTest(HealthRecordRestController.class)
 @ActiveProfiles("test")
-public class HealthRecordControllerTest {
+public class HealthRecordRestControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
