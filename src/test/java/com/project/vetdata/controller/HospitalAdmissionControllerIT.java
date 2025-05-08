@@ -31,7 +31,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static org.hamcrest.Matchers.*;
-import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -96,7 +96,7 @@ public class HospitalAdmissionControllerIT {
                 29D, false, "Grande");
         DogBreed savedBreed = dogBreedRepository.save(dogBreed);
 
-        HealthRecord healthRecord = new HealthRecord(null, LocalDate.of(2025, 1, 16), 4.0, "P01", "Preto", false, Euthanasia.NO, Gender.MALE,
+        HealthRecord healthRecord = new HealthRecord(null, 4.0, "P01", "Preto", false, Euthanasia.NO, Gender.MALE,
                 "Torresmo", DogSize.LARGE, "Beatriz", 20.0, savedBreed);
         HealthRecord savedHealthRecord = healthRecordRepository.save(healthRecord);
 
@@ -178,7 +178,7 @@ public class HospitalAdmissionControllerIT {
                 29D, false, "Grande");
         DogBreed savedBreed = dogBreedRepository.save(dogBreed);
 
-        HealthRecord healthRecord = new HealthRecord(null, LocalDate.of(2025, 1, 16), 4.0, "P01", "Preto", false, Euthanasia.NO, Gender.MALE,
+        HealthRecord healthRecord = new HealthRecord(null, 4.0, "P01", "Preto", false, Euthanasia.NO, Gender.MALE,
                 "Torresmo", DogSize.LARGE, "Beatriz", 20.0, savedBreed);
         HealthRecord savedHealthRecord = healthRecordRepository.save(healthRecord);
 
@@ -247,7 +247,7 @@ public class HospitalAdmissionControllerIT {
                 29D, false, "Grande");
         DogBreed savedBreed = dogBreedRepository.save(dogBreed);
 
-        HealthRecord healthRecord = new HealthRecord(null, LocalDate.of(2025, 1, 16), 4.0, "P01", "Preto", false, Euthanasia.NO, Gender.MALE,
+        HealthRecord healthRecord = new HealthRecord(null, 4.0, "P01", "Preto", false, Euthanasia.NO, Gender.MALE,
                 "Torresmo", DogSize.LARGE, "Beatriz", 20.0, savedBreed);
         HealthRecord savedHealthRecord = healthRecordRepository.save(healthRecord);
 
@@ -288,5 +288,78 @@ public class HospitalAdmissionControllerIT {
                 .put("/hospital-admission/{id}")
                 .then()
                 .statusCode(400);
+    }
+
+    @Test
+    public void given_hospitalAdmissionsInDatabase_when_getAllHospitalAdmissions_then_returnsPagedList() {
+        DogBreed dogBreed = new DogBreed(null, "1", "Pug", "Amigável", 10, 12, 30D, 34D, 25D,
+                29D, false, "Grande");
+        DogBreed savedBreed = dogBreedRepository.save(dogBreed);
+
+        HealthRecord healthRecord = new HealthRecord(null, 4.0, "P01", "Preto", false, Euthanasia.NO, Gender.MALE,
+                "Torresmo", DogSize.LARGE, "Beatriz", 20.0, savedBreed);
+        HealthRecord savedHealthRecord = healthRecordRepository.save(healthRecord);
+
+        HealthRecord healthRecord2 = new HealthRecord(null, 3.5, "P02", "Branco", true, Euthanasia.YES, Gender.FEMALE,
+                "Cacau", DogSize.MEDIUM, "João", 18.0, savedBreed);
+        HealthRecord savedHealthRecord2 = healthRecordRepository.save(healthRecord2);
+
+        Diagnostic diagnostic = new Diagnostic("Fratura", "teste");
+        Diagnostic savedDiagnostic = diagnosticRepository.save(diagnostic);
+
+        PostOperative postOperative = new PostOperative("teste");
+        PostOperative savedPostOperative = postOperativeRepository.save(postOperative);
+
+        HospitalAdmission admission = new HospitalAdmission();
+        admission.setDate(LocalDate.of(2025, 7, 16));
+        admission.setReasonHospitalization("Tratamento");
+        admission.setDateMedicalDischarge(LocalDate.of(2025, 5, 10));
+        admission.setDateReturns(LocalDate.of(2025, 6, 16));
+        admission.setMedicalEvolution("Recuperando");
+        admission.setTreatmentNextSteps("Retorno");
+        admission.setHealthRecord(savedHealthRecord);
+        admission.setDiagnostics(Set.of(savedDiagnostic));
+        admission.setPostOperatives(Set.of(savedPostOperative));
+
+        HospitalAdmission savedAdmission = hospitalAdmissionRepository.save(admission);
+
+        HospitalAdmission admission2 = new HospitalAdmission();
+        admission2.setDate(LocalDate.of(2025, 8, 10));
+        admission2.setReasonHospitalization("Cirurgia");
+        admission2.setDateMedicalDischarge(LocalDate.of(2025, 6, 5));
+        admission2.setDateReturns(LocalDate.of(2025, 7, 12));
+        admission2.setMedicalEvolution("Recuperação");
+        admission2.setTreatmentNextSteps("Fisioterapia");
+        admission2.setHealthRecord(savedHealthRecord2);
+        admission2.setDiagnostics(Set.of(savedDiagnostic));
+        admission2.setPostOperatives(Set.of(savedPostOperative));
+
+        HospitalAdmission savedAdmission2 = hospitalAdmissionRepository.save(admission2);
+
+        when()
+                .get("/hospital-admission?page=0&qtdRecordsPage=2&sortBy=date")
+                .then()
+                .statusCode(200)
+                .body("[0].reasonHospitalization", equalTo("Tratamento"))
+                .body("[0].medicalEvolution", equalTo("Recuperando"))
+                .body("[0].date", equalTo("2025-07-16"))
+                .body("[0].dateMedicalDischarge", equalTo("2025-05-10"))
+                .body("[0].dateReturns", equalTo("2025-06-16"))
+
+                .body("[1].reasonHospitalization", equalTo("Cirurgia"))
+                .body("[1].medicalEvolution", equalTo("Recuperação"))
+                .body("[1].date", equalTo("2025-08-10"))
+                .body("[1].dateMedicalDischarge", equalTo("2025-06-05"))
+                .body("[1].dateReturns", equalTo("2025-07-12"));
+    }
+
+    @Test
+    public void given_no_hospitalAdmission_in_database_when_get_all_hospitalAdmission_then_returns_noContent() {
+        hospitalAdmissionRepository.deleteAll();
+
+        when()
+                .get("/health-records")
+                .then()
+                .statusCode(204);
     }
 }

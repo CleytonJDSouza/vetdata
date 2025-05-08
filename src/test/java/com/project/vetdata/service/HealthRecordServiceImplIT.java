@@ -130,7 +130,6 @@ public class HealthRecordServiceImplIT {
         updateDTO.setPatient("Nutella");
         updateDTO.setTutor("Aline");
         updateDTO.setWeight(27.3);
-        updateDTO.setAdmission(LocalDate.of(2025, 4, 10));
         updateDTO.setBreedId(breed.getId());
         updateDTO.setEuthanasia(Euthanasia.NO);
         updateDTO.setGender(Gender.FEMALE);
@@ -142,7 +141,6 @@ public class HealthRecordServiceImplIT {
         assertEquals("Nutella", updated.getPatient());
         assertEquals("Aline", updated.getTutor());
         assertEquals(27.3, updated.getWeight());
-        assertEquals(LocalDate.of(2025, 4, 10), updated.getAdmission());
     }
 
     @Test
@@ -153,7 +151,6 @@ public class HealthRecordServiceImplIT {
         updateDTO.setPatient("Nutella");
         updateDTO.setTutor("Aline");
         updateDTO.setWeight(27.3);
-        updateDTO.setAdmission(LocalDate.of(2025, 4, 10));
         updateDTO.setBreedId(1L);
         updateDTO.setEuthanasia(Euthanasia.NO);
         updateDTO.setGender(Gender.FEMALE);
@@ -287,7 +284,6 @@ public class HealthRecordServiceImplIT {
 
     private HealthRecordCreateDTO getFakeHealthRecordDTO(Long breedId) {
         HealthRecordCreateDTO dto = new HealthRecordCreateDTO();
-        dto.setAdmission(LocalDate.of(2025, 8, 1));
         dto.setAge(5.0);
         dto.setCodPatient("C125");
         dto.setColor("Branco");
@@ -304,7 +300,6 @@ public class HealthRecordServiceImplIT {
 
     private HealthRecordCreateDTO getFakeHealthRecordDTO2(Long breedId) {
         HealthRecordCreateDTO dto = new HealthRecordCreateDTO();
-        dto.setAdmission(LocalDate.of(2025, 4, 8));
         dto.setAge(5.0);
         dto.setCodPatient("C123");
         dto.setColor("Branco");
@@ -324,7 +319,6 @@ public class HealthRecordServiceImplIT {
         dto.setPatient(null);
         dto.setAge(4.00);
         dto.setCodPatient("C123");
-        dto.setAdmission(LocalDate.of(2025, 4, 8));
         dto.setBreedId(1L);
         dto.setTutor("Beatriz");
         dto.setColor("Branco");

@@ -11,9 +11,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/hospital-admission")
@@ -25,7 +29,7 @@ public class HospitalAdmissionController {
         this.hospitalAdmissionService = hospitalAdmissionService;
     }
 
-    @Operation(summary = "Criar uma nova internação hospitalar")
+    @Operation(summary = "Criar uma nova internação")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Internação criada com sucesso!",
                     content = {@Content(mediaType = "application/json",
@@ -54,5 +58,17 @@ public class HospitalAdmissionController {
 
         HospitalAdmissionResponseDTO updated = hospitalAdmissionService.updateHospitalAdmission(id, dto);
         return ResponseEntity.ok(updated);
+    }
+
+    @Operation(summary = "Listar todas as internações")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de internações retornada com sucesso!",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = HospitalAdmission.class))})
+    })
+    @GetMapping
+    public ResponseEntity<List<HospitalAdmissionResponseDTO>> getAllHospitalAdmission() {
+        List<HospitalAdmissionResponseDTO> admissions = hospitalAdmissionService.findAll();
+        return  ResponseEntity.ok(admissions);
     }
 }

@@ -11,10 +11,13 @@ import com.project.vetdata.repository.DiagnosticRepository;
 import com.project.vetdata.repository.HealthRecordRepository;
 import com.project.vetdata.repository.HospitalAdmissionRepository;
 import com.project.vetdata.repository.PostOperativeRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -145,5 +148,13 @@ public class HospitalAdmissionServiceImpl implements HospitalAdmissionService {
 
         HospitalAdmission updated = hospitalAdmissionRepository.save(existing);
         return mapToResponse(updated);
+    }
+
+    @Override
+    public List<HospitalAdmissionResponseDTO> findAll() {
+        List<HospitalAdmission> admissions = hospitalAdmissionRepository.findAll();
+        return admissions.stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
     }
 }

@@ -17,6 +17,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -196,6 +200,31 @@ public class HospitalAdmissionServiceImplTest {
         assertEquals("Pós Operatório não foi encontrado", exception.getMessage());
     }
 
+    @Test
+    public void given_existing_hospitalAdmission_when_getAll_then_returns_paginated_list() {
+        HospitalAdmission admission = getFakeHospitalAdmission();
+        List<HospitalAdmission> admissions = List.of(admission);
+
+        when(hospitalAdmissionRepository.findAll()).thenReturn(admissions);
+
+        List<HospitalAdmissionResponseDTO> result = hospitalAdmissionService.findAll();
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals(admission.getReasonHospitalization(), result.get(0).getReasonHospitalization());
+
+    }
+
+    @Test
+    public void given_no_hospitalAdmission_when_getAll_then_returns_empty_page() {
+        when(hospitalAdmissionRepository.findAll()).thenReturn(List.of());
+
+        List<HospitalAdmissionResponseDTO> result = hospitalAdmissionService.findAll();
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
     private HospitalAdmissionCreateDTO getFakeHospitalAdmissionDTO() {
         HospitalAdmissionCreateDTO dto = new HospitalAdmissionCreateDTO();
         dto.setDate(LocalDate.of(2025, 4, 24));
@@ -233,8 +262,6 @@ public class HospitalAdmissionServiceImplTest {
         record.setGender(Gender.MALE);
         record.setDeath(null);
         record.setEuthanasia(Euthanasia.NO);
-        record.setAdmission(LocalDate.of(2025, 1, 1));
-
         return record;
     }
 

@@ -112,5 +112,4 @@ public class HospitalAdmissionResponseDTO {
     public void setPostOperativeIds(Set<Long> postOperativeIds) {
         this.postOperativeIds = postOperativeIds;
     }
-
 }

@@ -14,6 +14,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MySQLContainer;
@@ -24,6 +27,7 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -211,6 +215,51 @@ public class HospitalAdmissionServiceImplIT {
         assertEquals("Internação com ID " + invalidId + " não encontrada", exception.getMessage());
     }
 
+    @Test
+    public void given_existing_hospitalAdmissions_when_get_all_hospitalAdmission_then_returns_page_results() {
+        DogBreed breed = dogBreedRepository.save(createFakeBreed());
+        HealthRecord healthRecord = healthRecordRepository.save(createFakeHealthRecord(breed));
+        PostOperative postOperative = postOperativeRepository.save(createFakePostOperative());
+        Diagnostic diagnostic = diagnosticRepository.save(createFakeDiagnostic());
+
+        HospitalAdmissionCreateDTO dto1 = getFakeHospitalAdmissionDTO(
+                healthRecord.getId(),
+                List.of(postOperative.getId()),
+                List.of(diagnostic.getId())
+        );
+
+        HospitalAdmissionCreateDTO dto2 = getFakeHospitalAdmissionDTO2(
+                healthRecord.getId(),
+                List.of(postOperative.getId()),
+                List.of(diagnostic.getId())
+        );
+
+        hospitalAdmissionService.createHospitalAdmission(dto1);
+        hospitalAdmissionService.createHospitalAdmission(dto2);
+
+        List<HospitalAdmissionResponseDTO> result = hospitalAdmissionService.findAll();
+
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(2, result.size());
+
+        List<String> reasons = result.stream()
+                .map(HospitalAdmissionResponseDTO::getReasonHospitalization)
+                .collect(Collectors.toList());
+
+        assertTrue(reasons.contains("Infecção grave"));
+        assertTrue(reasons.contains("Teste"));
+    }
+
+    @Test
+    public void given_no_hospitalAdmission_in_database_when_get_all_hospitalAdmission_then_returns_empty_page() {
+        List<HospitalAdmissionResponseDTO> result = hospitalAdmissionService.findAll();
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+        assertEquals(0, result.size());
+    }
+
     private DogBreed createFakeBreed() {
         DogBreed breed = new DogBreed();
         breed.setName("Pug");
@@ -241,7 +290,6 @@ public class HospitalAdmissionServiceImplIT {
 
     private HealthRecord createFakeHealthRecord(DogBreed breed) {
         HealthRecord record = new HealthRecord();
-        record.setAdmission(LocalDate.of(2025, 8, 1));
         record.setAge(5.0);
         record.setCodPatient("C125");
         record.setColor("Branco");
@@ -264,6 +312,20 @@ public class HospitalAdmissionServiceImplIT {
         dto.setDateReturns(LocalDate.of(2025, 5, 1));
         dto.setMedicalEvolution("Teste");
         dto.setTreatmentNextSteps("Repouso e medicação");
+        dto.setHealthRecordId(healthRecordId);
+        dto.setPostOperativeIds(new HashSet<>(postOperativeIds));
+        dto.setDiagnosticIds(new HashSet<>(diagnosticIds));
+        return dto;
+    }
+
+    private HospitalAdmissionCreateDTO getFakeHospitalAdmissionDTO2 (Long healthRecordId, List<Long> postOperativeIds, List<Long> diagnosticIds) {
+        HospitalAdmissionCreateDTO dto = new HospitalAdmissionCreateDTO();
+        dto.setDate(LocalDate.of(2025, 4, 10));
+        dto.setReasonHospitalization("Teste");
+        dto.setDateMedicalDischarge(LocalDate.of(2025, 4, 20));
+        dto.setDateReturns(LocalDate.of(2025, 5, 1));
+        dto.setMedicalEvolution("Teste");
+        dto.setTreatmentNextSteps("Teste");
         dto.setHealthRecordId(healthRecordId);
         dto.setPostOperativeIds(new HashSet<>(postOperativeIds));
         dto.setDiagnosticIds(new HashSet<>(diagnosticIds));

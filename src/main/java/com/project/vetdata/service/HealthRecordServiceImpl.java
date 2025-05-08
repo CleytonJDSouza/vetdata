@@ -33,7 +33,7 @@ public class HealthRecordServiceImpl implements HealthRecordService {
                 .orElseThrow(() -> new IllegalArgumentException("Raça " + dto.getBreedId() + " não encontrada"));
 
         HealthRecord record = new HealthRecord();
-        record.setAdmission(dto.getAdmission());
+
         record.setAge(dto.getAge());
         record.setCodPatient(dto.getCodPatient());
         record.setColor(dto.getColor());
@@ -51,9 +51,6 @@ public class HealthRecordServiceImpl implements HealthRecordService {
 
     public HealthRecord updateHealthRecord(Long id, HealthRecordUpdateDTO dto) {
         return healthRecordRepository.findById(id).map(existingRecord -> {
-            if (dto.getAdmission() != null) {
-                existingRecord.setAdmission(dto.getAdmission());
-            }
             if (dto.getAge() != null) {
                 existingRecord.setAge(dto.getAge());
             }

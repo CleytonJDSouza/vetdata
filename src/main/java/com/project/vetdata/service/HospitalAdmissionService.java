@@ -5,8 +5,13 @@ import com.project.vetdata.dto.HospitalAdmissionCreateDTO;
 import com.project.vetdata.dto.HospitalAdmissionResponseDTO;
 import com.project.vetdata.dto.HospitalAdmissionUpdateDTO;
 import com.project.vetdata.model.HospitalAdmission;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 public interface HospitalAdmissionService {
     HospitalAdmissionResponseDTO createHospitalAdmission(HospitalAdmissionCreateDTO dto);
     HospitalAdmissionResponseDTO updateHospitalAdmission(Long id, HospitalAdmissionUpdateDTO dto);
+    List<HospitalAdmissionResponseDTO> findAll();
 }

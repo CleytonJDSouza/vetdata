@@ -50,11 +50,9 @@ public class HealthRecordControllerTest {
 
     @Test
     public void given_valid_healthRecord_when_createHealthRecord_then_returns_createdHealthRecord() throws Exception {
-        HealthRecordCreateDTO dto = new HealthRecordCreateDTO(LocalDate.of(2024, 4, 9), 3.5, "C123", "Preto", false,
-                Euthanasia.NO, Gender.MALE, "Torresmo", DogSize.SMALL, "Cleyton", 12.0, 1L
-        );
+        HealthRecordCreateDTO dto = new HealthRecordCreateDTO(3.5, "C123", "Preto", false, Euthanasia.NO, Gender.MALE, "Torresmo", DogSize.SMALL, "Cleyton", 12.0, 1L);
 
-        HealthRecord savedRecord = new HealthRecord(10L, dto.getAdmission(), dto.getAge(), dto.getCodPatient(), dto.getColor(), dto.getDeath(), dto.getEuthanasia(),
+        HealthRecord savedRecord = new HealthRecord(10L, dto.getAge(), dto.getCodPatient(), dto.getColor(), dto.getDeath(), dto.getEuthanasia(),
                 dto.getGender(), dto.getPatient(), dto.getSize(), dto.getTutor(), dto.getWeight(), new DogBreed(1L, "123", "Labrador",
                 "Amigavel e Corajoso", 8, 10, 20.0, 25.0, 18.0, 23.0,
                 false,"Médio"));
@@ -74,7 +72,6 @@ public class HealthRecordControllerTest {
     @Test
     public void given_invalid_healthRecord_when_createHealthRecord_then_returnsBadRequest() throws Exception {
         HealthRecordCreateDTO dto = new HealthRecordCreateDTO();
-        dto.setAdmission(null);
         dto.setAge(-1.0);
         dto.setCodPatient("");
         dto.setColor("");
@@ -91,7 +88,6 @@ public class HealthRecordControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.admission").value("Campo Obrigatório"))
                 .andExpect(jsonPath("$.euthanasia").value("Campo Obrigatório"))
                 .andExpect(jsonPath("$.gender").value("Campo Obrigatório"))
                 .andExpect(jsonPath("$.patient").value("Campo Obrigatório"))
@@ -104,14 +100,13 @@ public class HealthRecordControllerTest {
     @Test
     public void given_healthRecord_exists_and_is_updated_when_updateHealthRecord_then_returns_updatedRecord() throws Exception {
         HealthRecordUpdateDTO updateDTO = new HealthRecordUpdateDTO(
-                LocalDate.of(2024, 4, 10), 4.5, "P145", "Branco",
+                4.5, "P145", "Branco",
                 false, Euthanasia.NO, Gender.FEMALE, "Cacau", DogSize.MEDIUM,
                 "Andrea", 14.0, 2L
         );
 
         HealthRecord updatedRecord = new HealthRecord(
                 123L,
-                updateDTO.getAdmission(),
                 updateDTO.getAge(),
                 updateDTO.getCodPatient(),
                 updateDTO.getColor(),
@@ -145,14 +140,12 @@ public class HealthRecordControllerTest {
                 .andExpect(jsonPath("$.gender").value("FEMALE"))
                 .andExpect(jsonPath("$.size").value("MEDIUM"))
                 .andExpect(jsonPath("$.weight").value(14.0))
-                .andExpect(jsonPath("$.death").value(false))
-                .andExpect(jsonPath("$.admission").value("2024-04-10"));
+                .andExpect(jsonPath("$.death").value(false));
     }
 
     @Test
     public void given_invalid_healthRecord_when_updateHealthRecord_then_returnsBadRequest() throws Exception {
         HealthRecordUpdateDTO updateDTO = new HealthRecordUpdateDTO();
-        updateDTO.setAdmission(null);
         updateDTO.setAge(-2.0);
         updateDTO.setCodPatient("");
         updateDTO.setColor("");
@@ -169,7 +162,6 @@ public class HealthRecordControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateDTO)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.admission").value("Campo Obrigatório"))
                 .andExpect(jsonPath("$.euthanasia").value("Campo Obrigatório"))
                 .andExpect(jsonPath("$.gender").value("Campo Obrigatório"))
                 .andExpect(jsonPath("$.patient").value("Campo Obrigatório"))
@@ -181,7 +173,7 @@ public class HealthRecordControllerTest {
 
     @Test
     public void given_healthRecordDoesNotExist_when_updateHealthRecord_then_returnsNotFound() throws Exception {
-        HealthRecordUpdateDTO updateDTO = new HealthRecordUpdateDTO(LocalDate.of(2024, 4, 10), 4.5, "C456", "Branco",
+        HealthRecordUpdateDTO updateDTO = new HealthRecordUpdateDTO(4.5, "C456", "Branco",
                 false, Euthanasia.NO, Gender.FEMALE, "Cookie", DogSize.MEDIUM, "Aline", 14.0, 2L);
 
         when(healthRecordService.updateHealthRecord(eq(999L), any(HealthRecordUpdateDTO.class)))
@@ -196,11 +188,11 @@ public class HealthRecordControllerTest {
     @Test
     public void given_pageRequestAndHealthRecordsExist_when_getHealthRecordsPage_then_returnsHealthRecordsPage() throws Exception {
         List<HealthRecord> records = List.of(
-                new HealthRecord(1L, LocalDate.of(2024, 4, 1), 3.0, "C001", "Preto", false, Euthanasia.NO,
+                new HealthRecord(1L, 3.0, "C001", "Preto", false, Euthanasia.NO,
                         Gender.FEMALE, "Cacau", DogSize.SMALL, "Andrea", 10.0,
                         new DogBreed(1L, "001", "Beagle", "Curioso", 10, 12,
                                 10.0, 15.0, 8.0, 12.0, false, "Pequeno")),
-                new HealthRecord(2L, LocalDate.of(2024, 4, 2), 4.0, "C002", "Marrom", false, Euthanasia.NO,
+                new HealthRecord(2L, 4.0, "C002", "Marrom", false, Euthanasia.NO,
                         Gender.MALE, "Nutella", DogSize.MEDIUM, "Aline", 14.0,
                         new DogBreed(2L, "002", "Boxer", "Brincalhão", 9, 11,
                                 25.0, 32.0, 22.0, 30.0, false, "Médio"))
@@ -235,7 +227,7 @@ public class HealthRecordControllerTest {
     @Test
     public void given_search_parameter_when_get_healthRecords_page_then_returns_filtered_healthRecords_page() throws Exception {
         List<HealthRecord> filteredRecords = List.of(
-                new HealthRecord(3L, LocalDate.of(2024, 4, 5), 2.0, "C003", "Branco", false, Euthanasia.NO,
+                new HealthRecord(3L, 2.0, "C003", "Branco", false, Euthanasia.NO,
                         Gender.FEMALE, "Cacau", DogSize.SMALL, "Andrea", 11.0,
                         new DogBreed(3L, "003", "Shih Tzu", "Fofo e tranquilo", 10, 13,
                                 6.0, 8.0, 5.0, 7.0, false, "Pequeno"))
@@ -262,7 +254,7 @@ public class HealthRecordControllerTest {
     @Test
     public void given_existing_healthRecordId_when_deleteHealthRecord_then_returns_noContent() throws Exception{
         Long healthRecordId = 1L;
-        HealthRecord existingRecord = new HealthRecord(healthRecordId, LocalDate.of(2025, 2, 20),
+        HealthRecord existingRecord = new HealthRecord(healthRecordId,
                 4.0,"C357","Preto", false, Euthanasia.NO, Gender.MALE, "Nutella", DogSize.MEDIUM, "Clovis", 12.0,
                 new DogBreed(1L, "001", "Labrador", "Companheiro", 10, 12,
                         25.0, 30.0, 22.0, 28.0, false, "Médio"));
@@ -288,7 +280,7 @@ public class HealthRecordControllerTest {
     @Test
     public void given_existing_heathRecordId_when_getHealthRecordById_then_returns_record() throws Exception{
         Long healthRecordId = 1L;
-        HealthRecord existingRecord = new HealthRecord(healthRecordId, LocalDate.of(2025, 2, 20),
+        HealthRecord existingRecord = new HealthRecord(healthRecordId,
                 4.0,"C357","Preto", false, Euthanasia.NO, Gender.MALE, "Nutella", DogSize.MEDIUM, "Clovis", 12.0,
                 new DogBreed(1L, "001", "Labrador", "Companheiro", 10, 12,
                         25.0, 30.0, 22.0, 28.0, false, "Médio"));

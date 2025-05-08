@@ -17,7 +17,6 @@ public class HealthRecordResponseDTO {
     private String color;
     private Double age;
     private Double weight;
-    private LocalDate admission;
     private DogSize size;
     private Gender gender;
     private Boolean death;
@@ -37,7 +36,6 @@ public class HealthRecordResponseDTO {
         this.color = entity.getColor();
         this.age = entity.getAge();
         this.weight = entity.getWeight();
-        this.admission = entity.getAdmission();
         this.size = entity.getSize();
         this.gender = entity.getGender();
         this.death = entity.getDeath();
@@ -74,10 +72,6 @@ public class HealthRecordResponseDTO {
 
     public Double getWeight() {
         return weight;
-    }
-
-    public LocalDate getAdmission() {
-        return admission;
     }
 
     public DogSize getSize() {
