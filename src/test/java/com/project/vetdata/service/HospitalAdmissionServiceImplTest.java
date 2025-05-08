@@ -225,6 +225,24 @@ public class HospitalAdmissionServiceImplTest {
         assertTrue(result.isEmpty());
     }
 
+    @Test
+    public void given_valid_is_when_deleteHospitalAdmission_is_called_then_user_is_deleted() {
+        Long hospitalAdmissionId = 1L;
+
+        hospitalAdmissionService.deleteHospitalAdmission(hospitalAdmissionId);
+
+        verify(hospitalAdmissionRepository, times(1)).deleteById(hospitalAdmissionId);
+    }
+
+    @Test
+    public void given_invalid_id_when_deleteHospitalAdmission_the_no_exception_is_thrown_and_repository_is_called() {
+        Long invalidHospitalAdmissionId = 999L;
+
+        hospitalAdmissionService.deleteHospitalAdmission(invalidHospitalAdmissionId);
+
+        verify(hospitalAdmissionRepository, times(1)).deleteById(invalidHospitalAdmissionId);
+    }
+
     private HospitalAdmissionCreateDTO getFakeHospitalAdmissionDTO() {
         HospitalAdmissionCreateDTO dto = new HospitalAdmissionCreateDTO();
         dto.setDate(LocalDate.of(2025, 4, 24));

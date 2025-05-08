@@ -362,4 +362,85 @@ public class HospitalAdmissionControllerIT {
                 .then()
                 .statusCode(204);
     }
+
+    @Test
+    public void given_existing_hospitalAdmissionId_when_deleteHospitalAdmission_then_returnsNoContent() {
+        DogBreed dogBreed = new DogBreed(null, "1", "Pug", "Amigável", 10, 12, 30D, 34D, 25D,
+                29D, false, "Grande");
+        DogBreed savedBreed = dogBreedRepository.save(dogBreed);
+
+        HealthRecord healthRecord = new HealthRecord(null, 4.0, "P01", "Preto", false, Euthanasia.NO, Gender.MALE,
+                "Torresmo", DogSize.LARGE, "Beatriz", 20.0, savedBreed);
+        HealthRecord savedHealthRecord = healthRecordRepository.save(healthRecord);
+
+        Diagnostic diagnostic = new Diagnostic("Fratura", "teste");
+        Diagnostic savedDiagnostic = diagnosticRepository.save(diagnostic);
+
+        PostOperative postOperative = new PostOperative("teste");
+        PostOperative savedPostOperative = postOperativeRepository.save(postOperative);
+
+        HospitalAdmission admission = new HospitalAdmission();
+        admission.setDate(LocalDate.of(2025, 7, 16));
+        admission.setReasonHospitalization("Tratamento");
+        admission.setDateMedicalDischarge(LocalDate.of(2025, 5, 10));
+        admission.setDateReturns(LocalDate.of(2025, 6, 16));
+        admission.setMedicalEvolution("Recuperando");
+        admission.setTreatmentNextSteps("Retorno");
+        admission.setHealthRecord(savedHealthRecord);
+        admission.setDiagnostics(Set.of(savedDiagnostic));
+        admission.setPostOperatives(Set.of(savedPostOperative));
+        HospitalAdmission savedAdmission = hospitalAdmissionRepository.save(admission);
+
+        given()
+                .pathParam("id", savedAdmission.getId())
+                .when()
+                .delete("/hospital-admission/{id}")
+                .then()
+                .statusCode(204);
+
+        Optional<HospitalAdmission> deleted = hospitalAdmissionRepository.findById(savedAdmission.getId());
+        assertTrue(deleted.isEmpty(), "A internação deveria ter sido deletada do banco");
+    }
+
+    @Test
+    public void given_non_existing_hospitalAdmissionId_when_deleteHospitalAdmission_then_returns_notFound() {
+        DogBreed dogBreed = new DogBreed(null, "1", "Pug", "Amigável", 10, 12, 30D, 34D, 25D,
+                29D, false, "Grande");
+        DogBreed savedBreed = dogBreedRepository.save(dogBreed);
+
+        HealthRecord healthRecord = new HealthRecord(null, 4.0, "P01", "Preto", false, Euthanasia.NO, Gender.MALE,
+                "Torresmo", DogSize.LARGE, "Beatriz", 20.0, savedBreed);
+        HealthRecord savedHealthRecord = healthRecordRepository.save(healthRecord);
+
+        Diagnostic diagnostic = new Diagnostic("Fratura", "teste");
+        Diagnostic savedDiagnostic = diagnosticRepository.save(diagnostic);
+
+        PostOperative postOperative = new PostOperative("teste");
+        PostOperative savedPostOperative = postOperativeRepository.save(postOperative);
+
+        HospitalAdmission admission = new HospitalAdmission();
+        admission.setDate(LocalDate.of(2025, 7, 16));
+        admission.setReasonHospitalization("Tratamento");
+        admission.setDateMedicalDischarge(LocalDate.of(2025, 5, 10));
+        admission.setDateReturns(LocalDate.of(2025, 6, 16));
+        admission.setMedicalEvolution("Recuperando");
+        admission.setTreatmentNextSteps("Retorno");
+        admission.setHealthRecord(savedHealthRecord);
+        admission.setDiagnostics(Set.of(savedDiagnostic));
+        admission.setPostOperatives(Set.of(savedPostOperative));
+        HospitalAdmission savedAdmission = hospitalAdmissionRepository.save(admission);
+
+        given()
+                .pathParam("id", 99L)
+                .when()
+                .delete("/hospital-admission/{id}")
+                .then()
+                .statusCode(404);
+
+        HospitalAdmission existingAdmission = hospitalAdmissionRepository.findById(admission.getId()).orElse(null);
+        assertNotNull(existingAdmission, "A internação deveria existir no bancko de dados.");
+        assertEquals("Tratamento", existingAdmission.getReasonHospitalization());
+        assertEquals("Recuperando", existingAdmission.getMedicalEvolution());
+        assertEquals("Retorno", existingAdmission.getTreatmentNextSteps());
+    }
 }

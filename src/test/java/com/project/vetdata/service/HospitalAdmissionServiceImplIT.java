@@ -26,6 +26,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -258,6 +259,37 @@ public class HospitalAdmissionServiceImplIT {
         assertNotNull(result);
         assertTrue(result.isEmpty());
         assertEquals(0, result.size());
+    }
+
+    @Test
+    public void given_valid_is_when_deleteHospitalAdmission_then_record_is_deleted() {
+        DogBreed breed = dogBreedRepository.save(createFakeBreed());
+        HealthRecord healthRecord = healthRecordRepository.save(createFakeHealthRecord(breed));
+        PostOperative postOperative = postOperativeRepository.save(createFakePostOperative());
+        Diagnostic diagnostic = diagnosticRepository.save(createFakeDiagnostic());
+
+        HospitalAdmissionCreateDTO dto = getFakeHospitalAdmissionDTO(healthRecord.getId(), List.of(postOperative.getId()), List.of(diagnostic.getId()));
+
+        HospitalAdmissionResponseDTO admission = hospitalAdmissionService.createHospitalAdmission(dto);
+
+        assertNotNull(admission.getId(), "Confere se a internação foi salva!");
+
+        Long id = admission.getId();
+        hospitalAdmissionService.deleteHospitalAdmission(id);
+
+        Optional<HospitalAdmission> deleted = hospitalAdmissionRepository.findById(id);
+        assertFalse(deleted.isPresent(), "A internação deve ter sido deletada!");
+    }
+
+    @Test
+    public void given_invalid_id_when_deleteHospitalAdmission_then_no_exception_throws() {
+        Long invalidId = 99L;
+
+        try {
+            hospitalAdmissionService.deleteHospitalAdmission(invalidId);
+        } catch (Exception ex) {
+            fail("Não deve ter exceções");
+        }
     }
 
     private DogBreed createFakeBreed() {
