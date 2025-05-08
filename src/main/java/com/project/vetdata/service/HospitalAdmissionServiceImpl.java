@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -156,5 +157,15 @@ public class HospitalAdmissionServiceImpl implements HospitalAdmissionService {
         return admissions.stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteHospitalAdmission(Long id) {
+        hospitalAdmissionRepository.deleteById(id);
+    }
+
+    @Override
+    public Optional<HospitalAdmission> getHospitalAdmissionById(Long id) {
+        return hospitalAdmissionRepository.findById(id);
     }
 }

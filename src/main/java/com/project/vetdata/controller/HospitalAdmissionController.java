@@ -71,4 +71,21 @@ public class HospitalAdmissionController {
         List<HospitalAdmissionResponseDTO> admissions = hospitalAdmissionService.findAll();
         return  ResponseEntity.ok(admissions);
     }
+
+    @Operation(summary = "Remover internação por ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Internação removida!"),
+            @ApiResponse(responseCode = "404", description = "Intenação não encontrada!", content = @Content)
+    })
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteHospitalAdmission(@PathVariable Long id) {
+        return hospitalAdmissionService.getHospitalAdmissionById(id)
+                .map(this::handleDelete)
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    private ResponseEntity<Void> handleDelete(HospitalAdmission admission) {
+        hospitalAdmissionService.deleteHospitalAdmission(admission.getId());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
