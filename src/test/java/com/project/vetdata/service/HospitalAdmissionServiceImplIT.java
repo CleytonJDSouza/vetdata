@@ -292,6 +292,36 @@ public class HospitalAdmissionServiceImplIT {
         }
     }
 
+    @Test
+    public void given_existing_hospitalAdmission_when_getHospitalAdmissionById_then_returns_hospitalAdmission() {
+        DogBreed breed = dogBreedRepository.save(createFakeBreed());
+        HealthRecord healthRecord = healthRecordRepository.save(createFakeHealthRecord(breed));
+        PostOperative postOperative = postOperativeRepository.save(createFakePostOperative());
+        Diagnostic diagnostic = diagnosticRepository.save(createFakeDiagnostic());
+
+        HospitalAdmissionCreateDTO dto = getFakeHospitalAdmissionDTO(
+                healthRecord.getId(),
+                List.of(postOperative.getId()),
+                List.of(diagnostic.getId())
+        );
+
+        HospitalAdmissionResponseDTO createdAdmission = hospitalAdmissionService.createHospitalAdmission(dto);
+
+        HospitalAdmission foundAdmission = hospitalAdmissionService.getHospitalAdmissionById(createdAdmission.getId()).get();
+
+        assertNotNull(foundAdmission);
+        assertEquals(createdAdmission.getId(), foundAdmission.getId());
+    }
+
+    @Test
+    public void given_non_existing_hospitalAdmission_when_getHospitalAdmissionById_then_returns_empty_optional() {
+        Long nonExistentId = 99L;
+
+        Optional<HospitalAdmission> result = hospitalAdmissionService.getHospitalAdmissionById(nonExistentId);
+
+        assertThat(result).isNotPresent();
+    }
+
     private DogBreed createFakeBreed() {
         DogBreed breed = new DogBreed();
         breed.setName("Pug");

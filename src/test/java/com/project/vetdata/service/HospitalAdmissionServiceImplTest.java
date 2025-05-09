@@ -243,6 +243,30 @@ public class HospitalAdmissionServiceImplTest {
         verify(hospitalAdmissionRepository, times(1)).deleteById(invalidHospitalAdmissionId);
     }
 
+    @Test
+    public void given_valid_id_when_getHospitalAdmissionById_is_called_then_healthRecord_is_returned() {
+        Long id = 1L;
+        HospitalAdmission admission = getFakeHospitalAdmission();
+
+        when(hospitalAdmissionRepository.findById(id)).thenReturn(Optional.of(admission));
+
+        Optional<HospitalAdmission> result = hospitalAdmissionService.getHospitalAdmissionById(id);
+
+        assertTrue(result.isPresent(), "A internação deve ser encontrada");
+        assertEquals(admission.getTreatmentNextSteps(), result.get().getTreatmentNextSteps(), "O nome do tratamento deve ser igual");
+    }
+
+    @Test
+    public void given_invalid_is_when_getHospitalAdmissionById_is_called_optional_empty_is_returned() {
+        Long id = 99L;
+
+        when(hospitalAdmissionRepository.findById(id)).thenReturn(Optional.empty());
+
+        Optional<HospitalAdmission> result = hospitalAdmissionService.getHospitalAdmissionById(id);
+
+        assertFalse(result.isPresent(), "A internação não deve econtrada");
+    }
+
     private HospitalAdmissionCreateDTO getFakeHospitalAdmissionDTO() {
         HospitalAdmissionCreateDTO dto = new HospitalAdmissionCreateDTO();
         dto.setDate(LocalDate.of(2025, 4, 24));

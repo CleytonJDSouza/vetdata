@@ -1,5 +1,6 @@
 package com.project.vetdata.controller;
 
+import com.project.vetdata.dto.HealthRecordResponseDTO;
 import com.project.vetdata.dto.HospitalAdmissionCreateDTO;
 import com.project.vetdata.dto.HospitalAdmissionResponseDTO;
 import com.project.vetdata.dto.HospitalAdmissionUpdateDTO;
@@ -87,5 +88,24 @@ public class HospitalAdmissionController {
     private ResponseEntity<Void> handleDelete(HospitalAdmission admission) {
         hospitalAdmissionService.deleteHospitalAdmission(admission.getId());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Operation(summary = "Buscar internação pelo ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Internação encontrada!",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = HealthRecordResponseDTO.class))}),
+            @ApiResponse(responseCode = "400", description = "ID inválido!", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Internação não encontrada!", content = @Content)
+    })
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getHospitalAdmissionById(@PathVariable Long id) {
+        return hospitalAdmissionService.getHospitalAdmissionById(id)
+                .map(this::convertToResponseEntity)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    private ResponseEntity<?> convertToResponseEntity(HospitalAdmission admission) {
+        return ResponseEntity.ok(new HospitalAdmissionResponseDTO(admission));
     }
 }
