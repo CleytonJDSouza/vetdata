@@ -11,8 +11,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface HealthRecordRepository extends JpaRepository<HealthRecord, Long> {
 
-    @Query(value = "SELECT * FROM health_records WHERE LOWER(patient) LIKE CONCAT('%', LOWER(:search), '%')",
-            countQuery = "SELECT COUNT(*) FROM health_records WHERE LOWER(patient) LIKE CONCAT('%', LOWER(:search), '%')",
+    @Query(value = "SELECT * FROM health_record WHERE LOWER(patient) LIKE CONCAT('%', LOWER(:search), '%')",
+            countQuery = "SELECT COUNT(*) FROM health_record WHERE LOWER(patient) LIKE CONCAT('%', LOWER(:search), '%')",
             nativeQuery = true
     )
     Page<HealthRecord> searchByPatient(@Param("search") String search, Pageable pageable);
