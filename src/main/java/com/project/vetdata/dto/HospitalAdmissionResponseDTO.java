@@ -1,7 +1,13 @@
 package com.project.vetdata.dto;
 
+import com.project.vetdata.model.Diagnostic;
+import com.project.vetdata.model.HospitalAdmission;
+import com.project.vetdata.model.PostOperative;
+
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class HospitalAdmissionResponseDTO {
 
@@ -31,6 +37,19 @@ public class HospitalAdmissionResponseDTO {
         this.healthRecordId = healthRecordId;
         this.diagnosticIds = diagnosticIds;
         this.postOperativeIds = postOperativeIds;
+    }
+
+    public HospitalAdmissionResponseDTO(HospitalAdmission admission) {
+        this.id = admission.getId();
+        this.date = admission.getDate();
+        this.reasonHospitalization = admission.getReasonHospitalization();
+        this.dateMedicalDischarge = admission.getDateMedicalDischarge();
+        this.dateReturns = admission.getDateReturns();
+        this.medicalEvolution = admission.getMedicalEvolution();
+        this.treatmentNextSteps = admission.getTreatmentNextSteps();
+        this.healthRecordId = admission.getHealthRecord() != null ? admission.getHealthRecord().getId() : null;
+        this.diagnosticIds = admission.getDiagnostics() != null ? admission.getDiagnostics().stream().map(Diagnostic::getId).collect(Collectors.toSet()) : new HashSet<>();
+        this.postOperativeIds = admission.getPostOperatives() != null ? admission.getPostOperatives().stream().map(PostOperative::getId).collect(Collectors.toSet()) : new HashSet<>();
     }
 
     public Long getId() {

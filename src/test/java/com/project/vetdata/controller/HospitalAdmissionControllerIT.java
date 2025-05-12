@@ -443,4 +443,56 @@ public class HospitalAdmissionControllerIT {
         assertEquals("Recuperando", existingAdmission.getMedicalEvolution());
         assertEquals("Retorno", existingAdmission.getTreatmentNextSteps());
     }
+
+    @Test
+    public void given_valid_id_when_getHospitalAdmissionById_then_returns_hospitalAdmission() {
+        DogBreed dogBreed = new DogBreed(null, "1", "Pug", "Amigável", 10, 12, 30D, 34D, 25D,
+                29D, false, "Grande");
+        DogBreed savedBreed = dogBreedRepository.save(dogBreed);
+
+        HealthRecord healthRecord = new HealthRecord(null, 4.0, "P01", "Preto", false, Euthanasia.NO, Gender.MALE,
+                "Torresmo", DogSize.LARGE, "Beatriz", 20.0, savedBreed);
+        HealthRecord savedHealthRecord = healthRecordRepository.save(healthRecord);
+
+        Diagnostic diagnostic = new Diagnostic("Fratura", "teste");
+        Diagnostic savedDiagnostic = diagnosticRepository.save(diagnostic);
+
+        PostOperative postOperative = new PostOperative("teste");
+        PostOperative savedPostOperative = postOperativeRepository.save(postOperative);
+
+        HospitalAdmission admission = new HospitalAdmission();
+        admission.setDate(LocalDate.of(2025, 7, 16));
+        admission.setReasonHospitalization("Tratamento");
+        admission.setDateMedicalDischarge(LocalDate.of(2025, 5, 10));
+        admission.setDateReturns(LocalDate.of(2025, 6, 16));
+        admission.setMedicalEvolution("Recuperando");
+        admission.setTreatmentNextSteps("Retorno");
+        admission.setHealthRecord(savedHealthRecord);
+        admission.setDiagnostics(Set.of(savedDiagnostic));
+        admission.setPostOperatives(Set.of(savedPostOperative));
+        HospitalAdmission savedAdmission = hospitalAdmissionRepository.save(admission);
+
+        given()
+                .pathParam("id", savedAdmission.getId())
+                .when()
+                .get("/hospital-admission/{id}")
+                .then()
+                .statusCode(200)
+                .body("id", equalTo(savedAdmission.getId().intValue()))
+                .body("treatmentNextSteps", equalTo("Retorno"))
+                .body("medicalEvolution", equalTo("Recuperando"))
+                .body("date", equalTo("2025-07-16"))
+                .body("dateMedicalDischarge", equalTo("2025-05-10"))
+                .body("dateReturns", equalTo("2025-06-16"));
+    }
+
+    @Test
+    public void given_non_existent_id_when_getHospitalAdmissionById_then_returns_notFound() {
+        given()
+                .pathParam("id", 99L)
+                .when()
+                .get("/hospital-admission/{id}")
+                .then()
+                .statusCode(404);
+    }
 }
