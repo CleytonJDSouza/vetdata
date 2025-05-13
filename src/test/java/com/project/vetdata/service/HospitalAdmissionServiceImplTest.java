@@ -267,6 +267,58 @@ public class HospitalAdmissionServiceImplTest {
         assertFalse(result.isPresent(), "A internação não deve econtrada");
     }
 
+    @Test
+    public void given_hospitalAdmission_when_HospitalAdmissionResponseDTO_constructor_called_then_fields_are_mapped_correctly() {
+        HospitalAdmission admission = getFakeHospitalAdmission();
+        admission.setHealthRecord(getFakeHealthRecord());
+        admission.setDiagnostics(Set.of(getFakeDiagnostic()));
+        admission.setPostOperatives(Set.of(getFakePostOperative()));
+
+        HospitalAdmissionResponseDTO responseDTO = new HospitalAdmissionResponseDTO(admission);
+
+        assertNotNull(responseDTO);
+        assertEquals(admission.getId(), responseDTO.getId());
+        assertEquals(admission.getDate(), responseDTO.getDate());
+        assertEquals(admission.getReasonHospitalization(), responseDTO.getReasonHospitalization());
+        assertEquals(admission.getDateMedicalDischarge(), responseDTO.getDateMedicalDischarge());
+        assertEquals(admission.getDateReturns(), responseDTO.getDateReturns());
+        assertEquals(admission.getMedicalEvolution(), responseDTO.getMedicalEvolution());
+        assertEquals(admission.getTreatmentNextSteps(), responseDTO.getTreatmentNextSteps());
+        assertEquals(admission.getHealthRecord().getId(), responseDTO.getHealthRecordId());
+        assertEquals(1, responseDTO.getDiagnosticIds().size());
+        assertEquals(1, responseDTO.getPostOperativeIds().size());
+    }
+
+    @Test
+    void given_hospitalAdmission_with_null_fields_when_HospitalAdmissionResponseDTO_constructor_called_then_handle_nulls_correctly() {
+        HospitalAdmission admission = new HospitalAdmission();
+        admission.setDate(LocalDate.now());
+        admission.setReasonHospitalization("Reason");
+        admission.setDateMedicalDischarge(LocalDate.now().plusDays(10));
+        admission.setDateReturns(LocalDate.now().plusDays(20));
+        admission.setMedicalEvolution(null);
+        admission.setTreatmentNextSteps("Treatment Steps");
+        admission.setHealthRecord(null);
+        admission.setDiagnostics(null);
+        admission.setPostOperatives(null);
+
+        HospitalAdmissionResponseDTO responseDTO = new HospitalAdmissionResponseDTO(admission);
+
+        assertNotNull(responseDTO);
+        assertEquals(admission.getId(), responseDTO.getId());
+        assertEquals(admission.getDate(), responseDTO.getDate());
+        assertEquals(admission.getReasonHospitalization(), responseDTO.getReasonHospitalization());
+        assertEquals(admission.getDateMedicalDischarge(), responseDTO.getDateMedicalDischarge());
+        assertEquals(admission.getDateReturns(), responseDTO.getDateReturns());
+        assertNull(responseDTO.getMedicalEvolution());
+        assertEquals(admission.getTreatmentNextSteps(), responseDTO.getTreatmentNextSteps());
+        assertNull(responseDTO.getHealthRecordId());
+        assertNotNull(responseDTO.getDiagnosticIds());
+        assertTrue(responseDTO.getDiagnosticIds().isEmpty());
+        assertNotNull(responseDTO.getPostOperativeIds());
+        assertTrue(responseDTO.getPostOperativeIds().isEmpty());
+    }
+
     private HospitalAdmissionCreateDTO getFakeHospitalAdmissionDTO() {
         HospitalAdmissionCreateDTO dto = new HospitalAdmissionCreateDTO();
         dto.setDate(LocalDate.of(2025, 4, 24));

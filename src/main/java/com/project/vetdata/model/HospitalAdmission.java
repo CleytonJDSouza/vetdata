@@ -37,13 +37,13 @@ public class HospitalAdmission {
             foreignKey = @ForeignKey(name = "fk_health_record_id"))
     private HealthRecord healthRecord;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "admission_post_operative",
             joinColumns = @JoinColumn(name = "id_hospital_admission"),
             inverseJoinColumns = @JoinColumn(name = "id_post_operative"))
     private Set<PostOperative> postOperatives = new HashSet<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "admission_diagnostic",
             joinColumns = @JoinColumn(name = "id_hospital_admission"),
             inverseJoinColumns = @JoinColumn(name = "id_diagnostic"))

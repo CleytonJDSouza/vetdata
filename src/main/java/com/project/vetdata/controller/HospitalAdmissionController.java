@@ -90,11 +90,11 @@ public class HospitalAdmissionController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @Operation(summary = "Buscar internação pelo ID")
+    @Operation(summary = "Buscar internação hospitalar pelo ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Internação encontrada!",
                     content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = HealthRecordResponseDTO.class))}),
+                            schema = @Schema(implementation = HospitalAdmissionResponseDTO.class))}),
             @ApiResponse(responseCode = "400", description = "ID inválido!", content = @Content),
             @ApiResponse(responseCode = "404", description = "Internação não encontrada!", content = @Content)
     })
