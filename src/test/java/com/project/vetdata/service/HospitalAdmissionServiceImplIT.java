@@ -307,10 +307,11 @@ public class HospitalAdmissionServiceImplIT {
 
         HospitalAdmissionResponseDTO createdAdmission = hospitalAdmissionService.createHospitalAdmission(dto);
 
-        HospitalAdmission foundAdmission = hospitalAdmissionService.getHospitalAdmissionById(createdAdmission.getId()).get();
+        Optional<HospitalAdmission> foundAdmission = hospitalAdmissionService.getHospitalAdmissionById(createdAdmission.getId());
 
         assertNotNull(foundAdmission);
-        assertEquals(createdAdmission.getId(), foundAdmission.getId());
+        assertEquals(createdAdmission.getId(), foundAdmission.get().getId());
+        assertEquals(healthRecord.getId(), foundAdmission.get().getHealthRecord().getId());
     }
 
     @Test
