@@ -82,9 +82,6 @@ public class DogBreedServiceImpl implements DogBreedService {
             if (dogBreedUpdateDTO.getHypoallergenic() != null) {
                 existingBreed.setHypoallergenic(dogBreedUpdateDTO.getHypoallergenic());
             }
-            if (dogBreedUpdateDTO.getSize() != null) {
-                existingBreed.setSize(dogBreedUpdateDTO.getSize());
-            }
             return dogBreedRepository.save(existingBreed);
         }).orElseThrow(() -> new BreedNotFoundException("Raça não encontrada!" + id));
     }
@@ -105,7 +102,6 @@ public class DogBreedServiceImpl implements DogBreedService {
         breed.setFemaleWeightMin(dto.getFemaleWeightMin());
         breed.setFemaleWeightMax(dto.getFemaleWeightMax());
         breed.setHypoallergenic(dto.getHypoallergenic());
-        breed.setSize(dto.getSize());
         breed.setIdExternalApi(null);
         return breed;
     }

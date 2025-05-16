@@ -86,7 +86,7 @@ public class HealthRecordControllerIT {
     public void given_valid_healthRecordCreateDTO_when_create_healthRecord_then_returns_created() {
         DogBreed dogBreed = new DogBreed(null, "2", "Pug", "Amigável e inteligente e esperto",
                 10, 12, 30D, 34D, 25D, 29D,
-                false, "Medio");
+                false);
         DogBreed savedBreed = dogBreedRepository.save(dogBreed);
 
         HealthRecordCreateDTO dto = new HealthRecordCreateDTO();
@@ -157,7 +157,7 @@ public class HealthRecordControllerIT {
     @Test
     public void given_valid_healthRecordId_and_valid_data_when_updateHealthRecord_then_returns_updatedHealthRecord() {
         DogBreed dogBreed = new DogBreed(null, "2", "Pug", "Amigável e inteligente e esperto",
-                10, 12, 30D, 34D, 25D, 29D, false, "Medio");
+                10, 12, 30D, 34D, 25D, 29D, false);
         DogBreed savedBreed = dogBreedRepository.save(dogBreed);
 
         HealthRecord record = new HealthRecord();
@@ -219,7 +219,7 @@ public class HealthRecordControllerIT {
     @Test
     public void given_invalid_id_when_updateHealthRecord_then_returns_badRequest() {
         DogBreed dogBreed = new DogBreed(null, "2", "Pug", "Amigável e inteligente e esperto",
-                10, 12, 30D, 34D, 25D, 29D, false, "Medio");
+                10, 12, 30D, 34D, 25D, 29D, false);
         DogBreed savedBreed = dogBreedRepository.save(dogBreed);
 
         HealthRecord record = new HealthRecord();
@@ -274,7 +274,7 @@ public class HealthRecordControllerIT {
     @Test
     public void given_non_existent_healthRecordId_when_updateHealthRecord_then_returns_notFound() {
         DogBreed dogBreed = new DogBreed(null, "2", "Pug", "Amigável e inteligente e esperto",
-                10, 12, 30D, 34D, 25D, 29D, false, "Medio");
+                10, 12, 30D, 34D, 25D, 29D, false);
         DogBreed savedBreed = dogBreedRepository.save(dogBreed);
 
         HealthRecord record = new HealthRecord();
@@ -329,7 +329,7 @@ public class HealthRecordControllerIT {
     @Test
     public void given_healthRecordsInDatabase_when_getAllHealthRecords_then_returnsPagedList() {
         DogBreed dogBreed = new DogBreed(null, "2", "Pug", "Amigável e inteligente e esperto",
-                10, 12, 30D, 34D, 25D, 29D, false, "Medio");
+                10, 12, 30D, 34D, 25D, 29D, false);
         DogBreed savedBreed = dogBreedRepository.save(dogBreed);
 
         HealthRecord record1 = new HealthRecord();
@@ -404,7 +404,7 @@ public class HealthRecordControllerIT {
     @Test
     public void given_existing_healthRecordId_when_deleteHealthRecord_then_returnsNoContent() {
         DogBreed dogBreed = new DogBreed(null, "2", "Pug", "Amigável e inteligente e esperto",
-                10, 12, 30D, 34D, 25D, 29D, false, "Medio");
+                10, 12, 30D, 34D, 25D, 29D, false);
         DogBreed savedBreed = dogBreedRepository.save(dogBreed);
 
         HealthRecord record = new HealthRecord();
@@ -435,7 +435,7 @@ public class HealthRecordControllerIT {
     @Test
     public void given_non_existing_healthRecordId_when_deleteHealthRecord_then_returns_notFound() {
         DogBreed dogBreed = new DogBreed(null, "2", "Pug", "Amigável e inteligente e esperto",
-                10, 12, 30D, 34D, 25D, 29D, false, "Medio");
+                10, 12, 30D, 34D, 25D, 29D, false);
         DogBreed savedBreed = dogBreedRepository.save(dogBreed);
 
         HealthRecord record = new HealthRecord();
@@ -468,7 +468,7 @@ public class HealthRecordControllerIT {
     @Test
     public void given_valid_id_when_getHealthRecordById_then_returns_healthRecord() {
         DogBreed dogBreed = new DogBreed(null, "2", "Pug", "Amigável e inteligente e esperto",
-                10, 12, 30D, 34D, 25D, 29D, false, "Medio");
+                10, 12, 30D, 34D, 25D, 29D, false);
         DogBreed savedBreed = dogBreedRepository.save(dogBreed);
 
         HealthRecord record = new HealthRecord();

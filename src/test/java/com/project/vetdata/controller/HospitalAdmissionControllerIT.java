@@ -93,7 +93,7 @@ public class HospitalAdmissionControllerIT {
     @Test
     public void given_valid_hospitalAdmissionCreateDTO_when_createHospitalAdmission_then_returns_created() {
         DogBreed dogBreed = new DogBreed(null, "1", "Pug", "Amigável", 10, 12, 30D, 34D, 25D,
-                29D, false, "Grande");
+                29D, false);
         DogBreed savedBreed = dogBreedRepository.save(dogBreed);
 
         HealthRecord healthRecord = new HealthRecord(null, 4.0, "P01", "Preto", false, Euthanasia.NO, Gender.MALE,
@@ -175,7 +175,7 @@ public class HospitalAdmissionControllerIT {
     @Test
     public void given_valid_hospitalAdmissionId_and_data_valid_updateHospitalAdmission_then_returns_updateAdmission() {
         DogBreed dogBreed = new DogBreed(null, "1", "Pug", "Amigável", 10, 12, 30D, 34D, 25D,
-                29D, false, "Grande");
+                29D, false);
         DogBreed savedBreed = dogBreedRepository.save(dogBreed);
 
         HealthRecord healthRecord = new HealthRecord(null, 4.0, "P01", "Preto", false, Euthanasia.NO, Gender.MALE,
@@ -244,7 +244,7 @@ public class HospitalAdmissionControllerIT {
     @Test
     public void given_invalid_hospitalAdmissionId_and_invalid_data_when_updateHospitalAdmission_then_returns_badRequest() {
         DogBreed dogBreed = new DogBreed(null, "1", "Pug", "Amigável", 10, 12, 30D, 34D, 25D,
-                29D, false, "Grande");
+                29D, false);
         DogBreed savedBreed = dogBreedRepository.save(dogBreed);
 
         HealthRecord healthRecord = new HealthRecord(null, 4.0, "P01", "Preto", false, Euthanasia.NO, Gender.MALE,
@@ -293,7 +293,7 @@ public class HospitalAdmissionControllerIT {
     @Test
     public void given_hospitalAdmissionsInDatabase_when_getAllHospitalAdmissions_then_returnsPagedList() {
         DogBreed dogBreed = new DogBreed(null, "1", "Pug", "Amigável", 10, 12, 30D, 34D, 25D,
-                29D, false, "Grande");
+                29D, false);
         DogBreed savedBreed = dogBreedRepository.save(dogBreed);
 
         HealthRecord healthRecord = new HealthRecord(null, 4.0, "P01", "Preto", false, Euthanasia.NO, Gender.MALE,
@@ -366,7 +366,7 @@ public class HospitalAdmissionControllerIT {
     @Test
     public void given_existing_hospitalAdmissionId_when_deleteHospitalAdmission_then_returnsNoContent() {
         DogBreed dogBreed = new DogBreed(null, "1", "Pug", "Amigável", 10, 12, 30D, 34D, 25D,
-                29D, false, "Grande");
+                29D, false);
         DogBreed savedBreed = dogBreedRepository.save(dogBreed);
 
         HealthRecord healthRecord = new HealthRecord(null, 4.0, "P01", "Preto", false, Euthanasia.NO, Gender.MALE,
@@ -405,7 +405,7 @@ public class HospitalAdmissionControllerIT {
     @Test
     public void given_non_existing_hospitalAdmissionId_when_deleteHospitalAdmission_then_returns_notFound() {
         DogBreed dogBreed = new DogBreed(null, "1", "Pug", "Amigável", 10, 12, 30D, 34D, 25D,
-                29D, false, "Grande");
+                29D, false);
         DogBreed savedBreed = dogBreedRepository.save(dogBreed);
 
         HealthRecord healthRecord = new HealthRecord(null, 4.0, "P01", "Preto", false, Euthanasia.NO, Gender.MALE,
@@ -447,7 +447,7 @@ public class HospitalAdmissionControllerIT {
     @Test
     public void given_valid_id_when_getHospitalAdmissionById_then_returns_hospitalAdmission() {
         DogBreed dogBreed = new DogBreed(null, "1", "Pug", "Amigável", 10, 12, 30D, 34D, 25D,
-                29D, false, "Grande");
+                29D, false);
         DogBreed savedBreed = dogBreedRepository.save(dogBreed);
 
         HealthRecord healthRecord = new HealthRecord(null, 4.0, "P01", "Preto", false, Euthanasia.NO, Gender.MALE,

@@ -277,7 +277,6 @@ public class HealthRecordServiceImplIT {
         breed.setMaleWeightMax(34.0);
         breed.setFemaleWeightMin(28.0);
         breed.setFemaleWeightMax(32.0);
-        breed.setSize("Grande");
         breed.setHypoallergenic(false);
         return breed;
     }

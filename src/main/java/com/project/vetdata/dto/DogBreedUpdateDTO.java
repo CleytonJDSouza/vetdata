@@ -14,9 +14,8 @@ public class DogBreedUpdateDTO {
     private Double femaleWeightMin;
     private Double femaleWeightMax;
     private Boolean hypoallergenic;
-    private String size;
 
-    public DogBreedUpdateDTO(String name, String description, Integer lifeExpectancyMin, Integer lifeExpectancyMax, Double maleWeightMin, Double maleWeightMax, Double femaleWeightMin, Double femaleWeightMax, Boolean hypoallergenic, String size) {
+    public DogBreedUpdateDTO(String name, String description, Integer lifeExpectancyMin, Integer lifeExpectancyMax, Double maleWeightMin, Double maleWeightMax, Double femaleWeightMin, Double femaleWeightMax, Boolean hypoallergenic) {
         this.name = name;
         this.description = description;
         this.lifeExpectancyMin = lifeExpectancyMin;
@@ -26,7 +25,6 @@ public class DogBreedUpdateDTO {
         this.femaleWeightMin = femaleWeightMin;
         this.femaleWeightMax = femaleWeightMax;
         this.hypoallergenic = hypoallergenic;
-        this.size = size;
     }
 
     @NotBlank(message = "Campo Obrigatório")
@@ -86,11 +84,6 @@ public class DogBreedUpdateDTO {
         return hypoallergenic;
     }
 
-    @NotBlank(message = "Campo Obrigatório")
-    public String getSize() {
-        return size;
-    }
-
     public void setDescription(String description) {
         this.description = description;
     }
@@ -123,7 +116,4 @@ public class DogBreedUpdateDTO {
         this.hypoallergenic = hypoallergenic;
     }
 
-    public void setSize(String size) {
-        this.size = size;
-    }
 }

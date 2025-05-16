@@ -98,7 +98,6 @@ public class DogBreedRestControllerIT {
         dogBreed.setFemaleWeightMin(11D);
         dogBreed.setFemaleWeightMax(15D);
         dogBreed.setHypoallergenic(true);
-        dogBreed.setSize("Pequeno");
         DogBreed save = dogBreedRepository.save(dogBreed);
         when()
                 .get("/breeds/{id}", 1L)
@@ -113,8 +112,7 @@ public class DogBreedRestControllerIT {
                 .body("maleWeightMax", equalTo(16.0F))
                 .body("femaleWeightMin", equalTo(11.0F))
                 .body("femaleWeightMax", equalTo(15.0F))
-                .body("hypoallergenic", equalTo(save.getHypoallergenic()))
-                .body("size", equalTo(save.getSize()));
+                .body("hypoallergenic", equalTo(save.getHypoallergenic()));
     }
 
     @Test
@@ -146,7 +144,6 @@ public class DogBreedRestControllerIT {
         dogBreed.setFemaleWeightMin(11D);
         dogBreed.setFemaleWeightMax(15D);
         dogBreed.setHypoallergenic(true);
-        dogBreed.setSize("Pequeno");
 
         DogBreed dogBreed2 = new DogBreed();
         dogBreed2.setId(12L);
@@ -159,7 +156,6 @@ public class DogBreedRestControllerIT {
         dogBreed2.setFemaleWeightMin(11D);
         dogBreed2.setFemaleWeightMax(15D);
         dogBreed2.setHypoallergenic(false);
-        dogBreed2.setSize("Médio");
 
         DogBreed save = dogBreedRepository.save(dogBreed);
         DogBreed save2 = dogBreedRepository.save(dogBreed2);
@@ -206,7 +202,6 @@ public class DogBreedRestControllerIT {
         dogBreed.setFemaleWeightMin(7.0D);
         dogBreed.setFemaleWeightMax(11.0D);
         dogBreed.setHypoallergenic(true);
-        dogBreed.setSize("Médio");
 
         DogBreed savedDogBreed = dogBreedRepository.save(dogBreed);
 
@@ -234,7 +229,6 @@ public class DogBreedRestControllerIT {
         dogBreedCreateDTO.setFemaleWeightMin(14D);
         dogBreedCreateDTO.setFemaleWeightMax(18D);
         dogBreedCreateDTO.setHypoallergenic(true);
-        dogBreedCreateDTO.setSize("Médio");
 
         Long createdDogBreedId =
         given()
@@ -253,7 +247,6 @@ public class DogBreedRestControllerIT {
                 .body("femaleWeightMin", equalTo(dogBreedCreateDTO.getFemaleWeightMin().floatValue()))
                 .body("femaleWeightMax", equalTo(dogBreedCreateDTO.getFemaleWeightMax().floatValue()))
                 .body("hypoallergenic", equalTo(dogBreedCreateDTO.getHypoallergenic()))
-                .body("size", equalTo(dogBreedCreateDTO.getSize()))
                 .extract()
                 .jsonPath()
                 .getLong("id");
@@ -274,7 +267,6 @@ public class DogBreedRestControllerIT {
         dogBreedCreateDTO.setFemaleWeightMin(null);
         dogBreedCreateDTO.setFemaleWeightMax(-2D);
         dogBreedCreateDTO.setHypoallergenic(null);
-        dogBreedCreateDTO.setSize("");
 
                 given()
                         .contentType("application/json")
@@ -304,7 +296,6 @@ public class DogBreedRestControllerIT {
         dogBreed.setFemaleWeightMin(7.0D);
         dogBreed.setFemaleWeightMax(11.0D);
         dogBreed.setHypoallergenic(true);
-        dogBreed.setSize("Médio");
 
         dogBreedRepository.save(dogBreed);
 
@@ -332,7 +323,6 @@ public class DogBreedRestControllerIT {
         dogBreed.setFemaleWeightMin(4.0D);
         dogBreed.setFemaleWeightMax(9.0D);
         dogBreed.setHypoallergenic(false);
-        dogBreed.setSize("Médio");
 
         dogBreedRepository.save(dogBreed);
 
@@ -362,7 +352,6 @@ public class DogBreedRestControllerIT {
         dogBreed.setFemaleWeightMin(4.0D);
         dogBreed.setFemaleWeightMax(9.0D);
         dogBreed.setHypoallergenic(false);
-        dogBreed.setSize("Médio");
 
         dogBreedRepository.save(dogBreed);
 
@@ -375,7 +364,6 @@ public class DogBreedRestControllerIT {
         updateDTO.setFemaleWeightMin(5.0D);
         updateDTO.setFemaleWeightMax(10.0D);
         updateDTO.setHypoallergenic(true);
-        updateDTO.setSize("Grande");
 
         given()
                 .pathParam("id", dogBreed.getId())
@@ -398,7 +386,6 @@ public class DogBreedRestControllerIT {
         assertEquals(5.0D, updatedDogBreed.getFemaleWeightMin());
         assertEquals(10.0D, updatedDogBreed.getFemaleWeightMax());
         assertEquals(true, updatedDogBreed.getHypoallergenic());
-        assertEquals("Grande", updatedDogBreed.getSize());
     }
 
     @Test
@@ -414,7 +401,6 @@ public class DogBreedRestControllerIT {
         dogBreed.setFemaleWeightMin(4.0D);
         dogBreed.setFemaleWeightMax(9.0D);
         dogBreed.setHypoallergenic(false);
-        dogBreed.setSize("Médio");
 
         dogBreedRepository.save(dogBreed);
 
@@ -427,7 +413,6 @@ public class DogBreedRestControllerIT {
         updateDTO.setFemaleWeightMin(5.0D);
         updateDTO.setFemaleWeightMax(10.0D);
         updateDTO.setHypoallergenic(true);
-        updateDTO.setSize("Grande");
 
         given()
                 .pathParam("id", "abc")
@@ -448,7 +433,6 @@ public class DogBreedRestControllerIT {
         assertEquals(4.0D, existingBreed.getFemaleWeightMin());
         assertEquals(9.0D, existingBreed.getFemaleWeightMax());
         assertFalse(existingBreed.getHypoallergenic());
-        assertEquals("Médio", existingBreed.getSize());
     }
 
     @Test
@@ -464,7 +448,6 @@ public class DogBreedRestControllerIT {
         dogBreed.setFemaleWeightMin(4.0D);
         dogBreed.setFemaleWeightMax(9.0D);
         dogBreed.setHypoallergenic(false);
-        dogBreed.setSize("Médio");
 
         dogBreedRepository.save(dogBreed);
 
@@ -477,7 +460,6 @@ public class DogBreedRestControllerIT {
         updateDTO.setFemaleWeightMin(5.0D);
         updateDTO.setFemaleWeightMax(10.0D);
         updateDTO.setHypoallergenic(true);
-        updateDTO.setSize("Grande");
 
         given()
                 .pathParam("id", 999L)
@@ -498,7 +480,6 @@ public class DogBreedRestControllerIT {
         assertEquals(4.0D, existingBreed.getFemaleWeightMin());
         assertEquals(9.0D, existingBreed.getFemaleWeightMax());
         assertFalse(existingBreed.getHypoallergenic());
-        assertEquals("Médio", existingBreed.getSize());
     }
 
     @Test

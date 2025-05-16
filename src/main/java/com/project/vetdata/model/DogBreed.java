@@ -44,13 +44,12 @@ public class DogBreed {
 
     private Boolean hypoallergenic;
 
-    private String size;
 
     public DogBreed() {
     }
 
     public DogBreed(Long id, String idExternalApi ,String name, String description, Integer lifeExpectancyMin, Integer lifeExpectancyMax, Double maleWeightMin, Double maleWeightMax, Double femaleWeightMin,
-                    Double femaleWeightMax, Boolean hypoallergenic, String size) {
+                    Double femaleWeightMax, Boolean hypoallergenic) {
         this.id = id;
         this.idExternalApi = idExternalApi;
         this.name = name;
@@ -62,7 +61,6 @@ public class DogBreed {
         this.femaleWeightMin = femaleWeightMin;
         this.femaleWeightMax = femaleWeightMax;
         this.hypoallergenic = hypoallergenic;
-        this.size = size;
     }
 
     public Long getId() {
@@ -113,10 +111,6 @@ public class DogBreed {
         this.id = id;
     }
 
-    public String getSize() {
-        return size;
-    }
-
     public void setIdExternalApi(String idExternalApi) {
         this.idExternalApi = idExternalApi;
     }
@@ -157,9 +151,6 @@ public class DogBreed {
         this.hypoallergenic = hypoallergenic;
     }
 
-    public void setSize(String size) {
-        this.size = size;
-    }
 }
 
 

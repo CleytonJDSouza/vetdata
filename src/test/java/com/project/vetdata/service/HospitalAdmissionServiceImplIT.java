@@ -14,9 +14,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MySQLContainer;
@@ -334,7 +331,6 @@ public class HospitalAdmissionServiceImplIT {
         breed.setMaleWeightMax(8.0);
         breed.setFemaleWeightMin(6.0);
         breed.setFemaleWeightMax(8.0);
-        breed.setSize("Pequeno");
         breed.setHypoallergenic(false);
         return breed;
     }

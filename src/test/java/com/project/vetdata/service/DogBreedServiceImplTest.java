@@ -161,7 +161,6 @@ public class DogBreedServiceImplTest {
         assertEquals(updatedBreed.getFemaleWeightMin(), updatedBreed.getFemaleWeightMin(), "O peso mínimo das femeas deve ser atualizado");
         assertEquals(updatedBreed.getFemaleWeightMax(), updatedBreed.getFemaleWeightMax(), "O peso máximo das femeas deve ser atualizado");
         assertEquals(updatedBreed.getHypoallergenic(), updatedBreed.getHypoallergenic(), "A propriedade hipoalergênica deve ser atualizada");
-        assertEquals(updatedBreed.getSize(), updatedBreed.getSize(), "O tamanho deve ser atualizado");
     }
 
     @Test
@@ -204,7 +203,6 @@ public class DogBreedServiceImplTest {
         assertEquals(updateDTO.getFemaleWeightMin(), updatedBreed.getFemaleWeightMin(), "O peso mínimo das fêmeas deve ser atualizado");
         assertEquals(updateDTO.getFemaleWeightMax(), updatedBreed.getFemaleWeightMax(), "O peso máximo das fêmeas deve ser atualizado");
         assertEquals(updateDTO.getHypoallergenic(), updatedBreed.getHypoallergenic(), "A propriedade hipoalergênica deve ser atualizada");
-        assertEquals(updateDTO.getSize(), updatedBreed.getSize(), "O tamanho deve ser atualizado");
     }
 
     @Test
@@ -229,7 +227,6 @@ public class DogBreedServiceImplTest {
         assertEquals(existingBreed.getFemaleWeightMin(), updatedBreed.getFemaleWeightMin(), "O peso mínimo das fêmeas existente deve ser mantido");
         assertEquals(existingBreed.getFemaleWeightMax(), updatedBreed.getFemaleWeightMax(), "O peso máximo das fêmeas existente deve ser mantido");
         assertEquals(existingBreed.getHypoallergenic(), updatedBreed.getHypoallergenic(), "A propriedade hipoalergênica existente deve ser mantida");
-        assertEquals(existingBreed.getSize(), updatedBreed.getSize(), "O tamanho existente deve ser mantido");
     }
 
     @Test
@@ -257,19 +254,19 @@ public class DogBreedServiceImplTest {
     public DogBreed getFakeDogBreed() {
         return new DogBreed(1L, "2", "Golden Retriever", "Amigável e inteligente e esperto",
                 10, 12, 30D, 34D, 25D, 29D,
-                false, "Medio");
+                false);
     }
 
     public DogBreed getFakeDogBreed2() {
         return new DogBreed(2L, "3", "Labrador", "Amigável e inteligente e esperto",
                 10, 12, 30D, 34D, 25D, 29D,
-                false, "Medio");
+                false);
     }
 
     public DogBreed getFakeDogBreed3() {
         return new DogBreed(3L, "4", "Lhasa Apso", "Amigável e inteligente e esperto",
                 10, 12, 30D, 34D, 25D, 29D,
-                false, "Medio");
+                false);
     }
 
     public DogBreedCreateDTO getFakeDogBreedCreateDTO() {
@@ -283,7 +280,6 @@ public class DogBreedServiceImplTest {
         dto.setFemaleWeightMin(25D);
         dto.setFemaleWeightMax(29D);
         dto.setHypoallergenic(false);
-        dto.setSize("Médio");
         return dto;
     }
 
@@ -297,7 +293,6 @@ public class DogBreedServiceImplTest {
         updateDTO.setFemaleWeightMin(26D);
         updateDTO.setFemaleWeightMax(29D);
         updateDTO.setHypoallergenic(true);
-        updateDTO.setSize("Médio");
         return updateDTO;
     }
 }

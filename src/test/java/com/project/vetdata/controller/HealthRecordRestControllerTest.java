@@ -54,7 +54,7 @@ public class HealthRecordRestControllerTest {
         HealthRecord savedRecord = new HealthRecord(10L, dto.getAge(), dto.getCodPatient(), dto.getColor(), dto.getDeath(), dto.getEuthanasia(),
                 dto.getGender(), dto.getPatient(), dto.getSize(), dto.getTutor(), dto.getWeight(), new DogBreed(1L, "123", "Labrador",
                 "Amigavel e Corajoso", 8, 10, 20.0, 25.0, 18.0, 23.0,
-                false,"Médio"));
+                false));
 
         when(healthRecordService.createHealthRecord(any(HealthRecordCreateDTO.class))).thenReturn(savedRecord);
 
@@ -117,7 +117,7 @@ public class HealthRecordRestControllerTest {
                 updateDTO.getTutor(),
                 updateDTO.getWeight(),
                 new DogBreed(2L, "456", "Poodle", "Inteligente e Ativo", 12, 15,
-                        10.0, 12.0, 8.0, 10.0, false, "Pequeno")
+                        10.0, 12.0, 8.0, 10.0, false)
         );
 
         when(healthRecordService.updateHealthRecord(eq(123L), any(HealthRecordUpdateDTO.class)))
@@ -190,11 +190,11 @@ public class HealthRecordRestControllerTest {
                 new HealthRecord(1L, 3.0, "C001", "Preto", false, Euthanasia.NO,
                         Gender.FEMALE, "Cacau", DogSize.SMALL, "Andrea", 10.0,
                         new DogBreed(1L, "001", "Beagle", "Curioso", 10, 12,
-                                10.0, 15.0, 8.0, 12.0, false, "Pequeno")),
+                                10.0, 15.0, 8.0, 12.0, false)),
                 new HealthRecord(2L, 4.0, "C002", "Marrom", false, Euthanasia.NO,
                         Gender.MALE, "Nutella", DogSize.MEDIUM, "Aline", 14.0,
                         new DogBreed(2L, "002", "Boxer", "Brincalhão", 9, 11,
-                                25.0, 32.0, 22.0, 30.0, false, "Médio"))
+                                25.0, 32.0, 22.0, 30.0, false))
         );
 
         Pageable paging = PageRequest.of(0, 2, Sort.by("id"));
@@ -229,7 +229,7 @@ public class HealthRecordRestControllerTest {
                 new HealthRecord(3L, 2.0, "C003", "Branco", false, Euthanasia.NO,
                         Gender.FEMALE, "Cacau", DogSize.SMALL, "Andrea", 11.0,
                         new DogBreed(3L, "003", "Shih Tzu", "Fofo e tranquilo", 10, 13,
-                                6.0, 8.0, 5.0, 7.0, false, "Pequeno"))
+                                6.0, 8.0, 5.0, 7.0, false))
         );
 
         Pageable paging = PageRequest.of(0, 10, Sort.by("id"));
@@ -256,7 +256,7 @@ public class HealthRecordRestControllerTest {
         HealthRecord existingRecord = new HealthRecord(healthRecordId,
                 4.0,"C357","Preto", false, Euthanasia.NO, Gender.MALE, "Nutella", DogSize.MEDIUM, "Clovis", 12.0,
                 new DogBreed(1L, "001", "Labrador", "Companheiro", 10, 12,
-                        25.0, 30.0, 22.0, 28.0, false, "Médio"));
+                        25.0, 30.0, 22.0, 28.0, false));
 
         when(healthRecordService.getHealthRecordById(healthRecordId)).thenReturn(Optional.of(existingRecord));
 
@@ -282,7 +282,7 @@ public class HealthRecordRestControllerTest {
         HealthRecord existingRecord = new HealthRecord(healthRecordId,
                 4.0,"C357","Preto", false, Euthanasia.NO, Gender.MALE, "Nutella", DogSize.MEDIUM, "Clovis", 12.0,
                 new DogBreed(1L, "001", "Labrador", "Companheiro", 10, 12,
-                        25.0, 30.0, 22.0, 28.0, false, "Médio"));
+                        25.0, 30.0, 22.0, 28.0, false));
 
         when(healthRecordService.getHealthRecordById(healthRecordId)).thenReturn(Optional.of(existingRecord));
 
