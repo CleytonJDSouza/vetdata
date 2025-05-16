@@ -60,10 +60,10 @@
                 <a href="#"><i class="fa fa-lg fa-fw  fa-h-square txt-color-blue"></i> <span class="menu-item-parent">Prontuário</span></a>
                 <ul>
                     <li th:class="${submenuHRAtivo == 'list'} ? 'active'">
-                        <a th:href="@{/health-records/list}" title="Listar"><i class="fa fa-lg fa-fw  fa-list"></i> <span class="menu-item-parent">Listar</span></a>
+                        <a th:href="@{/health-records-pages/list}" title="Listar"><i class="fa fa-lg fa-fw  fa-list"></i> <span class="menu-item-parent">Listar</span></a>
                     </li>
                     <li th:class="${submenuHRAtivo == 'form'} ? 'active'">
-                        <a th:href="@{/health-records/form}" title="Novo Prontuário"><i class="fa fa-lg fa-fw  fa-save"></i> <span class="menu-item-parent">Cadastrar</span></a>
+                        <a th:href="@{/health-records-pages/form}" title="Novo Prontuário"><i class="fa fa-lg fa-fw  fa-save"></i> <span class="menu-item-parent">Cadastrar</span></a>
                     </li>
                 </ul>
             </li>

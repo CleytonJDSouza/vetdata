@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/health-records")
+@RequestMapping("/health-records-pages")
 public class HealthRecordController {
 
     @GetMapping("form")

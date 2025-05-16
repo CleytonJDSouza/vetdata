@@ -48,6 +48,20 @@
             border: 2px solid red;
             background-color: #fff0f0;
         }
+
+        /* Quando o usuário corrige o erro, remove o destaque */
+        input.valid, select.valid, textarea.valid {
+            border: 2px solid green;
+            background-color: #f0fff0;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            padding-left: 10px;
+        }
+
+        .select2-container--default .select2-results__option {
+            padding-left: 10px;
+        }
     </style>
 
     <!-- FAVICONS -->
@@ -87,7 +101,7 @@
     <div id="ribbon">
         <!-- breadcrumb -->
         <ol class="breadcrumb">
-            <li>Home</li><li>Forms</li><li>Atualização de Raças</li>
+            <li>Home</li><li>Forms</li><li>Atualização de Prontuários</li>
         </ol>
         <!-- end breadcrumb -->
     </div>
@@ -102,7 +116,7 @@
                     <i class="fa-fw fa fa-pencil-square-o"></i>
                     Forms
                     <span>>
-				Form Atualização de Raça
+				Form Atualização de Prontuários
 			</span>
                 </h1>
             </div>
@@ -118,7 +132,7 @@
                     <div class="jarviswidget" id="wid-id-1" data-widget-editbutton="false" data-widget-custombutton="false">
                         <header>
                             <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
-                            <h2>Atualização de Raça </h2>
+                            <h2>Atualização de Prontuários </h2>
                         </header>
 
                         <!-- widget div-->
@@ -131,104 +145,113 @@
 
                             <!-- widget content -->
                             <div class="widget-body no-padding">
-                                <form id="breed-form" class="smart-form" novalidate="novalidate">
+                                <form id="health-record-form" class="smart-form" novalidate="novalidate">
                                     <header>
                                         Identificação
                                     </header>
                                     <input type="hidden" name="id" id="id" th:field="*{id}">
                                     <fieldset>
+                                        <div class="row">
+                                            <section class="col col-6">
+                                                <label class="input"> <i class="icon-append fa fa-paw"></i>
+                                                    <input type="text" name="codPatient" id="codPatient" placeholder="Código do Paciente">
+                                                    <b class="tooltip tooltip-bottom-right">Informe o código do paciente !</b> </label>
+                                            </section>
+                                        </div>
+
+                                        <div class="row">
+                                            <section class="col col-6">
+                                                <label class="input">  <i class="icon-append fa fa-paw"></i>
+                                                    <input type="text" name="patient" id="patient" placeholder="Paciente">
+                                                    <b class="tooltip tooltip-bottom-right">Informe o nome do paciente !</b> </label>
+                                            </section>
+                                            <section class="col col-6">
+                                                <label class="input"> <i class="icon-append fa fa-paw"></i>
+                                                    <input type="text" name="age" id="age" placeholder="Idade">
+                                                    <b class="tooltip tooltip-bottom-right">Informe a idade do paciente !</b> </label>
+                                            </section>
+                                        </div>
                                         <section>
-                                            <label class="input"> <i class="icon-append fa fa-paw"></i>
-                                                <input type="text" name="name" id="name" placeholder="Nome da raça">
-                                                <b class="tooltip tooltip-bottom-right">Informe o nome da raça !</b> </label>
+                                            <label class="input"> <i class="icon-append fa fa-user"></i>
+                                                <input type="text" name="tutor" id="tutor" placeholder="Tutor">
+                                                <b class="tooltip tooltip-bottom-right">Informe o nome do tutor !</b> </label>
                                         </section>
 
-                                        <section>
-                                            <label class="input">
-                                                <input type="text" name="description" id="description" placeholder="Descrição">
-                                                <b class="tooltip tooltip-bottom-right">Informe a descricão da raça !</b> </label>
-                                        </section>
                                     </fieldset>
 
                                     <header>
-                                        Expectativa de Vida
+                                        Características
                                     </header>
                                     <fieldset>
+                                        <section>
+                                            <select name="breed" id="breedSelect" class="select2" style="width: 100%;">
+                                            </select>
+                                        </section>
                                         <div class="row">
                                             <section class="col col-6">
                                                 <label class="input">
-                                                    <input type="text" name="lifeExpectancyMin" id="lifeExpectancyMin" placeholder="Expectativa de vida mínima">
-                                                    <b class="tooltip tooltip-bottom-right">Informe a expectativa de vida mínima da raça !</b>
+                                                    <input type="text" name="color" id="color" placeholder="Coloração">
+                                                    <b class="tooltip tooltip-bottom-right">Informe a cor do animal !</b>
                                                 </label>
                                             </section>
                                             <section class="col col-6">
                                                 <label class="input">
-                                                    <input type="text" name="lifeExpectancyMax" id="lifeExpectancyMax" placeholder="Expectativa de vida máxima">
-                                                    <b class="tooltip tooltip-bottom-right">Informe a expectativa de vida máxima da raça !</b>
+                                                    <input type="text" name="weight" id="weight" placeholder="Peso">
+                                                    <b class="tooltip tooltip-bottom-right">Informe o peso do animal !</b>
                                                 </label>
                                             </section>
                                         </div>
-                                    </fieldset>
+                                        <div class="row">
+                                            <section class="col col-6">
+                                                <label class="select">
+                                                    <select name="gender" id="gender">
+                                                        <option value="" selected="" disabled="">Gênero</option>
+                                                        <option value="MALE">Macho</option>
+                                                        <option value="FEMALE">Fêmea</option>
+                                                    </select> <i></i> </label>
+                                            </section>
+                                            <section class="col col-6">
+                                                <label class="select">
+                                                    <select name="size" id="size">
+                                                        <option value="0" selected="" disabled="">Porte</option>
+                                                        <option value="SMALL">Pequeno</option>
+                                                        <option value="MEDIUM">Médio</option>
+                                                        <option value="LARGE">Grande</option>
+                                                    </select> <i></i> </label>
+                                            </section>
+                                        </div>
 
-                                    <header>
-                                        Dimensões
-                                    </header>
-                                    <fieldset>
-                                        <div class="row">
-                                            <section class="col col-6">
-                                                <label class="input">
-                                                    <input type="text" name="maleWeightMin"  id="maleWeightMin" placeholder="Peso mínimo macho">
-                                                    <b class="tooltip tooltip-bottom-right">Informe o peso mínimo do macho !</b>
-                                                </label>
-                                            </section>
-                                            <section class="col col-6">
-                                                <label class="input">
-                                                    <input type="text" name="maleWeightMax"  id="maleWeightMax" placeholder="Peso máximo macho">
-                                                    <b class="tooltip tooltip-bottom-right">Informe o peso máximo do macho !</b>
-                                                </label>
-                                            </section>
-                                        </div>
-
-                                        <div class="row">
-                                            <section class="col col-6">
-                                                <label class="input">
-                                                    <input type="text" name="femaleWeightMin" id="femaleWeightMin" placeholder="Peso mínimo femea">
-                                                    <b class="tooltip tooltip-bottom-right">Informe o peso mínimo da fêmea !</b>
-                                                </label>
-                                            </section>
-                                            <section class="col col-6">
-                                                <label class="input">
-                                                    <input type="text" name="femaleWeightMax" id="femaleWeightMax" placeholder="Peso máximo fêmea">
-                                                    <b class="tooltip tooltip-bottom-right">Informe o peso máximo da fêmea !</b>
-                                                </label>
-                                            </section>
-                                        </div>
-                                        <div class="row">
-                                            <section class="col col-6">
-                                                <label class="input">
-                                                    <input type="text" name="size"  id="size" placeholder="Tamanho">
-                                                    <b class="tooltip tooltip-bottom-right">Informe o tamanho da raça !</b>
-                                                </label>
-                                            </section>
-                                        </div>
                                     </fieldset>
 
                                     <header>
                                         Saúde
                                     </header>
                                     <fieldset>
-                                        <section class="col col-2">
-                                            <div class="row">
-                                                <label class="toggle">
-                                                    <input type="checkbox" name="hypoallergenic"  id="hypoallergenic" checked="checked">
-                                                    <i data-swchon-text="SIM" data-swchoff-text="NAO"></i> Hipoalergênico ?</label>
-                                            </div>
-                                        </section>
+                                        <div class="row">
+                                            <section class="col col-6">
+                                                <label class="select">
+                                                    <select name="death" id="death">
+                                                        <option value="0" selected="" disabled="">Animal faleceu ?</option>
+                                                        <option value="false">Não</option>
+                                                        <option value="true">Sim</option>
+                                                    </select> <i></i> </label>
+                                            </section>
+                                            <section class="col col-6">
+                                                <label class="select">
+                                                    <select name="euthanasia" id="euthanasia">
+                                                        <option value="0" selected="" disabled="">Eutanásia</option>
+                                                        <option value="NO">Não</option>
+                                                        <option value="YES">Sim</option>
+                                                        <option value="INDICATED">Indicado</option>
+                                                    </select> <i></i> </label>
+                                            </section>
+                                        </div>
                                     </fieldset>
                                     <footer>
                                         <button type="btn" class="btn btn-primary">
                                             Atualizar
                                         </button>
+                                        <button type="button" id="reset-form" class="btn btn-default">Limpar Form</button>
                                     </footer>
                                 </form>
                             </div>
@@ -333,138 +356,187 @@
     $(document).ready(function() {
         pageSetUp();
 
-        $("#name").focus();
-
         let id = window.location.pathname.split("/").pop();
 
         loadData(id);
 
-        $.validator.addMethod("greaterThan", function(value, element, param) {
-            var minValue = $(param).val(); // Obtém o valor de lifeExpectancyMin
-            return this.optional(element) || (parseInt(value) > parseInt(minValue));
-        }, "O valor máximo deve ser maior ou igual ao valor mínimo");
+        $('#breedSelect').select2({
+            placeholder: 'Escolha a raça do cão',
+            minimumInputLength: 1,
+            language: {
+                inputTooShort: function () {
+                    return 'Digite 1 ou mais caracteres';
+                },
+                searching: function () {
+                    return 'Buscando...';
+                },
+                noResults: function () {
+                    return 'Nenhum resultado encontrado';
+                },
+                loadingMore: function () {
+                    return 'Carregando mais resultados...';
+                }
+            },
+            ajax: {
+                url: '/breeds',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        page: params.page || 0, // página atual
+                        qtdRecordsPage: 10,
+                        searchByTerm: params.term || '', // termo de busca
+                        sortBy: 'name' // ou outro campo se quiser
+                    };
+                },
+                processResults: function (data, params) {
+                    const currentPage = data.page;
+                    const totalItems = data.total;
+                    const pageSize = data.qtdRecordsPage;
 
-        $('#breed-form').validate({
+                    // Atualiza página para Select2
+                    params.page = params.page || 0;
+
+                    return {
+                        results: data.data.map(function (breed) {
+                            return {
+                                id: breed.id,
+                                text: breed.name
+                            };
+                        }),
+                        pagination: {
+                            more: (currentPage + 1) * pageSize < totalItems
+                        }
+                    };
+                },
+                cache: true
+            }
+        });
+
+        $("#codPatient").focus();
+
+        $("#reset-form").click(function() {
+            $("#health-record-form").trigger("reset");
+            $("#health-record-form").validate().resetForm();
+            $("#codPatient").focus();
+        });
+
+        $('#health-record-form').validate({
             // Rules for form validation
             rules : {
-                name : {
+                codPatient : {
                     required : true
                 },
-                description : {
+                patient : {
                     required : true
                 },
-                lifeExpectancyMin : {
+                age : {
                     required : true,
                     digits : true
                 },
-                lifeExpectancyMax : {
-                    required : true,
-                    digits : true,
-                    greaterThan: "#lifeExpectancyMin"
+                tutor : {
+                    required : true
                 },
-                maleWeightMin : {
+                breedSelect : {
+                    required : true
+                },
+                color : {
+                    required : true
+                },
+                weight : {
                     required : true,
                     digits : true
                 },
-                maleWeightMax : {
-                    required : true,
-                    digits : true,
-                    greaterThan: "#maleWeightMin"
-                },
-                femaleWeightMin : {
-                    required : true,
-                    digits : true
-                },
-                femaleWeightMax : {
-                    required : true,
-                    digits : true,
-                    greaterThan: "#femaleWeightMin"
+                gender : {
+                    required : true
                 },
                 size : {
                     required : true,
-                    digits : true
+                },
+                death : {
+                    required : true,
+                },
+                euthanasia : {
+                    required : true,
                 }
             },
             // Messages for form validation
             messages : {
-                name : {
-                    required : 'Nome da raça é obrigatório !'
+                codPatient : {
+                    required : 'Código do paciente é obrigatório !'
                 },
-                description : {
-                    required : 'Descrição da raça é obrigatória !'
+                patient : {
+                    required : 'Nome do paciente é obrigatório !'
                 },
-                lifeExpectancyMin : {
-                    required : 'A expectativa de vida mínima é obrigatória !',
+                age : {
+                    required : 'A idade do animal é obrigatória !',
                     digits : 'Esse campo só aceita números !'
                 },
-                lifeExpectancyMax : {
-                    required : 'A expectativa de vida máxima é obrigatória !',
-                    digits : 'Esse campo só aceita números !',
-                    greaterThan: "A expectativa de vida máxima deve ser maior que à mínima."
+                tutor : {
+                    required : 'A nome do tutor é obrigatório !'
                 },
-                maleWeightMin : {
-                    required : 'O peso mínimo do macho é obrigatório !',
+                breedSelect : {
+                    required : 'A raça do câo é obrigatória !'
+                },
+                color : {
+                    required : 'A cor do animal é obrigatória !'
+                },
+                weight : {
+                    required : 'O peso do animal é obrigatório !',
                     digits : 'Esse campo só aceita números !'
                 },
-                maleWeightMax : {
-                    required : 'O peso máximo do macho é obrigatório !',
-                    digits : 'Esse campo só aceita números !',
-                    greaterThan: "O peso máximo do macho deve ser maior que o peso mínimo !"
-                },
-                femaleWeightMin : {
-                    required : 'O peso mínimo da fêmea é obrigatório !',
-                    digits : 'Esse campo só aceita números !'
-                },
-                femaleWeightMax : {
-                    required : 'O peso máximo da fêmea é obrigatório !',
-                    digits : 'Esse campo só aceita números !',
-                    greaterThan: "O peso máximo da fêmea deve ser maior que o peso mínimo !"
+                gender : {
+                    required : 'O genêro do animal é obrigatório !'
                 },
                 size : {
-                    required : 'O tamanho da raça é obrigatório !',
-                    digits : 'Esse campo só aceita números !'
+                    required : 'O porte do animal é obrigatório !'
+                },
+                death : {
+                    required : 'O campo morte do animal é obrigatório !'
+                },
+                euthanasia : {
+                    required : 'O campo eutanasia é obrigatório !'
                 }
             },
-
             submitHandler : function(form) {
                 var formData = {
-                    id: $("#id").val(),
-                    name: $("#name").val(),
-                    description: $("#description").val(),
-                    lifeExpectancyMin: $("#lifeExpectancyMin").val(),
-                    lifeExpectancyMax: $("#lifeExpectancyMax").val(),
-                    maleWeightMin: $("#maleWeightMin").val(),
-                    maleWeightMax: $("#maleWeightMax").val(),
-                    femaleWeightMin: $("#femaleWeightMin").val(),
-                    femaleWeightMax: $("#femaleWeightMax").val(),
+                    codPatient: $("#codPatient").val(),
+                    patient: $("#patient").val(),
+                    age: $("#age").val(),
+                    tutor: $("#tutor").val(),
+                    color: $("#color").val(),
+                    breedId: $("#breedSelect").val(),
+                    weight: $("#weight").val(),
+                    gender: $("#gender").val(),
                     size: $("#size").val(),
-                    hypoallergenic: $("#hypoallergenic").is(":checked") // Para checkboxes
+                    death: $("#death").val(),
+                    euthanasia: $("#euthanasia").val()
                 };
                 $.ajax({
                     type: "PUT",
-                    url: "/breeds/"+formData.id,
-                    contentType: "application/json",  // IMPORTANTE: Enviar JSON
-                    data: JSON.stringify(formData),  // Converter para JSON
+                    url: "/health-records/"+id,
+                    contentType: "application/json",
+                    data: JSON.stringify(formData),
                     success: function (response) {
                         $.smallBox({
-                            title : "Raça atualizada com sucesso !",
+                            title : "Prontuário atualizado com sucesso !",
                             color : "#739E73",
                             iconSmall : "fa fa-save",
                             timeout : 3000
                         },function() {
-                            window.location.href = "/breeds-pages/list"
+                            window.location.href = "/health-records-pages/list"
                         });
                     },
                     error: function (xhr) {
                         if (xhr.status === 400) {
                             var errors = JSON.parse(xhr.responseText);
                             for (var field in errors) {
-                                $("#breed-form").validate().showErrors({
+                                $("#health-record-form").validate().showErrors({
                                     [field]: errors[field]
                                 });
                             }
                             $.bigBox({
-                                title : "Erro ao tentar atualizar uma raça !",
+                                title : "Erro ao tentar atualizar um prontuário !",
                                 content : "Existem erros de validação no seu formulário. Verifique se logo abaixo aos campos não aparecem mensagens de erros.",
                                 color : "#C46A69",
                                 //timeout: 6000,
@@ -487,21 +559,28 @@
 
     function loadData(id) {
         $.ajax({
-            url: "/breeds/" + id,
+            url: "/health-records/" + id,
             type: "GET",
             success: function (data) {
                 // Preenchendo o formulário com os dados recebidos da API
                 $('#id').val(data.id);
-                $('#name').val(data.name);
-                $('#description').val(data.description);
-                $('#lifeExpectancyMin').val(data.lifeExpectancyMin);
-                $('#lifeExpectancyMax').val(data.lifeExpectancyMax);
-                $('#maleWeightMin').val(data.maleWeightMin);
-                $('#maleWeightMax').val(data.maleWeightMax);
-                $('#femaleWeightMin').val(data.femaleWeightMin);
-                $('#femaleWeightMax').val(data.femaleWeightMax);
+                $('#codPatient').val(data.codPatient);
+                $('#patient').val(data.patient);
+                $('#age').val(data.age);
+                $('#tutor').val(data.tutor);
+               // $('#breedSelect').val(data.breedId).trigger('change');
+                $('#color').val(data.color);
+                $('#weight').val(data.weight);
+                $('#gender').val(data.gender);
                 $('#size').val(data.size);
-                $('#hypoallergenic').val(data.hypoallergenic.toString()); // Converte booleano para string
+                $('#death').val(data.death.toString());
+                $('#euthanasia').val(data.euthanasia.toString());
+                // Preencher o select2
+                if ($("#breedSelect option[value='" + data.breedId + "']").length === 0) {
+                    $('#breedSelect').append(new Option(data.breedName, data.breedId, true, true)).trigger('change');
+                } else {
+                    $('#breedSelect').val(data.breedId).trigger('change');
+                }
             },
             error: function (xhr, status, error) {
                 alert("Erro ao carregar os dados: " + xhr.responseText);
