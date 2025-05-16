@@ -30,7 +30,6 @@ CREATE TABLE IF NOT EXISTS `dog_breeds` (
   `male_weight_max` double NOT NULL,
   `male_weight_min` double NOT NULL,
   `name` varchar(255) NOT NULL,
-  `size` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1421 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 

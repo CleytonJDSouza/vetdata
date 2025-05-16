@@ -93,8 +93,7 @@ public class DogBreedRestController {
                 dogBreed.getMaleWeightMax(),
                 dogBreed.getFemaleWeightMin(),
                 dogBreed.getFemaleWeightMax(),
-                dogBreed.getHypoallergenic(),
-                dogBreed.getSize()
+                dogBreed.getHypoallergenic()
         );
     }
 

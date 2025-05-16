@@ -66,7 +66,6 @@ public class DogBreedExternalService {
         breed.setFemaleWeightMin(dto.getAttributeDTO().getFemaleWeightDTO().getMin());
         breed.setFemaleWeightMax(dto.getAttributeDTO().getFemaleWeightDTO().getMax());
         breed.setHypoallergenic(dto.getAttributeDTO().getHypoallergenic());
-        breed.setSize(null);
         return breed;
     }
 
@@ -80,8 +79,7 @@ public class DogBreedExternalService {
                 dogBreed.getMaleWeightMax(),
                 dogBreed.getFemaleWeightMin(),
                 dogBreed.getFemaleWeightMax(),
-                dogBreed.getHypoallergenic(),
-                dogBreed.getSize()
+                dogBreed.getHypoallergenic()
         );
     }
 

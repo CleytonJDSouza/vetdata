@@ -12,12 +12,11 @@ public class DogBreedDTO {
     private Double femaleWeightMin;
     private Double femaleWeightMax;
     private Boolean hypoallergenic;
-    private String size;
 
     public DogBreedDTO(){}
 
     public DogBreedDTO(Long id ,String name, String description, Integer lifeExpectancyMin, Integer lifeExpectancyMax, Double maleWeightMin, Double maleWeightMax,
-                            Double femaleWeightMin, Double femaleWeightMax, Boolean hypoallergenic, String size) {
+                            Double femaleWeightMin, Double femaleWeightMax, Boolean hypoallergenic) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -28,7 +27,6 @@ public class DogBreedDTO {
         this.femaleWeightMin = femaleWeightMin;
         this.femaleWeightMax = femaleWeightMax;
         this.hypoallergenic = hypoallergenic;
-        this.size = size;
     }
 
     public Long getId() {
@@ -69,10 +67,6 @@ public class DogBreedDTO {
 
     public Boolean getHypoallergenic() {
         return hypoallergenic;
-    }
-
-    public String getSize() {
-        return size;
     }
 
     public void setName(String name) {

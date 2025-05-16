@@ -262,7 +262,6 @@ public class DogBreedServiceImplIT {
         dogBreed.setFemaleWeightMin(27D);
         dogBreed.setFemaleWeightMax(33D);
         dogBreed.setHypoallergenic(false);
-        dogBreed.setSize(null);
         return dogBreed;
     }
 
@@ -278,7 +277,6 @@ public class DogBreedServiceImplIT {
         dogBreed.setFemaleWeightMin(27D);
         dogBreed.setFemaleWeightMax(33D);
         dogBreed.setHypoallergenic(false);
-        dogBreed.setSize(null);
         return dogBreed;
     }
 
@@ -294,7 +292,6 @@ public class DogBreedServiceImplIT {
         dogBreed.setFemaleWeightMin(27D);
         dogBreed.setFemaleWeightMax(33D);
         dogBreed.setHypoallergenic(false);
-        dogBreed.setSize(null);
         return dogBreed;
     }
 
@@ -309,7 +306,6 @@ public class DogBreedServiceImplIT {
         dogBreedCreateDTO.setFemaleWeightMin(27D);
         dogBreedCreateDTO.setFemaleWeightMax(33D);
         dogBreedCreateDTO.setHypoallergenic(false);
-        dogBreedCreateDTO.setSize("Médio");
         return dogBreedCreateDTO;
     }
 
@@ -324,7 +320,6 @@ public class DogBreedServiceImplIT {
         dogBreedCreateDTO.setFemaleWeightMin(27D);
         dogBreedCreateDTO.setFemaleWeightMax(33D);
         dogBreedCreateDTO.setHypoallergenic(false);
-        dogBreedCreateDTO.setSize("Médio");
         return dogBreedCreateDTO;
     }
 }

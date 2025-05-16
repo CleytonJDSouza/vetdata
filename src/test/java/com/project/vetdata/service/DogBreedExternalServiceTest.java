@@ -104,7 +104,6 @@ public class DogBreedExternalServiceTest {
         assertEquals(existingBreed.getFemaleWeightMin(), updateDTO.getFemaleWeightMin(), "O peso mínimo da fêmea deve ser o mesmo");
         assertEquals(existingBreed.getFemaleWeightMax(), updateDTO.getFemaleWeightMax(), "O peso máximo da fêmea deve ser o mesmo");
         assertEquals(existingBreed.getHypoallergenic(), updateDTO.getHypoallergenic(), "A informação de hipoalergenicidade deve ser a mesma");
-        assertEquals(existingBreed.getSize(), updateDTO.getSize(), "O tamanho deve ser o mesmo (mesmo que esteja nulo)");
     }
 
     @Test
@@ -254,7 +253,6 @@ public class DogBreedExternalServiceTest {
         dogBreed.setFemaleWeightMin(27D);
         dogBreed.setFemaleWeightMax(33D);
         dogBreed.setHypoallergenic(false);
-        dogBreed.setSize(null);
         return dogBreed;
     }
 }

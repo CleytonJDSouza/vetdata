@@ -12,7 +12,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.*;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -59,9 +58,9 @@ public class DogBreedRestControllerTest {
     @Test
     public void given_validDogBreed_when_createDogBreed_then_returnsCreatedDogBreed() throws Exception {
        DogBreedCreateDTO dogBreedCreateDTO = new DogBreedCreateDTO("Bulldog", "Amigavel e Corajoso", 8, 10, 20.0,
-               25.0, 18.0, 23.0, false,"Médio");
+               25.0, 18.0, 23.0, false);
        DogBreed dogBreed = new DogBreed(null, null, "Bulldog", "Amigavel e Corajoso", 8, 10, 20.0,
-               25.0, 18.0, 23.0, false,"Médio");
+               25.0, 18.0, 23.0, false);
 
         when(dogBreedService.createDogBreed(any(DogBreedCreateDTO.class))).thenReturn(dogBreed);
 
@@ -77,8 +76,7 @@ public class DogBreedRestControllerTest {
                 .andExpect(jsonPath("$.maleWeightMax").value(dogBreed.getMaleWeightMax()))
                 .andExpect(jsonPath("$.femaleWeightMin").value(dogBreed.getFemaleWeightMin()))
                 .andExpect(jsonPath("$.femaleWeightMax").value(dogBreed.getFemaleWeightMax()))
-                .andExpect(jsonPath("$.hypoallergenic").value(dogBreed.getHypoallergenic()))
-                .andExpect(jsonPath("$.size").value(dogBreed.getSize()));
+                .andExpect(jsonPath("$.hypoallergenic").value(dogBreed.getHypoallergenic()));
     }
 
     @Test
@@ -93,7 +91,6 @@ public class DogBreedRestControllerTest {
         dogBreedCreateDTO.setFemaleWeightMin(-18.0);
         dogBreedCreateDTO.setFemaleWeightMax(-23.0);
         dogBreedCreateDTO.setHypoallergenic(false);
-        dogBreedCreateDTO.setSize(null);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/breeds")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -105,14 +102,13 @@ public class DogBreedRestControllerTest {
                 .andExpect(jsonPath("$.maleWeightMin").value("Campo deve ter valor maior que: 0"))
                 .andExpect(jsonPath("$.maleWeightMax").value("Campo deve ter valor maior que: 0"))
                 .andExpect(jsonPath("$.femaleWeightMin").value("Campo deve ter valor maior que: 0"))
-                .andExpect(jsonPath("$.femaleWeightMax").value("Campo deve ter valor maior que: 0"))
-                .andExpect(jsonPath("$.size").value("Campo Obrigatório"));
+                .andExpect(jsonPath("$.femaleWeightMax").value("Campo deve ter valor maior que: 0"));
     }
 
     @Test
     public void given_validDogBreedId_when_getBreedById_then_returnsDogBreed() throws Exception {
         DogBreed dogBreed = new DogBreed(12345L, null ,"Bulldog", "Amigavel e Corajoso", 8, 10,
-                20.0, 25.0, 18.0, 23.0, false, "Médio");
+                20.0, 25.0, 18.0, 23.0, false);
 
         when(dogBreedService.getDogBreedId(12345L)).thenReturn(Optional.of(dogBreed));
 
@@ -128,8 +124,7 @@ public class DogBreedRestControllerTest {
                 .andExpect(jsonPath("$.maleWeightMax").value(25.0))
                 .andExpect(jsonPath("$.femaleWeightMin").value(18.0))
                 .andExpect(jsonPath("$.femaleWeightMax").value(23.0))
-                .andExpect(jsonPath("$.hypoallergenic").value(false))
-                .andExpect(jsonPath("$.size").value("Médio"));
+                .andExpect(jsonPath("$.hypoallergenic").value(false));
 
     }
 
@@ -144,7 +139,7 @@ public class DogBreedRestControllerTest {
     @Test
     public void given_dogBreedExists_when_deleteBreedById_then_returnsNoContent() throws Exception {
         DogBreed dogBreed = new DogBreed(12345L, null,"Bulldog", "Amigavel e Corajoso", 8, 10,
-                20.0, 25.0, 18.0, 23.0, false, "Médio");
+                20.0, 25.0, 18.0, 23.0, false);
 
         when(dogBreedService.getDogBreedId(12345L)).thenReturn(Optional.of(dogBreed));
 
@@ -172,10 +167,9 @@ public class DogBreedRestControllerTest {
         dogBreedUpdateDTO.setFemaleWeightMin(20.0);
         dogBreedUpdateDTO.setFemaleWeightMax(26.0);
         dogBreedUpdateDTO.setHypoallergenic(true);
-        dogBreedUpdateDTO.setSize("Pequeno");
 
         DogBreed updatedDogBreed = new DogBreed(12345L, null,"Bulldog", "Leal e Protetor", 9, 12,
-                22.0, 28.0, 20.0, 26.0, true, "Pequeno");
+                22.0, 28.0, 20.0, 26.0, true);
 
         when(dogBreedService.updateDogBreed(anyLong(), any(DogBreedUpdateDTO.class))).thenReturn(updatedDogBreed);
 
@@ -192,17 +186,16 @@ public class DogBreedRestControllerTest {
                 .andExpect(jsonPath("$.maleWeightMax").value(28.0))
                 .andExpect(jsonPath("$.femaleWeightMin").value(20.0))
                 .andExpect(jsonPath("$.femaleWeightMax").value(26.0))
-                .andExpect(jsonPath("$.hypoallergenic").value(true))
-                .andExpect(jsonPath("$.size").value("Pequeno"));
+                .andExpect(jsonPath("$.hypoallergenic").value(true));
     }
 
     @Test
     public void given_pageRequestAndBreedsExist_when_getBreedsPage_then_returnsBreedsPage() throws Exception {
         List<DogBreed> breeds = List.of(
                 new DogBreed(12345L, null,"Golden Retriever", "Amigável e inteligente", 10, 12, 29.0,
-                        34.0, 25.0, 32.0, false, "Grande"),
+                        34.0, 25.0, 32.0, false),
                 new DogBreed(67890L, null,"Labrador Retriever", "Raça popular conhecida por sua natureza amigável", 10,
-                        12, 29.0, 36.0, 25.0, 32.0, false, "Grande")
+                        12, 29.0, 36.0, 25.0, 32.0, false)
         );
         Pageable paging = PageRequest.of(0, 2, Sort.by("id"));
         Page<DogBreed> pageBreeds = new PageImpl<>(breeds, paging, breeds.size());

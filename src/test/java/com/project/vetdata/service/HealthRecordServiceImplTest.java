@@ -233,7 +233,7 @@ public class HealthRecordServiceImplTest {
     public DogBreed getFakeDogBreed() {
         return new DogBreed(1L, "2", "Golden Retriever", "Amigável e inteligente e esperto",
                 10, 12, 30D, 34D, 25D, 29D,
-                false, "Medio");
+                false);
     }
 
     private HealthRecord getFakeHealthRecord() {
@@ -266,7 +266,6 @@ public class HealthRecordServiceImplTest {
         dto.setGender(Gender.FEMALE);
         dto.setDeath(false);
         dto.setEuthanasia(Euthanasia.NO);
-
         return dto;
     }
 }
