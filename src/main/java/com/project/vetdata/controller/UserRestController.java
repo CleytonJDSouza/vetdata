@@ -40,7 +40,7 @@ public class UserRestController {
     @Operation(summary = "Remover usuário por ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Usuário removido!"),
-            @ApiResponse(responseCode = "404", description = "Usuário não encontrada!", content = @Content)
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado!", content = @Content)
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
