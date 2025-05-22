@@ -1,5 +1,8 @@
 package com.project.vetdata.dto;
 
+import com.project.vetdata.enums.MedicalEvolution;
+import com.project.vetdata.enums.ReasonHospitalization;
+import com.project.vetdata.enums.TreatmentNextSteps;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -11,18 +14,18 @@ public class HospitalAdmissionUpdateDTO {
     @NotNull(message = "Campo Obrigatório")
     private LocalDate date;
 
-    @NotBlank(message = "Campo Obrigatório")
-    private String reasonHospitalization;
+    @NotNull(message = "Campo Obrigatório")
+    private ReasonHospitalization reasonHospitalization;
 
     private LocalDate dateMedicalDischarge;
 
     private LocalDate dateReturns;
 
-    @NotBlank(message = "Campo Obrigatório")
-    private String medicalEvolution;
+    @NotNull(message = "Campo Obrigatório")
+    private MedicalEvolution medicalEvolution;
 
-    @NotBlank(message = "Campo Obrigatório")
-    private String treatmentNextSteps;
+    @NotNull(message = "Campo Obrigatório")
+    private TreatmentNextSteps treatmentNextSteps;
 
     @NotNull(message = "Campo Obrigatório")
     private Long healthRecordId;
@@ -36,8 +39,8 @@ public class HospitalAdmissionUpdateDTO {
     public HospitalAdmissionUpdateDTO() {
     }
 
-    public HospitalAdmissionUpdateDTO(Long id, LocalDate date, String reasonHospitalization, LocalDate dateMedicalDischarge, LocalDate dateReturns,
-                                      String medicalEvolution, String treatmentNextSteps, Long healthRecordId, Set<Long> postOperativeIds, Set<Long> diagnosticIds) {
+    public HospitalAdmissionUpdateDTO(Long id, LocalDate date, ReasonHospitalization reasonHospitalization, LocalDate dateMedicalDischarge, LocalDate dateReturns,
+                                      MedicalEvolution medicalEvolution, TreatmentNextSteps treatmentNextSteps, Long healthRecordId, Set<Long> postOperativeIds, Set<Long> diagnosticIds) {
         this.date = date;
         this.reasonHospitalization = reasonHospitalization;
         this.dateMedicalDischarge = dateMedicalDischarge;
@@ -57,11 +60,11 @@ public class HospitalAdmissionUpdateDTO {
         this.date = date;
     }
 
-    public String getReasonHospitalization() {
+    public ReasonHospitalization getReasonHospitalization() {
         return reasonHospitalization;
     }
 
-    public void setReasonHospitalization(String reasonHospitalization) {
+    public void setReasonHospitalization(ReasonHospitalization reasonHospitalization) {
         this.reasonHospitalization = reasonHospitalization;
     }
 
@@ -81,19 +84,19 @@ public class HospitalAdmissionUpdateDTO {
         this.dateReturns = dateReturns;
     }
 
-    public String getMedicalEvolution() {
+    public MedicalEvolution getMedicalEvolution() {
         return medicalEvolution;
     }
 
-    public void setMedicalEvolution(String medicalEvolution) {
+    public void setMedicalEvolution(MedicalEvolution medicalEvolution) {
         this.medicalEvolution = medicalEvolution;
     }
 
-    public String getTreatmentNextSteps() {
+    public TreatmentNextSteps getTreatmentNextSteps() {
         return treatmentNextSteps;
     }
 
-    public void setTreatmentNextSteps(String treatmentNextSteps) {
+    public void setTreatmentNextSteps(TreatmentNextSteps treatmentNextSteps) {
         this.treatmentNextSteps = treatmentNextSteps;
     }
 

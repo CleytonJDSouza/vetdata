@@ -1,5 +1,8 @@
 package com.project.vetdata.model;
 
+import com.project.vetdata.enums.MedicalEvolution;
+import com.project.vetdata.enums.ReasonHospitalization;
+import com.project.vetdata.enums.TreatmentNextSteps;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
@@ -17,8 +20,9 @@ public class HospitalAdmission {
 
     private LocalDate date;
 
-    @Column(name = "reason_hospitalization", columnDefinition = "TEXT")
-    private String reasonHospitalization;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "reason_hospitalization")
+    private ReasonHospitalization reasonHospitalization;
 
     @Column(name = "date_medical_discharge")
     private LocalDate dateMedicalDischarge;
@@ -26,11 +30,13 @@ public class HospitalAdmission {
     @Column(name = "date_return")
     private LocalDate dateReturns;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "medical_evolution")
-    private String medicalEvolution;
+    private MedicalEvolution medicalEvolution;
 
-    @Column(name = "treatment_next_steps", columnDefinition = "TEXT")
-    private String treatmentNextSteps;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "treatment_next_steps")
+    private TreatmentNextSteps treatmentNextSteps;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "health_record_id", nullable = false,
@@ -52,8 +58,8 @@ public class HospitalAdmission {
     public HospitalAdmission() {
     }
 
-    public HospitalAdmission(LocalDate date, String reasonHospitalization, LocalDate dateMedicalDischarge,
-                             LocalDate dateReturns, String medicalEvolution, String treatmentNextSteps,
+    public HospitalAdmission(LocalDate date, ReasonHospitalization reasonHospitalization, LocalDate dateMedicalDischarge,
+                             LocalDate dateReturns, MedicalEvolution medicalEvolution, TreatmentNextSteps treatmentNextSteps,
                              HealthRecord healthRecord, Set<PostOperative> postOperatives, Set<Diagnostic> diagnostics) {
         this.date = date;
         this.reasonHospitalization = reasonHospitalization;
@@ -78,11 +84,11 @@ public class HospitalAdmission {
         this.date = date;
     }
 
-    public String getReasonHospitalization() {
+    public ReasonHospitalization getReasonHospitalization() {
         return reasonHospitalization;
     }
 
-    public void setReasonHospitalization(String reasonHospitalization) {
+    public void setReasonHospitalization(ReasonHospitalization reasonHospitalization) {
         this.reasonHospitalization = reasonHospitalization;
     }
 
@@ -102,19 +108,19 @@ public class HospitalAdmission {
         this.dateReturns = dateReturns;
     }
 
-    public String getMedicalEvolution() {
+    public MedicalEvolution getMedicalEvolution() {
         return medicalEvolution;
     }
 
-    public void setMedicalEvolution(String medicalEvolution) {
+    public void setMedicalEvolution(MedicalEvolution medicalEvolution) {
         this.medicalEvolution = medicalEvolution;
     }
 
-    public String getTreatmentNextSteps() {
+    public TreatmentNextSteps getTreatmentNextSteps() {
         return treatmentNextSteps;
     }
 
-    public void setTreatmentNextSteps(String treatmentNextSteps) {
+    public void setTreatmentNextSteps(TreatmentNextSteps treatmentNextSteps) {
         this.treatmentNextSteps = treatmentNextSteps;
     }
 
