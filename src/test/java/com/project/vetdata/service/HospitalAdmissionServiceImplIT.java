@@ -4,9 +4,7 @@ import com.project.vetdata.dto.HealthRecordCreateDTO;
 import com.project.vetdata.dto.HospitalAdmissionCreateDTO;
 import com.project.vetdata.dto.HospitalAdmissionResponseDTO;
 import com.project.vetdata.dto.HospitalAdmissionUpdateDTO;
-import com.project.vetdata.enums.DogSize;
-import com.project.vetdata.enums.Euthanasia;
-import com.project.vetdata.enums.Gender;
+import com.project.vetdata.enums.*;
 import com.project.vetdata.model.*;
 import com.project.vetdata.repository.*;
 import org.junit.jupiter.api.AfterAll;
@@ -169,23 +167,23 @@ public class HospitalAdmissionServiceImplIT {
 
         HospitalAdmissionUpdateDTO updateDTO = new HospitalAdmissionUpdateDTO();
         updateDTO.setDate(LocalDate.of(2025, 7, 1));
-        updateDTO.setReasonHospitalization("Cancer");
+        updateDTO.setReasonHospitalization(ReasonHospitalization.NEFROLOGIA);
         updateDTO.setDateMedicalDischarge(LocalDate.of(2025, 9, 1));
         updateDTO.setDateReturns(LocalDate.of(2025, 1, 1));
-        updateDTO.setMedicalEvolution("Evoluindo bem");
-        updateDTO.setTreatmentNextSteps("Continuar tratamento");
+        updateDTO.setMedicalEvolution(MedicalEvolution.QUADRO_GRAVE);
+        updateDTO.setTreatmentNextSteps(TreatmentNextSteps.TRATAMENTO_EM_ANDAMENTO);
         updateDTO.setDiagnosticIds(Set.of(newDiagnostic.getId()));
         updateDTO.setPostOperativeIds(Set.of(newPostOperative.getId()));
 
         HospitalAdmissionResponseDTO updatedAdmission = hospitalAdmissionService.updateHospitalAdmission(createdAdmission.getId(), updateDTO);
 
         assertNotNull(updatedAdmission);
-        assertEquals("Cancer", updatedAdmission.getReasonHospitalization());
+        assertEquals(ReasonHospitalization.NEFROLOGIA, updatedAdmission.getReasonHospitalization());
         assertEquals(LocalDate.of(2025, 7, 1), updatedAdmission.getDate());
         assertEquals(LocalDate.of(2025, 9, 1), updatedAdmission.getDateMedicalDischarge());
         assertEquals(LocalDate.of(2025, 1, 1), updatedAdmission.getDateReturns());
-        assertEquals("Evoluindo bem", updatedAdmission.getMedicalEvolution());
-        assertEquals("Continuar tratamento", updatedAdmission.getTreatmentNextSteps());
+        assertEquals(MedicalEvolution.QUADRO_GRAVE, updatedAdmission.getMedicalEvolution());
+        assertEquals(TreatmentNextSteps.TRATAMENTO_EM_ANDAMENTO, updatedAdmission.getTreatmentNextSteps());
         assertEquals(1, updatedAdmission.getDiagnosticIds().size());
         assertTrue(updatedAdmission.getDiagnosticIds().contains(newDiagnostic.getId()));
         assertEquals(1, updatedAdmission.getPostOperativeIds().size());
@@ -198,11 +196,11 @@ public class HospitalAdmissionServiceImplIT {
 
         HospitalAdmissionUpdateDTO updateDTO = new HospitalAdmissionUpdateDTO();
         updateDTO.setDate(LocalDate.of(2025, 7, 1));
-        updateDTO.setReasonHospitalization("Cancer");
+        updateDTO.setReasonHospitalization(ReasonHospitalization.HEMATOLOGIA);
         updateDTO.setDateMedicalDischarge(LocalDate.of(2025, 9, 1));
         updateDTO.setDateReturns(LocalDate.of(2025, 1, 1));
-        updateDTO.setMedicalEvolution("Evoluindo bem");
-        updateDTO.setTreatmentNextSteps("Continuar tratamento");
+        updateDTO.setMedicalEvolution(MedicalEvolution.PROGRESSO_DESFAVORAVEL);
+        updateDTO.setTreatmentNextSteps(TreatmentNextSteps.TUTOR_OPTOU_POR_EUTANASIA);
         updateDTO.setDiagnosticIds(Set.of());
         updateDTO.setPostOperativeIds(Set.of());
 
@@ -241,7 +239,7 @@ public class HospitalAdmissionServiceImplIT {
         assertFalse(result.isEmpty());
         assertEquals(2, result.size());
 
-        List<String> reasons = result.stream()
+        List<ReasonHospitalization> reasons = result.stream()
                 .map(HospitalAdmissionResponseDTO::getReasonHospitalization)
                 .collect(Collectors.toList());
 
@@ -366,11 +364,11 @@ public class HospitalAdmissionServiceImplIT {
     private HospitalAdmissionCreateDTO getFakeHospitalAdmissionDTO(Long healthRecordId, List<Long> postOperativeIds, List<Long> diagnosticIds) {
         HospitalAdmissionCreateDTO dto = new HospitalAdmissionCreateDTO();
         dto.setDate(LocalDate.of(2025, 4, 10));
-        dto.setReasonHospitalization("Infecção grave");
+        dto.setReasonHospitalization(ReasonHospitalization.OFTALMOLOGIA);
         dto.setDateMedicalDischarge(LocalDate.of(2025, 4, 20));
         dto.setDateReturns(LocalDate.of(2025, 5, 1));
-        dto.setMedicalEvolution("Teste");
-        dto.setTreatmentNextSteps("Repouso e medicação");
+        dto.setMedicalEvolution(MedicalEvolution.PCR);
+        dto.setTreatmentNextSteps(TreatmentNextSteps.TRATAMENTO_EM_ANDAMENTO);
         dto.setHealthRecordId(healthRecordId);
         dto.setPostOperativeIds(new HashSet<>(postOperativeIds));
         dto.setDiagnosticIds(new HashSet<>(diagnosticIds));
@@ -380,11 +378,11 @@ public class HospitalAdmissionServiceImplIT {
     private HospitalAdmissionCreateDTO getFakeHospitalAdmissionDTO2 (Long healthRecordId, List<Long> postOperativeIds, List<Long> diagnosticIds) {
         HospitalAdmissionCreateDTO dto = new HospitalAdmissionCreateDTO();
         dto.setDate(LocalDate.of(2025, 4, 10));
-        dto.setReasonHospitalization("Teste");
+        dto.setReasonHospitalization(ReasonHospitalization.NEFROLOGIA);
         dto.setDateMedicalDischarge(LocalDate.of(2025, 4, 20));
         dto.setDateReturns(LocalDate.of(2025, 5, 1));
-        dto.setMedicalEvolution("Teste");
-        dto.setTreatmentNextSteps("Teste");
+        dto.setMedicalEvolution(MedicalEvolution.PCR);
+        dto.setTreatmentNextSteps(TreatmentNextSteps.TRATAMENTO_EM_ANDAMENTO);
         dto.setHealthRecordId(healthRecordId);
         dto.setPostOperativeIds(new HashSet<>(postOperativeIds));
         dto.setDiagnosticIds(new HashSet<>(diagnosticIds));

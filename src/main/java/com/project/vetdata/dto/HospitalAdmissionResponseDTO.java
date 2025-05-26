@@ -1,5 +1,8 @@
 package com.project.vetdata.dto;
 
+import com.project.vetdata.enums.MedicalEvolution;
+import com.project.vetdata.enums.ReasonHospitalization;
+import com.project.vetdata.enums.TreatmentNextSteps;
 import com.project.vetdata.model.Diagnostic;
 import com.project.vetdata.model.HospitalAdmission;
 import com.project.vetdata.model.PostOperative;
@@ -14,11 +17,11 @@ public class HospitalAdmissionResponseDTO {
 
     private Long id;
     private LocalDate date;
-    private String reasonHospitalization;
+    private ReasonHospitalization reasonHospitalization;
     private LocalDate dateMedicalDischarge;
     private LocalDate dateReturns;
-    private String medicalEvolution;
-    private String treatmentNextSteps;
+    private MedicalEvolution medicalEvolution;
+    private TreatmentNextSteps treatmentNextSteps;
     private Long healthRecordId;
     private Set<Long> diagnosticIds;
     private Set<Long> postOperativeIds;
@@ -26,8 +29,8 @@ public class HospitalAdmissionResponseDTO {
     public HospitalAdmissionResponseDTO() {
     }
 
-    public HospitalAdmissionResponseDTO(Long id, LocalDate date, String reasonHospitalization, LocalDate dateMedicalDischarge, LocalDate dateReturns,
-                                        String medicalEvolution, String treatmentNextSteps, Long healthRecordId, Set<Long> diagnosticIds, Set<Long> postOperativeIds) {
+    public HospitalAdmissionResponseDTO(Long id, LocalDate date, ReasonHospitalization reasonHospitalization, LocalDate dateMedicalDischarge, LocalDate dateReturns,
+                                        MedicalEvolution medicalEvolution, TreatmentNextSteps treatmentNextSteps, Long healthRecordId, Set<Long> diagnosticIds, Set<Long> postOperativeIds) {
         this.id = id;
         this.date = date;
         this.reasonHospitalization = reasonHospitalization;
@@ -70,7 +73,7 @@ public class HospitalAdmissionResponseDTO {
         return date;
     }
 
-    public String getReasonHospitalization() {
+    public ReasonHospitalization getReasonHospitalization() {
         return reasonHospitalization;
     }
 
@@ -82,11 +85,11 @@ public class HospitalAdmissionResponseDTO {
         return dateReturns;
     }
 
-    public String getMedicalEvolution() {
+    public MedicalEvolution getMedicalEvolution() {
         return medicalEvolution;
     }
 
-    public String getTreatmentNextSteps() {
+    public TreatmentNextSteps getTreatmentNextSteps() {
         return treatmentNextSteps;
     }
 
@@ -110,15 +113,15 @@ public class HospitalAdmissionResponseDTO {
         this.date = date;
     }
 
-    public void setTreatmentNextSteps(String treatmentNextSteps) {
+    public void setTreatmentNextSteps(TreatmentNextSteps treatmentNextSteps) {
         this.treatmentNextSteps = treatmentNextSteps;
     }
 
-    public void setMedicalEvolution(String medicalEvolution) {
+    public void setMedicalEvolution(MedicalEvolution medicalEvolution) {
         this.medicalEvolution = medicalEvolution;
     }
 
-    public void setReasonHospitalization(String reasonHospitalization) {
+    public void setReasonHospitalization(ReasonHospitalization reasonHospitalization) {
         this.reasonHospitalization = reasonHospitalization;
     }
 

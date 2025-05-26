@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.vetdata.dto.HospitalAdmissionCreateDTO;
 import com.project.vetdata.dto.HospitalAdmissionResponseDTO;
 import com.project.vetdata.dto.HospitalAdmissionUpdateDTO;
+import com.project.vetdata.enums.MedicalEvolution;
+import com.project.vetdata.enums.ReasonHospitalization;
+import com.project.vetdata.enums.TreatmentNextSteps;
 import com.project.vetdata.service.HospitalAdmissionService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,11 +42,11 @@ public class HospitalAdmissionControllerTest {
     public void given_valid_hospitalAdmission_when_createHospitalAdmission_then_return_created() throws Exception {
         HospitalAdmissionCreateDTO dto = new HospitalAdmissionCreateDTO();
         dto.setDate(LocalDate.of(2024, 2, 25));
-        dto.setReasonHospitalization("Infecção");
+        dto.setReasonHospitalization(ReasonHospitalization.DERMATOLOGIA);
         dto.setDateMedicalDischarge(LocalDate.of(2024, 3, 4));
         dto.setDateReturns(LocalDate.of(2024, 4, 17));
-        dto.setMedicalEvolution("Boa evolução");
-        dto.setTreatmentNextSteps("Repouso");
+        dto.setMedicalEvolution(MedicalEvolution.PROGRESSO_DESFAVORAVEL);
+        dto.setTreatmentNextSteps(TreatmentNextSteps.EUTANASIA);
         dto.setHealthRecordId(1L);
         dto.setPostOperativeIds(Set.of(1L));
         dto.setDiagnosticIds(Set.of(1L));
@@ -63,20 +66,20 @@ public class HospitalAdmissionControllerTest {
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(created.getId()))
-                .andExpect(jsonPath("$.reasonHospitalization").value("Infecção"))
-                .andExpect(jsonPath("$.medicalEvolution").value("Boa evolução"))
-                .andExpect(jsonPath("$.treatmentNextSteps").value("Repouso"));
+                .andExpect(jsonPath("$.reasonHospitalization").value(ReasonHospitalization.DERMATOLOGIA.name()))
+                .andExpect(jsonPath("$.medicalEvolution").value(MedicalEvolution.PROGRESSO_DESFAVORAVEL.name()))
+                .andExpect(jsonPath("$.treatmentNextSteps").value(TreatmentNextSteps.EUTANASIA.name()));
     }
 
     @Test
     public void given_invalid_hospitalAdmission_when_createHospitalAdmission_then_returns_badRequest() throws Exception {
         HospitalAdmissionCreateDTO dto = new HospitalAdmissionCreateDTO();
         dto.setDate(null);
-        dto.setReasonHospitalization("");
+        dto.setReasonHospitalization(null);
         dto.setDateMedicalDischarge(null);
         dto.setDateReturns(LocalDate.of(2024, 4, 17));
-        dto.setMedicalEvolution("Boa evolução");
-        dto.setTreatmentNextSteps("Repouso");
+        dto.setMedicalEvolution(null);
+        dto.setTreatmentNextSteps(null);
         dto.setHealthRecordId(null);
         dto.setPostOperativeIds(Set.of(1L));
         dto.setDiagnosticIds(Set.of(1L));
@@ -95,11 +98,11 @@ public class HospitalAdmissionControllerTest {
     public void given_hospitalAdmission_exists_and_is_updated_when_updateHospitalAdmission_then_returns_updateAdmission() throws Exception {
         HospitalAdmissionUpdateDTO updateDTO = new HospitalAdmissionUpdateDTO();
         updateDTO.setDate(LocalDate.of(2025, 6, 12));
-        updateDTO.setReasonHospitalization("Câncer");
+        updateDTO.setReasonHospitalization(ReasonHospitalization.DERMATOLOGIA);
         updateDTO.setDateMedicalDischarge(LocalDate.of(2025, 7, 12));
         updateDTO.setDateReturns(LocalDate.of(2025, 8, 12));
-        updateDTO.setMedicalEvolution("Melhora");
-        updateDTO.setTreatmentNextSteps("Retorno");
+        updateDTO.setMedicalEvolution(MedicalEvolution.QUADRO_GRAVE);
+        updateDTO.setTreatmentNextSteps(TreatmentNextSteps.EUTANASIA);
         updateDTO.setPostOperativeIds(Set.of(1L, 2L));
         updateDTO.setDiagnosticIds(Set.of(3L));
         updateDTO.setHealthRecordId(1L);
@@ -121,9 +124,9 @@ public class HospitalAdmissionControllerTest {
                         .content(objectMapper.writeValueAsString(updateDTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(123))
-                .andExpect(jsonPath("$.reasonHospitalization").value("Câncer"))
-                .andExpect(jsonPath("$.medicalEvolution").value("Melhora"))
-                .andExpect(jsonPath("$.treatmentNextSteps").value("Retorno"))
+                .andExpect(jsonPath("$.reasonHospitalization").value(ReasonHospitalization.DERMATOLOGIA.name()))
+                .andExpect(jsonPath("$.medicalEvolution").value(MedicalEvolution.QUADRO_GRAVE.name()))
+                .andExpect(jsonPath("$.treatmentNextSteps").value(TreatmentNextSteps.EUTANASIA.name()))
                 .andExpect(jsonPath("$.date").value("2025-06-12"))
                 .andExpect(jsonPath("$.dateMedicalDischarge").value("2025-07-12"))
                 .andExpect(jsonPath("$.dateReturns").value("2025-08-12"));
@@ -133,11 +136,11 @@ public class HospitalAdmissionControllerTest {
     public void given_invalid_hospitalAdmission_when_updateHospitalAdmission_then_returns_badRequest() throws Exception {
         HospitalAdmissionUpdateDTO updateDTO = new HospitalAdmissionUpdateDTO();
         updateDTO.setDate(null);
-        updateDTO.setReasonHospitalization("");
+        updateDTO.setReasonHospitalization(null);
         updateDTO.setDateMedicalDischarge(null);
         updateDTO.setDateReturns(null);
-        updateDTO.setMedicalEvolution("");
-        updateDTO.setTreatmentNextSteps("");
+        updateDTO.setMedicalEvolution(null);
+        updateDTO.setTreatmentNextSteps(null);
         updateDTO.setPostOperativeIds(null);
         updateDTO.setDiagnosticIds(null);
 

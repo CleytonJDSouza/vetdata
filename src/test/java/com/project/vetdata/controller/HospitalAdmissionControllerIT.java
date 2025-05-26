@@ -5,9 +5,7 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.project.vetdata.dto.HospitalAdmissionCreateDTO;
 import com.project.vetdata.dto.HospitalAdmissionUpdateDTO;
-import com.project.vetdata.enums.DogSize;
-import com.project.vetdata.enums.Euthanasia;
-import com.project.vetdata.enums.Gender;
+import com.project.vetdata.enums.*;
 import com.project.vetdata.model.*;
 import com.project.vetdata.repository.*;
 import io.restassured.RestAssured;
@@ -108,11 +106,11 @@ public class HospitalAdmissionControllerIT {
 
         HospitalAdmissionCreateDTO dto = new HospitalAdmissionCreateDTO();
         dto.setDate(LocalDate.of(2025, 7, 16));
-        dto.setReasonHospitalization("Tratamento");
+        dto.setReasonHospitalization(ReasonHospitalization.OFTALMOLOGIA);
         dto.setDateMedicalDischarge(LocalDate.of(2025, 5, 10));
         dto.setDateReturns(LocalDate.of(2025, 6, 16));
-        dto.setMedicalEvolution("Recuperando");
-        dto.setTreatmentNextSteps("Retorno");
+        dto.setMedicalEvolution(MedicalEvolution.QUADRO_GRAVE);
+        dto.setTreatmentNextSteps(TreatmentNextSteps.CONTINUOU_TRATAMENTO);
         dto.setHealthRecordId(savedHealthRecord.getId());
         dto.setPostOperativeIds(Set.of(savedPostOperative.getId()));
         dto.setDiagnosticIds(Set.of(savedDiagnostic.getId()));
@@ -151,11 +149,11 @@ public class HospitalAdmissionControllerIT {
     public void given_invalid_hospitalAdmissionCreateDTO_when_createHospitalAdmission_then_returns_badRequest() {
         HospitalAdmissionCreateDTO dto = new HospitalAdmissionCreateDTO();
         dto.setDate(null);
-        dto.setReasonHospitalization("");
+        dto.setReasonHospitalization(null);
         dto.setDateMedicalDischarge(null);
         dto.setDateReturns(null);
-        dto.setMedicalEvolution("");
-        dto.setTreatmentNextSteps("");
+        dto.setMedicalEvolution(null);
+        dto.setTreatmentNextSteps(null);
         dto.setHealthRecordId(null);
         dto.setPostOperativeIds(null);
         dto.setDiagnosticIds(null);
@@ -190,11 +188,11 @@ public class HospitalAdmissionControllerIT {
 
         HospitalAdmission admission = new HospitalAdmission();
         admission.setDate(LocalDate.of(2025, 7, 16));
-        admission.setReasonHospitalization("Tratamento");
+        admission.setReasonHospitalization(ReasonHospitalization.OFTALMOLOGIA);
         admission.setDateMedicalDischarge(LocalDate.of(2025, 5, 10));
         admission.setDateReturns(LocalDate.of(2025, 6, 16));
-        admission.setMedicalEvolution("Recuperando");
-        admission.setTreatmentNextSteps("Retorno");
+        admission.setMedicalEvolution(MedicalEvolution.QUADRO_GRAVE);
+        admission.setTreatmentNextSteps(TreatmentNextSteps.CONTINUOU_TRATAMENTO);
         admission.setHealthRecord(savedHealthRecord);
         admission.setDiagnostics(Set.of(savedDiagnostic));
         admission.setPostOperatives(Set.of(savedPostOperative));
@@ -203,9 +201,9 @@ public class HospitalAdmissionControllerIT {
 
         HospitalAdmissionUpdateDTO updateDTO = new HospitalAdmissionUpdateDTO();
         updateDTO.setDate(LocalDate.of(2025, 5, 1));
-        updateDTO.setReasonHospitalization("Reabilitação");
-        updateDTO.setMedicalEvolution("Melhora");
-        updateDTO.setTreatmentNextSteps("Fisioterapia");
+        updateDTO.setReasonHospitalization(ReasonHospitalization.DERMATOLOGIA);
+        updateDTO.setMedicalEvolution(MedicalEvolution.PCR);
+        updateDTO.setTreatmentNextSteps(TreatmentNextSteps.TUTOR_OPTOU_POR_EUTANASIA);
         updateDTO.setDateMedicalDischarge(LocalDate.of(2025, 5, 15));
         updateDTO.setDateReturns(LocalDate.of(2025, 6, 15));
         updateDTO.setHealthRecordId(savedHealthRecord.getId());
@@ -220,9 +218,9 @@ public class HospitalAdmissionControllerIT {
                 .put("/hospital-admission/{id}")
                 .then()
                 .statusCode(200)
-                .body("reasonHospitalization", equalTo("Reabilitação"))
-                .body("medicalEvolution", equalTo("Melhora"))
-                .body("treatmentNextSteps", equalTo("Fisioterapia"))
+                .body("reasonHospitalization", equalTo(ReasonHospitalization.DERMATOLOGIA))
+                .body("medicalEvolution", equalTo(MedicalEvolution.PCR))
+                .body("treatmentNextSteps", equalTo(TreatmentNextSteps.TUTOR_OPTOU_POR_EUTANASIA))
                 .body("date", equalTo("2025-05-01"))
                 .body("dateMedicalDischarge", equalTo("2025-05-15"))
                 .body("dateReturns", equalTo("2025-06-15"));
@@ -232,9 +230,9 @@ public class HospitalAdmissionControllerIT {
 
         HospitalAdmission updatedAdmission = optional.get();
         assertEquals(LocalDate.of(2025, 5, 1), updatedAdmission.getDate());
-        assertEquals("Reabilitação", updatedAdmission.getReasonHospitalization());
-        assertEquals("Melhora", updatedAdmission.getMedicalEvolution());
-        assertEquals("Fisioterapia", updatedAdmission.getTreatmentNextSteps());
+        assertEquals(ReasonHospitalization.DERMATOLOGIA, updatedAdmission.getReasonHospitalization());
+        assertEquals(MedicalEvolution.PCR, updatedAdmission.getMedicalEvolution());
+        assertEquals(TreatmentNextSteps.TUTOR_OPTOU_POR_EUTANASIA, updatedAdmission.getTreatmentNextSteps());
         assertEquals(LocalDate.of(2025, 5, 15), updatedAdmission.getDateMedicalDischarge());
         assertEquals(LocalDate.of(2025, 6, 15), updatedAdmission.getDateReturns());
         assertEquals(1, updatedAdmission.getPostOperatives().size());
@@ -259,11 +257,11 @@ public class HospitalAdmissionControllerIT {
 
         HospitalAdmission admission = new HospitalAdmission();
         admission.setDate(LocalDate.of(2025, 7, 16));
-        admission.setReasonHospitalization("Tratamento");
+        admission.setReasonHospitalization(ReasonHospitalization.OFTALMOLOGIA);
         admission.setDateMedicalDischarge(LocalDate.of(2025, 5, 10));
         admission.setDateReturns(LocalDate.of(2025, 6, 16));
-        admission.setMedicalEvolution("Recuperando");
-        admission.setTreatmentNextSteps("Retorno");
+        admission.setMedicalEvolution(MedicalEvolution.QUADRO_GRAVE);
+        admission.setTreatmentNextSteps(TreatmentNextSteps.TUTOR_OPTOU_POR_EUTANASIA);
         admission.setHealthRecord(savedHealthRecord);
         admission.setDiagnostics(Set.of(savedDiagnostic));
         admission.setPostOperatives(Set.of(savedPostOperative));
@@ -272,9 +270,9 @@ public class HospitalAdmissionControllerIT {
 
         HospitalAdmissionUpdateDTO invalidUpdateDTO = new HospitalAdmissionUpdateDTO();
         invalidUpdateDTO.setDate(null);
-        invalidUpdateDTO.setReasonHospitalization("");
-        invalidUpdateDTO.setMedicalEvolution("");
-        invalidUpdateDTO.setTreatmentNextSteps("");
+        invalidUpdateDTO.setReasonHospitalization(null);
+        invalidUpdateDTO.setMedicalEvolution(null);
+        invalidUpdateDTO.setTreatmentNextSteps(null);
         invalidUpdateDTO.setDateMedicalDischarge(null);
         invalidUpdateDTO.setDateReturns(null);
         invalidUpdateDTO.setPostOperativeIds(null);
@@ -312,11 +310,11 @@ public class HospitalAdmissionControllerIT {
 
         HospitalAdmission admission = new HospitalAdmission();
         admission.setDate(LocalDate.of(2025, 7, 16));
-        admission.setReasonHospitalization("Tratamento");
+        admission.setReasonHospitalization(ReasonHospitalization.ENDOCRINOLOGIA);
         admission.setDateMedicalDischarge(LocalDate.of(2025, 5, 10));
         admission.setDateReturns(LocalDate.of(2025, 6, 16));
-        admission.setMedicalEvolution("Recuperando");
-        admission.setTreatmentNextSteps("Retorno");
+        admission.setMedicalEvolution(MedicalEvolution.PROGRESSO_DESFAVORAVEL);
+        admission.setTreatmentNextSteps(TreatmentNextSteps.EUTANASIA);
         admission.setHealthRecord(savedHealthRecord);
         admission.setDiagnostics(Set.of(savedDiagnostic));
         admission.setPostOperatives(Set.of(savedPostOperative));
@@ -325,11 +323,11 @@ public class HospitalAdmissionControllerIT {
 
         HospitalAdmission admission2 = new HospitalAdmission();
         admission2.setDate(LocalDate.of(2025, 8, 10));
-        admission2.setReasonHospitalization("Cirurgia");
+        admission2.setReasonHospitalization(ReasonHospitalization.OFTALMOLOGIA);
         admission2.setDateMedicalDischarge(LocalDate.of(2025, 6, 5));
         admission2.setDateReturns(LocalDate.of(2025, 7, 12));
-        admission2.setMedicalEvolution("Recuperação");
-        admission2.setTreatmentNextSteps("Fisioterapia");
+        admission2.setMedicalEvolution(MedicalEvolution.QUADRO_GRAVE);
+        admission2.setTreatmentNextSteps(TreatmentNextSteps.TUTOR_OPTOU_POR_EUTANASIA);
         admission2.setHealthRecord(savedHealthRecord2);
         admission2.setDiagnostics(Set.of(savedDiagnostic));
         admission2.setPostOperatives(Set.of(savedPostOperative));
@@ -340,14 +338,14 @@ public class HospitalAdmissionControllerIT {
                 .get("/hospital-admission?page=0&qtdRecordsPage=2&sortBy=date")
                 .then()
                 .statusCode(200)
-                .body("[0].reasonHospitalization", equalTo("Tratamento"))
-                .body("[0].medicalEvolution", equalTo("Recuperando"))
+                .body("[0].reasonHospitalization", equalTo(ReasonHospitalization.ENDOCRINOLOGIA))
+                .body("[0].medicalEvolution", equalTo(MedicalEvolution.PROGRESSO_DESFAVORAVEL))
                 .body("[0].date", equalTo("2025-07-16"))
                 .body("[0].dateMedicalDischarge", equalTo("2025-05-10"))
                 .body("[0].dateReturns", equalTo("2025-06-16"))
 
-                .body("[1].reasonHospitalization", equalTo("Cirurgia"))
-                .body("[1].medicalEvolution", equalTo("Recuperação"))
+                .body("[1].reasonHospitalization", equalTo(ReasonHospitalization.OFTALMOLOGIA))
+                .body("[1].medicalEvolution", equalTo(MedicalEvolution.QUADRO_GRAVE))
                 .body("[1].date", equalTo("2025-08-10"))
                 .body("[1].dateMedicalDischarge", equalTo("2025-06-05"))
                 .body("[1].dateReturns", equalTo("2025-07-12"));
@@ -381,11 +379,11 @@ public class HospitalAdmissionControllerIT {
 
         HospitalAdmission admission = new HospitalAdmission();
         admission.setDate(LocalDate.of(2025, 7, 16));
-        admission.setReasonHospitalization("Tratamento");
+        admission.setReasonHospitalization(ReasonHospitalization.OFTALMOLOGIA);
         admission.setDateMedicalDischarge(LocalDate.of(2025, 5, 10));
         admission.setDateReturns(LocalDate.of(2025, 6, 16));
-        admission.setMedicalEvolution("Recuperando");
-        admission.setTreatmentNextSteps("Retorno");
+        admission.setMedicalEvolution(MedicalEvolution.PROGRESSO_FAVORAVEL);
+        admission.setTreatmentNextSteps(TreatmentNextSteps.TUTOR_INTERROMPEU_TRATAMENTO);
         admission.setHealthRecord(savedHealthRecord);
         admission.setDiagnostics(Set.of(savedDiagnostic));
         admission.setPostOperatives(Set.of(savedPostOperative));
@@ -420,11 +418,11 @@ public class HospitalAdmissionControllerIT {
 
         HospitalAdmission admission = new HospitalAdmission();
         admission.setDate(LocalDate.of(2025, 7, 16));
-        admission.setReasonHospitalization("Tratamento");
+        admission.setReasonHospitalization(ReasonHospitalization.NEFROLOGIA);
         admission.setDateMedicalDischarge(LocalDate.of(2025, 5, 10));
         admission.setDateReturns(LocalDate.of(2025, 6, 16));
-        admission.setMedicalEvolution("Recuperando");
-        admission.setTreatmentNextSteps("Retorno");
+        admission.setMedicalEvolution(MedicalEvolution.PROGRESSO_FAVORAVEL);
+        admission.setTreatmentNextSteps(TreatmentNextSteps.CONTINUOU_TRATAMENTO);
         admission.setHealthRecord(savedHealthRecord);
         admission.setDiagnostics(Set.of(savedDiagnostic));
         admission.setPostOperatives(Set.of(savedPostOperative));
@@ -439,9 +437,9 @@ public class HospitalAdmissionControllerIT {
 
         HospitalAdmission existingAdmission = hospitalAdmissionRepository.findById(admission.getId()).orElse(null);
         assertNotNull(existingAdmission, "A internação deveria existir no bancko de dados.");
-        assertEquals("Tratamento", existingAdmission.getReasonHospitalization());
-        assertEquals("Recuperando", existingAdmission.getMedicalEvolution());
-        assertEquals("Retorno", existingAdmission.getTreatmentNextSteps());
+        assertEquals(ReasonHospitalization.NEFROLOGIA, existingAdmission.getReasonHospitalization());
+        assertEquals(MedicalEvolution.PROGRESSO_FAVORAVEL, existingAdmission.getMedicalEvolution());
+        assertEquals(TreatmentNextSteps.CONTINUOU_TRATAMENTO, existingAdmission.getTreatmentNextSteps());
     }
 
     @Test
@@ -462,11 +460,11 @@ public class HospitalAdmissionControllerIT {
 
         HospitalAdmission admission = new HospitalAdmission();
         admission.setDate(LocalDate.of(2025, 7, 16));
-        admission.setReasonHospitalization("Tratamento");
+        admission.setReasonHospitalization(ReasonHospitalization.NEFROLOGIA);
         admission.setDateMedicalDischarge(LocalDate.of(2025, 5, 10));
         admission.setDateReturns(LocalDate.of(2025, 6, 16));
-        admission.setMedicalEvolution("Recuperando");
-        admission.setTreatmentNextSteps("Retorno");
+        admission.setMedicalEvolution(MedicalEvolution.PROGRESSO_FAVORAVEL);
+        admission.setTreatmentNextSteps(TreatmentNextSteps.CONTINUOU_TRATAMENTO);
         admission.setHealthRecord(savedHealthRecord);
         admission.setDiagnostics(Set.of(savedDiagnostic));
         admission.setPostOperatives(Set.of(savedPostOperative));
@@ -479,8 +477,8 @@ public class HospitalAdmissionControllerIT {
                 .then()
                 .statusCode(200)
                 .body("id", equalTo(savedAdmission.getId().intValue()))
-                .body("treatmentNextSteps", equalTo("Retorno"))
-                .body("medicalEvolution", equalTo("Recuperando"))
+                .body("treatmentNextSteps", equalTo(TreatmentNextSteps.CONTINUOU_TRATAMENTO))
+                .body("medicalEvolution", equalTo(MedicalEvolution.PROGRESSO_FAVORAVEL))
                 .body("date", equalTo("2025-07-16"))
                 .body("dateMedicalDischarge", equalTo("2025-05-10"))
                 .body("dateReturns", equalTo("2025-06-16"));

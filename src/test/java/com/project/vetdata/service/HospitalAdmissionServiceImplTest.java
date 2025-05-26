@@ -3,9 +3,7 @@ package com.project.vetdata.service;
 import com.project.vetdata.dto.HospitalAdmissionCreateDTO;
 import com.project.vetdata.dto.HospitalAdmissionResponseDTO;
 import com.project.vetdata.dto.HospitalAdmissionUpdateDTO;
-import com.project.vetdata.enums.DogSize;
-import com.project.vetdata.enums.Euthanasia;
-import com.project.vetdata.enums.Gender;
+import com.project.vetdata.enums.*;
 import com.project.vetdata.model.*;
 import com.project.vetdata.repository.DiagnosticRepository;
 import com.project.vetdata.repository.HealthRecordRepository;
@@ -113,12 +111,12 @@ public class HospitalAdmissionServiceImplTest {
     public void given_valid_id_and_updateDTO_when_updateHospitalAdmission_then_admission_is_updated() {
         Long id = 1L;
         HospitalAdmissionUpdateDTO dto = new HospitalAdmissionUpdateDTO();
-        dto.setReasonHospitalization("Atualizando");
+        dto.setReasonHospitalization(ReasonHospitalization.ENDOCRINOLOGIA);
         dto.setDate(LocalDate.of(2025, 7, 4));
         dto.setDateMedicalDischarge(LocalDate.of(2025, 9, 15));
         dto.setDateReturns(LocalDate.of(2025, 10, 15));
-        dto.setMedicalEvolution("Estável");
-        dto.setTreatmentNextSteps("Fisioterapia");
+        dto.setMedicalEvolution(MedicalEvolution.PCR);
+        dto.setTreatmentNextSteps(TreatmentNextSteps.ALTA_MEDICA);
         dto.setDiagnosticIds(Set.of(1L));
         dto.setPostOperativeIds(Set.of(1L));
 
@@ -293,11 +291,11 @@ public class HospitalAdmissionServiceImplTest {
     void given_hospitalAdmission_with_null_fields_when_HospitalAdmissionResponseDTO_constructor_called_then_handle_nulls_correctly() {
         HospitalAdmission admission = new HospitalAdmission();
         admission.setDate(LocalDate.now());
-        admission.setReasonHospitalization("Reason");
+        admission.setReasonHospitalization(ReasonHospitalization.NEFROLOGIA);
         admission.setDateMedicalDischarge(LocalDate.now().plusDays(10));
         admission.setDateReturns(LocalDate.now().plusDays(20));
         admission.setMedicalEvolution(null);
-        admission.setTreatmentNextSteps("Treatment Steps");
+        admission.setTreatmentNextSteps(TreatmentNextSteps.CONTINUOU_TRATAMENTO);
         admission.setHealthRecord(null);
         admission.setDiagnostics(null);
         admission.setPostOperatives(null);
@@ -322,11 +320,11 @@ public class HospitalAdmissionServiceImplTest {
     private HospitalAdmissionCreateDTO getFakeHospitalAdmissionDTO() {
         HospitalAdmissionCreateDTO dto = new HospitalAdmissionCreateDTO();
         dto.setDate(LocalDate.of(2025, 4, 24));
-        dto.setReasonHospitalization("Cirurgia");
+        dto.setReasonHospitalization(ReasonHospitalization.HEMATOLOGIA);
         dto.setDateMedicalDischarge(LocalDate.of(2025, 4, 27));
         dto.setDateReturns(LocalDate.of(2025, 5, 10));
-        dto.setMedicalEvolution("Boa");
-        dto.setTreatmentNextSteps("Reabilitação");
+        dto.setMedicalEvolution(MedicalEvolution.PROGRESSO_FAVORAVEL);
+        dto.setTreatmentNextSteps(TreatmentNextSteps.ALTA_MEDICA);
         dto.setHealthRecordId(1L);
         dto.setDiagnosticIds(Set.of(1L));
         dto.setPostOperativeIds(Set.of(1L));
@@ -335,12 +333,12 @@ public class HospitalAdmissionServiceImplTest {
 
     private HospitalAdmission getFakeHospitalAdmission() {
         HospitalAdmission ha = new HospitalAdmission();
-        ha.setReasonHospitalization("Cirurgia");
+        ha.setReasonHospitalization(ReasonHospitalization.HEMATOLOGIA);
         ha.setDate(LocalDate.of(2025, 4, 24));
         ha.setDateMedicalDischarge(LocalDate.of(2025, 4, 27));
         ha.setDateReturns(LocalDate.of(2025, 5, 10));
-        ha.setMedicalEvolution("Boa");
-        ha.setTreatmentNextSteps("Reabilitação");
+        ha.setMedicalEvolution(MedicalEvolution.QUADRO_GRAVE);
+        ha.setTreatmentNextSteps(TreatmentNextSteps.CONTINUOU_TRATAMENTO);
         return ha;
     }
     private HealthRecord getFakeHealthRecord() {

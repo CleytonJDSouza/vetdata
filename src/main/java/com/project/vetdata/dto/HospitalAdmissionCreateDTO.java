@@ -1,6 +1,9 @@
 package com.project.vetdata.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.project.vetdata.enums.MedicalEvolution;
+import com.project.vetdata.enums.ReasonHospitalization;
+import com.project.vetdata.enums.TreatmentNextSteps;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -10,11 +13,11 @@ import java.util.Set;
 public class HospitalAdmissionCreateDTO {
 
     private LocalDate date;
-    private String reasonHospitalization;
+    private ReasonHospitalization reasonHospitalization;
     private LocalDate dateMedicalDischarge;
     private LocalDate dateReturns;
-    private String medicalEvolution;
-    private String treatmentNextSteps;
+    private MedicalEvolution medicalEvolution;
+    private TreatmentNextSteps treatmentNextSteps;
     private Long healthRecordId;
     private Set<Long> postOperativeIds;
     private Set<Long> diagnosticIds;
@@ -22,8 +25,8 @@ public class HospitalAdmissionCreateDTO {
     public HospitalAdmissionCreateDTO() {
     }
 
-    public HospitalAdmissionCreateDTO(LocalDate date, String reasonHospitalization, LocalDate dateMedicalDischarge, LocalDate dateReturns, String medicalEvolution,
-                                      String treatmentNextSteps, Long healthRecordId, Set<Long> postOperativeIds, Set<Long> diagnosticIds) {
+    public HospitalAdmissionCreateDTO(LocalDate date, ReasonHospitalization reasonHospitalization, LocalDate dateMedicalDischarge, LocalDate dateReturns, MedicalEvolution medicalEvolution,
+                                      TreatmentNextSteps treatmentNextSteps, Long healthRecordId, Set<Long> postOperativeIds, Set<Long> diagnosticIds) {
         this.date = date;
         this.reasonHospitalization = reasonHospitalization;
         this.dateMedicalDischarge = dateMedicalDischarge;
@@ -41,8 +44,8 @@ public class HospitalAdmissionCreateDTO {
         return date;
     }
 
-    @NotBlank(message = "Motivo da internação é obrigatório")
-    public String getReasonHospitalization() {
+    @NotNull(message = "Motivo da internação é obrigatório")
+    public ReasonHospitalization getReasonHospitalization() {
         return reasonHospitalization;
     }
 
@@ -57,11 +60,11 @@ public class HospitalAdmissionCreateDTO {
         return dateReturns;
     }
 
-    public String getMedicalEvolution() {
+    public MedicalEvolution getMedicalEvolution() {
         return medicalEvolution;
     }
 
-    public String getTreatmentNextSteps() {
+    public TreatmentNextSteps getTreatmentNextSteps() {
         return treatmentNextSteps;
     }
 
@@ -82,7 +85,7 @@ public class HospitalAdmissionCreateDTO {
         this.date = date;
     }
 
-    public void setReasonHospitalization(String reasonHospitalization) {
+    public void setReasonHospitalization(ReasonHospitalization reasonHospitalization) {
         this.reasonHospitalization = reasonHospitalization;
     }
 
@@ -94,11 +97,11 @@ public class HospitalAdmissionCreateDTO {
         this.dateReturns = dateReturns;
     }
 
-    public void setMedicalEvolution(String medicalEvolution) {
+    public void setMedicalEvolution(MedicalEvolution medicalEvolution) {
         this.medicalEvolution = medicalEvolution;
     }
 
-    public void setTreatmentNextSteps(String treatmentNextSteps) {
+    public void setTreatmentNextSteps(TreatmentNextSteps treatmentNextSteps) {
         this.treatmentNextSteps = treatmentNextSteps;
     }
 
