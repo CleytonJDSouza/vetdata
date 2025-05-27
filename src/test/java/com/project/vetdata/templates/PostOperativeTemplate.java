@@ -11,8 +11,16 @@ public final class PostOperativeTemplate {
         return new PostOperativeCreateDTO("Fisioterapia");
     }
 
+    public static PostOperativeCreateDTO getFakePostOperativeCreateDTO2() {
+        return new PostOperativeCreateDTO("Repouso");
+    }
+
     public static PostOperative getFakePostOperative() {
         return new PostOperative("Fisioterapia");
+    }
+
+    public static PostOperative getFakePostOperative2() {
+        return new PostOperative("Repouso");
     }
 
     public static PostOperativeCreateDTO getFakePostOperativeCreateDTOWithInvalidDescription() {

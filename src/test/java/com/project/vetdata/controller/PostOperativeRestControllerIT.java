@@ -174,4 +174,53 @@ public class PostOperativeRestControllerIT {
                 .body("", hasSize(0))
                 .body(equalTo("[]"));
     }
+
+    @Test
+    public void given_multiple_postOperatives_when_search_without_term_then_returns_paginated_result() {
+        repository.save(PostOperativeTemplate.getFakePostOperative());
+        repository.save(PostOperativeTemplate.getFakePostOperative2());
+
+        given()
+                .queryParam("page", 0)
+                .queryParam("qtdRecordsPage", 10)
+                .queryParam("sortBy", "description")
+                .when()
+                .get("/post-operatives/search")
+                .then()
+                .statusCode(200)
+                .body("total", equalTo(2))
+                .body("qtdRecordsPage", equalTo(10))
+                .body("page", equalTo(0))
+                .body("data.size()", equalTo(2));
+    }
+
+    @Test
+    public void given_postOperatives_when_search_with_matching_term_then_returns_filtered_result() {
+        repository.save(PostOperativeTemplate.getFakePostOperative());
+        repository.save(PostOperativeTemplate.getFakePostOperative2());
+
+        given()
+                .queryParam("searchByTerm", "fisio")
+                .queryParam("page", 0)
+                .queryParam("qtdRecordsPage", 10)
+                .when()
+                .get("/post-operatives/search")
+                .then()
+                .statusCode(200)
+                .body("total", equalTo(1))
+                .body("data[0].description", equalTo("Fisioterapia"));
+    }
+
+    @Test
+    public void given_postOperatives_when_search_with_non_matching_term_then_returns_no_content() {
+        repository.save(PostOperativeTemplate.getFakePostOperative());
+        repository.save(PostOperativeTemplate.getFakePostOperative2());
+
+        given()
+                .queryParam("searchByTerm", "man")
+                .when()
+                .get("/post-operatives/search")
+                .then()
+                .statusCode(204);
+    }
 }
