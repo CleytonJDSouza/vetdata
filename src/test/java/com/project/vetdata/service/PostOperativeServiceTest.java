@@ -10,6 +10,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Collections;
 import java.util.List;
@@ -73,5 +77,52 @@ public class PostOperativeServiceTest {
         assertNotNull(result, "A lista não deve ser nula.");
         assertTrue(result.isEmpty(), "A lista deve estar vazia");
         verify(repository, times(1)).findAll();
+    }
+
+    @Test
+    public void given_postOperative_exist_when_getAllPostOperativePaginated_is_called_then_return_page_of_postOperatives() {
+        Pageable pageable = PageRequest.of(0,10);
+        PostOperative postOperative = PostOperativeTemplate.getFakePostOperative();
+        Page<PostOperative> postOperativePage = new PageImpl<>(List.of(postOperative));
+
+        when(repository.findAll(pageable)).thenReturn(postOperativePage);
+
+        Page<PostOperative> result = service.getAllPostOperativesPaginated(pageable);
+
+        assertNotNull(result);
+        assertEquals(1, result.getTotalElements());
+        verify(repository, times(1)).findAll(pageable);
+    }
+
+    @Test
+    public void given_matching_postOperatives_when_getBySearchTerm_is_called_then_return_page_of_matching_postOperatives() {
+        String term = "fisioterapia";
+        Pageable pageable = PageRequest.of(0,10);
+        PostOperative postOperative = PostOperativeTemplate.getFakePostOperative();
+        Page<PostOperative> postOperativePage = new PageImpl<>(List.of(postOperative));
+
+        when(repository.findByDescriptionContainingIgnoreCase(term, pageable)).thenReturn(postOperativePage);
+
+        Page<PostOperative> result = service.getBySearchTerm(term, pageable);
+
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(1, result.getTotalElements());
+        verify(repository, times(1)).findByDescriptionContainingIgnoreCase(term, pageable);
+    }
+
+    @Test
+    public void given_no_matching_postOperatives_when_getBySearchTerm_is_called_then_return_empty_page() {
+        String term = "teste";
+        Pageable pageable = PageRequest.of(0,10);
+        Page<PostOperative> emptyPage = Page.empty(pageable);
+
+        when(repository.findByDescriptionContainingIgnoreCase(term, pageable)).thenReturn(emptyPage);
+
+        Page<PostOperative> result = service.getBySearchTerm(term, pageable);
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+        verify(repository, times(1)).findByDescriptionContainingIgnoreCase(term, pageable);
     }
 }

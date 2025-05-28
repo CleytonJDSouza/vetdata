@@ -8,6 +8,8 @@ import com.project.vetdata.model.PostOperative;
 import com.project.vetdata.repository.DiagnosticRepository;
 import com.project.vetdata.repository.PostOperativeRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,5 +41,13 @@ public class PostOperativeService {
 
     public List<PostOperative> getAllPostOperatives() {
         return repository.findAll();
+    }
+
+    public Page<PostOperative> getAllPostOperativesPaginated(Pageable pageable) {
+        return repository.findAll(pageable);
+    }
+
+    public Page<PostOperative> getBySearchTerm(String term, Pageable pageable) {
+        return repository.findByDescriptionContainingIgnoreCase(term, pageable);
     }
 }

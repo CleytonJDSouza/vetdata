@@ -9,11 +9,17 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/diagnostics")
@@ -64,5 +70,38 @@ public class DiagnosticRestController {
     public ResponseEntity<List<Diagnostic>> getAllDiagnostics() {
         List<Diagnostic> diagnostics = service.getAllDiagnostics();
         return ResponseEntity.ok(diagnostics);
+    }
+
+    @Operation(summary = "Buscar todos os diagnósticos (com paginação e busca)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Diagnóstico(s) encontrado(s)!",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Diagnostic.class))}),
+            @ApiResponse(responseCode = "204", description = "Nenhum diagnóstico encontrado!", content = @Content)
+    })
+    @GetMapping("/search")
+    public ResponseEntity<Map<String, Object>> getAllDiagnosticsPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int qtdRecordsPage,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(required = false) String searchByTerm
+    ) {
+        Pageable pageable = PageRequest.of(page, qtdRecordsPage, Sort.by(sortBy));
+        Page<Diagnostic> diagnosticsPage = StringUtils.hasText(searchByTerm)
+                ? service.getBySearchTerm(searchByTerm, pageable)
+                : service.getAllDiagnosticsPaginated(pageable);
+
+        if (diagnosticsPage.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        Map<String, Object> response = Map.of(
+                "total", diagnosticsPage.getTotalElements(),
+                "qtdRecordsPage", diagnosticsPage.getSize(),
+                "page", diagnosticsPage.getNumber(),
+                "data", diagnosticsPage.getContent()
+        );
+
+        return ResponseEntity.ok(response);
     }
 }

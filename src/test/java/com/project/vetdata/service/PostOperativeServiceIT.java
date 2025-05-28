@@ -14,11 +14,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -124,5 +128,43 @@ public class PostOperativeServiceIT {
 
         List<String> names = result.stream().map(PostOperative::getDescription).toList();
         assertTrue(names.contains("Fisioterapia"));
+    }
+
+    @Test
+    public void given_multiple_postOperatives_when_getAllPostOperativesPaginated_then_return_paginated_postOperatives() {
+        service.createPostOperative(PostOperativeTemplate.getFakePostOperativeCreateDTO());
+        service.createPostOperative(PostOperativeTemplate.getFakePostOperativeCreateDTO2());
+
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("description"));
+        Page<PostOperative> result = service.getAllPostOperativesPaginated(pageable);
+
+        assertNotNull(result);
+        assertEquals(2, result.getTotalElements());
+        assertFalse(result.isEmpty(), "A página não deve estar vazia");
+    }
+
+    @Test
+    public void given_postOperatives_when_getBySearchTerm_with_matching_term_then_return_filtered_page() {
+        service.createPostOperative(PostOperativeTemplate.getFakePostOperativeCreateDTO());
+        service.createPostOperative(PostOperativeTemplate.getFakePostOperativeCreateDTO2());
+
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<PostOperative> result = service.getBySearchTerm("fisiote", pageable);
+
+        assertNotNull(result);
+        assertEquals(1, result.getTotalElements());
+        assertTrue(result.getContent().get(0).getDescription().toLowerCase().contains("fisiote"));
+    }
+
+    @Test
+    public void given_postOperatives_when_getBySearchTerm_with_no_match_then_return_empty_page() {
+        service.createPostOperative(PostOperativeTemplate.getFakePostOperativeCreateDTO());
+        service.createPostOperative(PostOperativeTemplate.getFakePostOperativeCreateDTO2());
+
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<PostOperative> result = service.getBySearchTerm("Man", pageable);
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty(), "A página deve estar vazia");
     }
 }

@@ -10,6 +10,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Collections;
 import java.util.List;
@@ -73,5 +77,52 @@ public class DiagnosticServiceTest {
         assertNotNull(result, "A lista não deve ser nula.");
         assertTrue(result.isEmpty(), "A lista deve estar vazia");
         verify(repository, times(1)).findAll();
+    }
+
+    @Test
+    public void given_diagnostic_exist_when_getAllDiagnosticsPaginated_is_called_then_return_page_of_diagnostics() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Diagnostic diagnostic = DiagnosticTemplate.getFakeDiagnostic();
+        Page<Diagnostic> diagnosticPage = new PageImpl<>(List.of(diagnostic));
+
+        when(repository.findAll(pageable)).thenReturn(diagnosticPage);
+
+        Page<Diagnostic> result = service.getAllDiagnosticsPaginated(pageable);
+
+        assertNotNull(result);
+        assertEquals(1, result.getTotalElements());
+        verify(repository, times(1)).findAll(pageable);
+    }
+
+    @Test
+    public void given_matching_diagnostics_when_getBySearchTerm_is_called_then_return_page_of_matching_diagnostics() {
+        String term = "gripe";
+        Pageable pageable = PageRequest.of(0,10);
+        Diagnostic diagnostic = DiagnosticTemplate.getFakeDiagnostic();
+        Page<Diagnostic> diagnosticPage = new PageImpl<>(List.of(diagnostic));
+
+        when(repository.findByDescriptionContainingIgnoreCase(term, pageable)).thenReturn(diagnosticPage);
+
+        Page<Diagnostic> result = service.getBySearchTerm(term, pageable);
+
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(1, result.getTotalElements());
+        verify(repository, times(1)).findByDescriptionContainingIgnoreCase(term, pageable);
+    }
+
+    @Test
+    public void given_no_matching_diagnostics_when_getBySearchTerm_is_called_then_return_empty_page() {
+        String term = "teste";
+        Pageable pageable = PageRequest.of(0,10);
+        Page<Diagnostic> emptyPage = Page.empty(pageable);
+
+        when(repository.findByDescriptionContainingIgnoreCase(term, pageable)).thenReturn(emptyPage);
+
+        Page<Diagnostic> result = service.getBySearchTerm(term, pageable);
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+        verify(repository, times(1)).findByDescriptionContainingIgnoreCase(term, pageable);
     }
 }

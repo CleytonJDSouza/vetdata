@@ -14,11 +14,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -125,5 +129,43 @@ public class DiagnosticServiceIT {
 
         List<String> names = result.stream().map(Diagnostic::getDescription).toList();
         assertTrue(names.contains("Cancer"));
+    }
+
+    @Test
+    public void given_multiple_diagnostics_when_getAllDiagnosticPaginated_then_return_paginated_diagnostics() {
+        service.createDiagnostic(DiagnosticTemplate.getFakeDiagnosticCreateDTO());
+        service.createDiagnostic(DiagnosticTemplate.getFakeDiagnosticCreateDTO2());
+
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("description"));
+        Page<Diagnostic> result = service.getAllDiagnosticsPaginated(pageable);
+
+        assertNotNull(result);
+        assertEquals(2, result.getTotalElements());
+        assertFalse(result.isEmpty(), "A página não deve estar vazia");
+    }
+
+    @Test
+    public void given_diagnostics_when_getBySearchTerm_with_matching_term_then_return_filtered_page() {
+        service.createDiagnostic(DiagnosticTemplate.getFakeDiagnosticCreateDTO());
+        service.createDiagnostic(DiagnosticTemplate.getFakeDiagnosticCreateDTO2());
+
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Diagnostic> result = service.getBySearchTerm("gri", pageable);
+
+        assertNotNull(result);
+        assertEquals(1, result.getTotalElements());
+        assertEquals("Gripe", result.getContent().get(0).getDescription());
+    }
+
+    @Test
+    public void given_diagnostics_when_getBySearchTerm_with_no_match_return_empty_page() {
+        service.createDiagnostic(DiagnosticTemplate.getFakeDiagnosticCreateDTO());
+        service.createDiagnostic(DiagnosticTemplate.getFakeDiagnosticCreateDTO2());
+
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Diagnostic> result = service.getBySearchTerm("Man", pageable);
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty(), "A página deve estar vazia");
     }
 }

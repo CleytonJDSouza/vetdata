@@ -9,11 +9,17 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/post-operatives")
@@ -64,5 +70,38 @@ public class PostOperativeRestController {
     public ResponseEntity<List<PostOperative>> getAllPostOperatives() {
         List<PostOperative> postOperatives = service.getAllPostOperatives();
         return ResponseEntity.ok(postOperatives);
+    }
+
+    @Operation(summary = "Buscar todos os pós-operatórios (com paginação e busca)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Pós-operatório(s) encontrado(s)!",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = PostOperative.class))}),
+            @ApiResponse(responseCode = "204", description = "Nenhum pós-operatório encontrado!", content = @Content)
+    })
+    @GetMapping("/search")
+    public ResponseEntity<Map<String, Object>> getAllPostOperativesPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int qtdRecordsPage,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(required = false) String searchByTerm
+    ) {
+        Pageable pageable = PageRequest.of(page, qtdRecordsPage, Sort.by(sortBy));
+        Page<PostOperative> postOperativesPage = StringUtils.hasText(searchByTerm)
+                ? service.getBySearchTerm(searchByTerm, pageable)
+                : service.getAllPostOperativesPaginated(pageable);
+
+        if (postOperativesPage.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        Map<String, Object> response = Map.of(
+                "total", postOperativesPage.getTotalElements(),
+                "qtdRecordsPage", postOperativesPage.getSize(),
+                "page", postOperativesPage.getNumber(),
+                "data", postOperativesPage.getContent()
+        );
+
+        return ResponseEntity.ok(response);
     }
 }

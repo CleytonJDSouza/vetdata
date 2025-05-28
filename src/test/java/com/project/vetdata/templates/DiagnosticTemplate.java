@@ -9,9 +9,18 @@ public final class DiagnosticTemplate {
         return new DiagnosticCreateDTO("Cancer", "test");
     }
 
+    public static DiagnosticCreateDTO getFakeDiagnosticCreateDTO2() {
+        return new DiagnosticCreateDTO("Gripe", "test");
+    }
+
     public static Diagnostic getFakeDiagnostic() {
         return new Diagnostic("Cancer", "test");
     }
+
+    public static Diagnostic getFakeDiagnostic2() {
+        return new Diagnostic("Gripe", "test");
+    }
+
 
     public static DiagnosticCreateDTO getFakeDiagnosticCreateDTOWithInvalidDescription() {
         return new DiagnosticCreateDTO();
