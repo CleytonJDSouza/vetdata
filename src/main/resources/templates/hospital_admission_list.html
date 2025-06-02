@@ -28,9 +28,8 @@
 
     <style>
         /* Centralizar os ícones das colunas Editar e Excluir */
-        #dt_basic td:nth-child(8),
-        #dt_basic td:nth-child(9),
-        #dt_basic td:nth-child(10) {
+        #dt_basic td:nth-child(10),
+        #dt_basic td:nth-child(11) {
             text-align: center;
         }
 
@@ -118,7 +117,7 @@
     <div id="ribbon">
         <!-- breadcrumb -->
         <ol class="breadcrumb">
-            <li>Home</li><li>Tables</li><li>Prontuário</li>
+            <li>Home</li><li>Tables</li><li>Internações</li>
         </ol>
         <!-- end breadcrumb -->
     </div>
@@ -132,15 +131,20 @@
                     <i class="fa fa-table fa-fw "></i>
                     Tabelas
                     <span>>
-						Tabela de Prontuários
+						Tabela de Internações
 					</span>
                 </h1>
+            </div>
+            <div class="col-xs-12 col-sm-5 col-md-5 col-lg-8">
+                <!-- Button trigger modal -->
+                <a href="#" id="import-breeds" class="btn btn-success btn-lg pull-right header-btn hidden-mobile"><i class="fa fa-circle-arrow-up fa-lg"></i>Cadastrar Internação</a>
             </div>
         </div>
 
 
         <!-- widget grid -->
         <section id="widget-grid" class="">
+
             <!-- row -->
             <div class="row">
 
@@ -150,9 +154,9 @@
                     <div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false">
                         <header>
                             <span class="widget-icon"> <i class="fa fa-table"></i> </span>
-                            <h2>Tabela de Prontuários </h2>
-
+                            <h2>Tabela de Internações </h2>
                         </header>
+                        <input type="hidden" name="id" id="id" th:value="${id}">
 
                         <!-- widget div-->
                         <div>
@@ -170,16 +174,17 @@
                                 <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
                                     <thead>
                                     <tr>
-                                        <th data-hide="phone">Código do Paciente</th>
-                                        <th data-class="expand">Paciente</th>
-                                        <th data-hide="phone,tablet">Raça</th>
-                                        <th data-hide="phone,tablet">Idade</th>
-                                        <th data-hide="phone,tablet">Gênero</th>
-                                        <th data-hide="phone,tablet">Porte</th>
-                                        <th data-hide="phone,tablet">Faleceu ?</th>
+                                        <th data-class="expand">Nome</th>
+                                        <th data-hide="phone">Descrição</th>
+                                        <th data-hide="phone,tablet">Expectativa Mínima</th>
+                                        <th data-hide="phone,tablet">Expectativa Máxima</th>
+                                        <th data-hide="phone,tablet">Peso Mín. Macho</th>
+                                        <th data-hide="phone,tablet">Peso Máx. Macho</th>
+                                        <th data-hide="phone,tablet">Peso Mín. Fêmea</th>
+                                        <th data-hide="phone,tablet">Peso Máx. Fêmea</th>
+                                        <th data-hide="phone,tablet">Hipoalergênico</th>
                                         <th data-hide="phone,tablet" class="header-center">Editar</th>
                                         <th data-hide="phone,tablet" class="header-center">Excluir</th>
-                                        <th data-hide="phone,tablet" class="header-center">Internações</th>
                                     </tr>
                                     </thead>
                                 </table>
@@ -301,6 +306,9 @@
 
         pageSetUp();
 
+        var id = $("#id").val()
+
+
         /* // DOM Position key index //
 
 			l - Length changing (dropdown)
@@ -328,120 +336,101 @@
             phone : 480
         };
 
-        let table = $('#dt_basic').DataTable({
-            "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+
-                "t"+
-                "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
-            "autoWidth" : true,
-            "oLanguage": {
-                "sProcessing":   "Processando...",
-                "sLengthMenu":   "Exibir _MENU_ registros",
-                "sZeroRecords":  "Nenhum registro encontrado",
-                "sInfo":         "Exibindo de _START_ até _END_ de _TOTAL_ registros",
-                "sInfoEmpty":    "Exibindo de 0 até 0 de 0 registros",
-                "sInfoFiltered": "(filtrado de _MAX_ registros no total)",
-                "sSearch": '<span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>',
-                "oPaginate": {
-                    "sFirst":    "Primeiro",
-                    "sPrevious": "Anterior",
-                    "sNext":     "Próximo",
-                    "sLast":     "Último"
-                }
-            },
-            "serverSide": true,  // Definir para server-side pagination
-            "ajax": function(data, callback, settings) {
-                // Montando os parâmetros para a API
-                const page = settings._iDisplayStart / settings._iDisplayLength; // Página atual
-                const qtdRecordsPage = settings._iDisplayLength; // Quantidade de registros por página
-                const sortBy = settings.aaSorting[0][0] == 0 ? 'patient' : 'id'; // Defina o campo de ordenação, exemplo "name"
-                const searchTerm = data.search.value;
-
-                $.ajax({
-                    url: "/health-records",
-                    type: "GET",
-                    data: {
-                        page: page,
-                        qtdRecordsPage: qtdRecordsPage,
-                        sortBy: sortBy,
-                        search: searchTerm
-                    },
-                    success: function(response) {
-                        // Passando os dados e informações de paginação para o DataTable
-                        callback({
-                            draw: settings.iDraw,
-                            recordsTotal: response.total,
-                            recordsFiltered: response.total,
-                            data: response.data
-                        });
-                    }
-                });
-            },
-            "columns": [
-                { "data": "codPatient", "title": "Código do Paciente" },
-                { "data": "patient", "title": "Paciente" },
-                { "data": "breedName", "title": "Raça" },
-                { "data": "age", "title": "Idade" },
-                {"data": "gender", "title": "Gênero","render": function(data) {
-                        switch (data) {
-                            case 'MALE': return 'Macho';
-                            case 'FEMALE': return 'Fêmea';
-                            default: return 'Desconhecido';
-                        }
-                }},
-                {"data": "size", "title": "Porte","render": function(data) {
-                    switch (data) {
-                        case 'SMALL': return 'Pequeno';
-                        case 'MEDIUM': return 'Médio';
-                        case 'LARGE': return 'Grande';
-                        default: return 'Desconhecido';
-                    }
-                }},
-                { "data": "death", "title": "Faleceu ?", "render": function(data) {
-                        return data ? 'Sim' : 'Não';
-                }},
-                {
-                    "data": "id",
-                    "render": function(data) {
-                        return `<a href="/health-records-pages/form_update/${data}" class="link-edit">
-                            <i class="fa fa-edit"></i>
-                        </a>`;
-                    }
-                },
-                {
-                    "data": "id",
-                    "render": function(data) {
-                        return `<a href="#" class="link-delete" data-id="${data}">
-                            <i class="fa fa-trash"></i>
-                        </a>`;
-                    }
-                },
-                {
-                    "data": "id",
-                    "render": function(data) {
-                        return `<a href="/hospital-admission-pages/list/${data}">
-                            <i class="fa fa-ambulance"></i>
-                        </a>`;
-                    }
-                }
-            ]
-        });
+        // let table = $('#dt_basic').DataTable({
+        //     "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+
+        //         "t"+
+        //         "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
+        //     "autoWidth" : true,
+        //     "oLanguage": {
+        //         "sProcessing":   "Processando...",
+        //         "sLengthMenu":   "Exibir _MENU_ registros",
+        //         "sZeroRecords":  "Nenhum registro encontrado",
+        //         "sInfo":         "Exibindo de _START_ até _END_ de _TOTAL_ registros",
+        //         "sInfoEmpty":    "Exibindo de 0 até 0 de 0 registros",
+        //         "sInfoFiltered": "(filtrado de _MAX_ registros no total)",
+        //         "sSearch": '<span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>',
+        //         "oPaginate": {
+        //             "sFirst":    "Primeiro",
+        //             "sPrevious": "Anterior",
+        //             "sNext":     "Próximo",
+        //             "sLast":     "Último"
+        //         }
+        //     },
+        //     "serverSide": true,  // Definir para server-side pagination
+        //     "ajax": function(data, callback, settings) {
+        //         // Montando os parâmetros para a API
+        //         const page = settings._iDisplayStart / settings._iDisplayLength; // Página atual
+        //         const qtdRecordsPage = settings._iDisplayLength; // Quantidade de registros por página
+        //         const sortBy = settings.aaSorting[0][0] == 0 ? 'name' : 'id'; // Defina o campo de ordenação, exemplo "name"
+        //         const searchTerm = data.search.value;
+        //
+        //         $.ajax({
+        //             url: "/breeds",
+        //             type: "GET",
+        //             data: {
+        //                 page: page,
+        //                 qtdRecordsPage: qtdRecordsPage,
+        //                 sortBy: sortBy,
+        //                 searchByTerm: searchTerm
+        //             },
+        //             success: function(response) {
+        //                 // Passando os dados e informações de paginação para o DataTable
+        //                 callback({
+        //                     draw: settings.iDraw,
+        //                     recordsTotal: response.total,
+        //                     recordsFiltered: response.total,
+        //                     data: response.data
+        //                 });
+        //             }
+        //         });
+        //     },
+        //     "columns": [
+        //         { "data": "name", "title": "Nome" },
+        //         { "data": "description", "title": "Descrição" },
+        //         { "data": "lifeExpectancyMin", "title": "Expectativa Mínima" },
+        //         { "data": "lifeExpectancyMax", "title": "Expectativa Máxima" },
+        //         { "data": "maleWeightMin", "title": "Peso Mín. Macho" },
+        //         { "data": "maleWeightMax", "title": "Peso Máx. Macho" },
+        //         { "data": "femaleWeightMin", "title": "Peso Mín. Fêmea" },
+        //         { "data": "femaleWeightMax", "title": "Peso Máx. Fêmea" },
+        //         { "data": "hypoallergenic", "title": "Hipoalergênico", "render": function(data) {
+        //                 return data ? 'Sim' : 'Não'; // Converte true/false para Sim/Não
+        //             }},
+        //         {
+        //             "data": "id",
+        //             "render": function(data) {
+        //                 return `<a href="/breeds-pages/form_update/${data}" class="link-edit">
+        //                     <i class="fa fa-edit"></i>
+        //                 </a>`;
+        //             }
+        //         },
+        //         {
+        //             "data": "id",
+        //             "render": function(data) {
+        //                 return `<a href="#" class="link-delete" data-id="${data}">
+        //                     <i class="fa fa-trash"></i>
+        //                 </a>`;
+        //             }
+        //         }
+        //     ]
+        // });
         /* END BASIC */
 
         $('#dt_basic tbody').on('click', '.link-delete', function (e) {
             e.preventDefault();
             let id = $(this).data('id');
             $.SmartMessageBox({
-                title : "<i class=\"fa fa-trash-o txt-color-red\"></i> <span class=\"txt-color-red\"><strong>Exlusão de um Prontuário !</strong></span>",
+                title : "<i class=\"fa fa-trash-o txt-color-red\"></i> <span class=\"txt-color-red\"><strong>Exlusão de uma Raça !</strong></span>",
                 content : "Deseja excluir este registro ?",
                 buttons : '[Não][Sim]'
             }, function(ButtonPressed) {
                 if (ButtonPressed === "Sim") {
                     $.ajax({
-                        url: "/health-records/" + id,
+                        url: "/breeds/" + id,
                         type: "DELETE",
                         success: function (response) {
                             $.smallBox({
-                                title : "Prontuário excluido com sucesso !",
+                                title : "Raça excluida com sucesso !",
                                 color : "#739E73",
                                 iconSmall : "fa  fa-trash-o",
                                 timeout : 2000
@@ -450,7 +439,7 @@
                         },
                         error: function (xhr, status, error) {
                             $.bigBox({
-                                title : "Erro ao tentar excluir um prontuário !",
+                                title : "Erro ao tentar excluir uma raça !",
                                 content : "Erro ao tentar excluir: " + xhr.responseText,
                                 color : "#C46A69",
                                 icon : "fa fa-warning shake animated",
@@ -461,6 +450,10 @@
                 }
             });
             e.preventDefault();
+        });
+
+        $('#import-breeds').on('click', function (e) {
+            window.location.href = "/hospital-admission-pages/form/"+id
         });
     })
 </script>

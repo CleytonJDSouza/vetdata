@@ -22,9 +22,9 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(HospitalAdmissionController.class)
+@WebMvcTest(HospitalAdmissionRestController.class)
 @ActiveProfiles("test")
-public class HospitalAdmissionControllerTest {
+public class HospitalAdmissionRestControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

@@ -11,7 +11,6 @@ import com.project.vetdata.enums.Gender;
 import com.project.vetdata.model.*;
 import com.project.vetdata.repository.*;
 import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
-public class HospitalAdmissionControllerIT {
+public class HospitalAdmissionRestControllerIT {
 
     @LocalServerPort
     private Integer port;
