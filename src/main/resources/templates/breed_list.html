@@ -304,6 +304,9 @@
 <script src="/js/plugin/datatables/dataTables.bootstrap.min.js"></script>
 <script src="/js/plugin/datatable-responsive/datatables.responsive.min.js"></script>
 
+<!-- Logout -->
+<script src="/js/logout.js"></script>
+
 
 
 <script type="text/javascript">
@@ -488,6 +491,25 @@
             });
             e.preventDefault();
         });
+
+        // $.get("/authentications/user-info", function(data) {
+        //     $("#menuUsername").text(data.username); // Exibe no menu
+        // });
+        //
+        // $("#logoutLink").on("click", function (e) {
+        //     e.preventDefault();
+        //
+        //     $.ajax({
+        //         url: "/authentications/logout",
+        //         type: "POST",
+        //         success: function () {
+        //             window.location.href = "/login"
+        //         },
+        //         error: function () {
+        //             alert("Erro ao tentar fazer logout.");
+        //         }
+        //     });
+        // });
     })
 </script>
 
