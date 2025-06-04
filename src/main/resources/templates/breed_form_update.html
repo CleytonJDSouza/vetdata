@@ -203,14 +203,6 @@
                                                 </label>
                                             </section>
                                         </div>
-                                        <div class="row">
-                                            <section class="col col-6">
-                                                <label class="input">
-                                                    <input type="text" name="size"  id="size" placeholder="Tamanho">
-                                                    <b class="tooltip tooltip-bottom-right">Informe o tamanho da raça !</b>
-                                                </label>
-                                            </section>
-                                        </div>
                                     </fieldset>
 
                                     <header>
@@ -328,6 +320,8 @@
 <!-- PAGE RELATED PLUGIN(S) -->
 <script src="/js/plugin/jquery-form/jquery-form.min.js"></script>
 
+<!-- Logout -->
+<script src="/js/logout.js"></script>
 
 <script type="text/javascript">
     $(document).ready(function() {
@@ -379,10 +373,6 @@
                     required : true,
                     digits : true,
                     greaterThan: "#femaleWeightMin"
-                },
-                size : {
-                    required : true,
-                    digits : true
                 }
             },
             // Messages for form validation
@@ -419,10 +409,6 @@
                     required : 'O peso máximo da fêmea é obrigatório !',
                     digits : 'Esse campo só aceita números !',
                     greaterThan: "O peso máximo da fêmea deve ser maior que o peso mínimo !"
-                },
-                size : {
-                    required : 'O tamanho da raça é obrigatório !',
-                    digits : 'Esse campo só aceita números !'
                 }
             },
 
@@ -437,7 +423,6 @@
                     maleWeightMax: $("#maleWeightMax").val(),
                     femaleWeightMin: $("#femaleWeightMin").val(),
                     femaleWeightMax: $("#femaleWeightMax").val(),
-                    size: $("#size").val(),
                     hypoallergenic: $("#hypoallergenic").is(":checked") // Para checkboxes
                 };
                 $.ajax({
@@ -500,7 +485,6 @@
                 $('#maleWeightMax').val(data.maleWeightMax);
                 $('#femaleWeightMin').val(data.femaleWeightMin);
                 $('#femaleWeightMax').val(data.femaleWeightMax);
-                $('#size').val(data.size);
                 $('#hypoallergenic').val(data.hypoallergenic.toString()); // Converte booleano para string
             },
             error: function (xhr, status, error) {
