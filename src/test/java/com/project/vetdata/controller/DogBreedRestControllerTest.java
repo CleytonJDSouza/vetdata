@@ -1,6 +1,7 @@
 package com.project.vetdata.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.vetdata.configs.TestSecurityConfig;
 import com.project.vetdata.dto.*;
 import com.project.vetdata.model.DogBreed;
 import com.project.vetdata.service.DogBreedExternalService;
@@ -12,8 +13,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.*;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -26,14 +29,13 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @WebMvcTest(DogBreedRestController.class)
+@Import(TestSecurityConfig.class)
 public class DogBreedRestControllerTest {
-
-    @InjectMocks
-    private DogBreedServiceImpl dogBreedServiceImpl;
 
     @Autowired
     private MockMvc mockMvc;
@@ -44,16 +46,8 @@ public class DogBreedRestControllerTest {
     @MockitoBean
     private DogBreedExternalService dogBreedExternalService;
 
-    @InjectMocks
-    private DogBreedRestController dogBreedController;
-
     @Autowired
     private ObjectMapper objectMapper;
-
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     public void given_validDogBreed_when_createDogBreed_then_returnsCreatedDogBreed() throws Exception {

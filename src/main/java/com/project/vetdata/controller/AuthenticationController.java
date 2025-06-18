@@ -13,8 +13,13 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.Map;
 
 @RestController
@@ -37,8 +42,14 @@ public class AuthenticationController {
     @PostMapping
     public ResponseEntity<AuthenticationResponseDTO> authenticate(@RequestBody @Valid AuthenticationRequestDTO dto, HttpSession session) {
         AuthenticationResponseDTO response = authenticationService.authenticate(dto);
-        if (response.status().equals(AuthenticationStatus.AUTHORIZED)){
+        if (response.status().equals(AuthenticationStatus.AUTHORIZED)) {
             session.setAttribute("user", response.name());
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                    dto.email(), null, Collections.emptyList()
+            );
+            SecurityContext context = SecurityContextHolder.createEmptyContext();
+            context.setAuthentication(authentication);
+            session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, context);
         }
         return ResponseEntity.ok(response);
     }

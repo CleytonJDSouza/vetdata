@@ -217,6 +217,9 @@
                     url: "/authentications",
                     contentType: "application/json",
                     data: JSON.stringify(formData),
+                    xhrFields: {
+        withCredentials: true
+    },
                     success: function (response) {
                         if (response.status === "AUTHORIZED"){
                             window.location.href = "/breeds-pages/list"

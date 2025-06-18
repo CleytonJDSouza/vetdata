@@ -1,12 +1,14 @@
 package com.project.vetdata.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.vetdata.configs.TestSecurityConfig;
 import com.project.vetdata.model.Diagnostic;
 import com.project.vetdata.service.DiagnosticService;
 import com.project.vetdata.templates.DiagnosticTemplate;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -17,13 +19,16 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+
 import java.util.List;
 
 import static org.mockito.Mockito.*;
+import org.springframework.security.test.context.support.WithMockUser;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(DiagnosticRestController.class)
+@Import(TestSecurityConfig.class)
 public class DiagnosticRestControllerTest {
 
     @Autowired
@@ -100,5 +105,4 @@ public class DiagnosticRestControllerTest {
 
         verify(diagnosticService).getAllDiagnosticsPaginated(eq(paging));
     }
-
 }
