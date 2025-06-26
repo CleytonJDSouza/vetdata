@@ -11,6 +11,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -19,10 +24,14 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class AuthenticationServiceImplTest {
 
     @InjectMocks
     private AuthenticationServiceImpl authenticationService;
+
+    @Mock
+    private AuthenticationManager authenticationManager;
 
     @Mock
     private UserRepository userRepository;
@@ -43,6 +52,9 @@ public class AuthenticationServiceImplTest {
         AuthenticationRequestDTO dto = new AuthenticationRequestDTO(email, password);
 
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(email, password);
+        when(authenticationManager.authenticate(any())).thenReturn(authToken);
 
         AuthenticationResponseDTO response = authenticationService.authenticate(dto);
 
@@ -68,6 +80,7 @@ public class AuthenticationServiceImplTest {
         AuthenticationRequestDTO dto = new AuthenticationRequestDTO(email, wrongPassword);
 
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+        when(authenticationManager.authenticate(any())).thenThrow(new BadCredentialsException("Senha incorreta"));
 
         AuthenticationResponseDTO response = authenticationService.authenticate(dto);
 
