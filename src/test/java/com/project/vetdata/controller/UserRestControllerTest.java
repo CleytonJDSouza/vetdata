@@ -2,6 +2,7 @@ package com.project.vetdata.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.password4j.Password;
+import com.project.vetdata.configs.TestSecurityConfig;
 import com.project.vetdata.dto.UserCreateDTO;
 import com.project.vetdata.model.User;
 import com.project.vetdata.service.UserService;
@@ -9,7 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,6 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(UserRestController.class)
 @ActiveProfiles("test")
+@Import(TestSecurityConfig.class)
 public class UserRestControllerTest {
 
     @Autowired
