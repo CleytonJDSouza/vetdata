@@ -15,7 +15,7 @@ public class HealthRecordResponseDTO {
     private String tutor;
     private String patient;
     private String color;
-    private Double age;
+    private Integer age;
     private Double weight;
     private DogSize size;
     private Gender gender;
@@ -66,7 +66,7 @@ public class HealthRecordResponseDTO {
         return color;
     }
 
-    public Double getAge() {
+    public Integer getAge() {
         return age;
     }
 

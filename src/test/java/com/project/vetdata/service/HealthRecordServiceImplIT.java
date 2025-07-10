@@ -283,7 +283,7 @@ public class HealthRecordServiceImplIT {
 
     private HealthRecordCreateDTO getFakeHealthRecordDTO(Long breedId) {
         HealthRecordCreateDTO dto = new HealthRecordCreateDTO();
-        dto.setAge(5.0);
+        dto.setAge(5);
         dto.setCodPatient("C125");
         dto.setColor("Branco");
         dto.setDeath(false);
@@ -299,7 +299,7 @@ public class HealthRecordServiceImplIT {
 
     private HealthRecordCreateDTO getFakeHealthRecordDTO2(Long breedId) {
         HealthRecordCreateDTO dto = new HealthRecordCreateDTO();
-        dto.setAge(5.0);
+        dto.setAge(5);
         dto.setCodPatient("C123");
         dto.setColor("Branco");
         dto.setDeath(false);
@@ -316,7 +316,7 @@ public class HealthRecordServiceImplIT {
     private HealthRecordCreateDTO getInvalidFakeHealthRecordDTO() {
         HealthRecordCreateDTO dto = new HealthRecordCreateDTO();
         dto.setPatient(null);
-        dto.setAge(4.00);
+        dto.setAge(4);
         dto.setCodPatient("C123");
         dto.setBreedId(1L);
         dto.setTutor("Beatriz");

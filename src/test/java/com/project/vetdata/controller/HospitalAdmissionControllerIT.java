@@ -94,7 +94,7 @@ public class HospitalAdmissionControllerIT {
                 29D, false);
         DogBreed savedBreed = dogBreedRepository.save(dogBreed);
 
-        HealthRecord healthRecord = new HealthRecord(null, 4.0, "P01", "Preto", false, Euthanasia.NO, Gender.MALE,
+        HealthRecord healthRecord = new HealthRecord(null, 4, "P01", "Preto", false, Euthanasia.NO, Gender.MALE,
                 "Torresmo", DogSize.LARGE, "Beatriz", 20.0, savedBreed);
         HealthRecord savedHealthRecord = healthRecordRepository.save(healthRecord);
 
@@ -176,7 +176,7 @@ public class HospitalAdmissionControllerIT {
                 29D, false);
         DogBreed savedBreed = dogBreedRepository.save(dogBreed);
 
-        HealthRecord healthRecord = new HealthRecord(null, 4.0, "P01", "Preto", false, Euthanasia.NO, Gender.MALE,
+        HealthRecord healthRecord = new HealthRecord(null, 4, "P01", "Preto", false, Euthanasia.NO, Gender.MALE,
                 "Torresmo", DogSize.LARGE, "Beatriz", 20.0, savedBreed);
         HealthRecord savedHealthRecord = healthRecordRepository.save(healthRecord);
 
@@ -245,7 +245,7 @@ public class HospitalAdmissionControllerIT {
                 29D, false);
         DogBreed savedBreed = dogBreedRepository.save(dogBreed);
 
-        HealthRecord healthRecord = new HealthRecord(null, 4.0, "P01", "Preto", false, Euthanasia.NO, Gender.MALE,
+        HealthRecord healthRecord = new HealthRecord(null, 4, "P01", "Preto", false, Euthanasia.NO, Gender.MALE,
                 "Torresmo", DogSize.LARGE, "Beatriz", 20.0, savedBreed);
         HealthRecord savedHealthRecord = healthRecordRepository.save(healthRecord);
 
@@ -294,11 +294,11 @@ public class HospitalAdmissionControllerIT {
                 29D, false);
         DogBreed savedBreed = dogBreedRepository.save(dogBreed);
 
-        HealthRecord healthRecord = new HealthRecord(null, 4.0, "P01", "Preto", false, Euthanasia.NO, Gender.MALE,
+        HealthRecord healthRecord = new HealthRecord(null, 4, "P01", "Preto", false, Euthanasia.NO, Gender.MALE,
                 "Torresmo", DogSize.LARGE, "Beatriz", 20.0, savedBreed);
         HealthRecord savedHealthRecord = healthRecordRepository.save(healthRecord);
 
-        HealthRecord healthRecord2 = new HealthRecord(null, 3.5, "P02", "Branco", true, Euthanasia.YES, Gender.FEMALE,
+        HealthRecord healthRecord2 = new HealthRecord(null, 3, "P02", "Branco", true, Euthanasia.YES, Gender.FEMALE,
                 "Cacau", DogSize.MEDIUM, "João", 18.0, savedBreed);
         HealthRecord savedHealthRecord2 = healthRecordRepository.save(healthRecord2);
 
@@ -367,7 +367,7 @@ public class HospitalAdmissionControllerIT {
                 29D, false);
         DogBreed savedBreed = dogBreedRepository.save(dogBreed);
 
-        HealthRecord healthRecord = new HealthRecord(null, 4.0, "P01", "Preto", false, Euthanasia.NO, Gender.MALE,
+        HealthRecord healthRecord = new HealthRecord(null, 4, "P01", "Preto", false, Euthanasia.NO, Gender.MALE,
                 "Torresmo", DogSize.LARGE, "Beatriz", 20.0, savedBreed);
         HealthRecord savedHealthRecord = healthRecordRepository.save(healthRecord);
 
@@ -406,7 +406,7 @@ public class HospitalAdmissionControllerIT {
                 29D, false);
         DogBreed savedBreed = dogBreedRepository.save(dogBreed);
 
-        HealthRecord healthRecord = new HealthRecord(null, 4.0, "P01", "Preto", false, Euthanasia.NO, Gender.MALE,
+        HealthRecord healthRecord = new HealthRecord(null, 4, "P01", "Preto", false, Euthanasia.NO, Gender.MALE,
                 "Torresmo", DogSize.LARGE, "Beatriz", 20.0, savedBreed);
         HealthRecord savedHealthRecord = healthRecordRepository.save(healthRecord);
 
@@ -448,7 +448,7 @@ public class HospitalAdmissionControllerIT {
                 29D, false);
         DogBreed savedBreed = dogBreedRepository.save(dogBreed);
 
-        HealthRecord healthRecord = new HealthRecord(null, 4.0, "P01", "Preto", false, Euthanasia.NO, Gender.MALE,
+        HealthRecord healthRecord = new HealthRecord(null, 4, "P01", "Preto", false, Euthanasia.NO, Gender.MALE,
                 "Torresmo", DogSize.LARGE, "Beatriz", 20.0, savedBreed);
         HealthRecord savedHealthRecord = healthRecordRepository.save(healthRecord);
 

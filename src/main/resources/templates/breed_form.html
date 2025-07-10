@@ -352,34 +352,31 @@
                 name : {
                     required : true
                 },
-                description : {
-                    required : true
-                },
                 lifeExpectancyMin : {
                     required : true,
-                    digits : true
+                    pattern: /^[0-9]+(\.[0-9]+)?$/
                 },
                 lifeExpectancyMax : {
                     required : true,
-                    digits : true,
+                    pattern: /^[0-9]+(\.[0-9]+)?$/,
                     greaterThan: "#lifeExpectancyMin"
                 },
                 maleWeightMin : {
                     required : true,
-                    digits : true
+                    pattern: /^[0-9]+(\.[0-9]+)?$/
                 },
                 maleWeightMax : {
                     required : true,
-                    digits : true,
+                    pattern: /^[0-9]+(\.[0-9]+)?$/,
                     greaterThan: "#maleWeightMin"
                 },
                 femaleWeightMin : {
                     required : true,
-                    digits : true
+                    pattern: /^[0-9]+(\.[0-9]+)?$/
                 },
                 femaleWeightMax : {
                     required : true,
-                    digits : true,
+                    pattern: /^[0-9]+(\.[0-9]+)?$/,
                     greaterThan: "#femaleWeightMin"
                 }
             },
@@ -388,34 +385,31 @@
                 name : {
                     required : 'Nome da raça é obrigatório !'
                 },
-                description : {
-                    required : 'Descrição da raça é obrigatória !'
-                },
                 lifeExpectancyMin : {
                     required : 'A expectativa de vida mínima é obrigatória !',
-                    digits : 'Esse campo só aceita números !'
+                    pattern: 'Digite um número válido (inteiro ou decimal).'
                 },
                 lifeExpectancyMax : {
                     required : 'A expectativa de vida máxima é obrigatória !',
-                    digits : 'Esse campo só aceita números !',
+                    pattern: 'Digite um número válido (inteiro ou decimal).',
                     greaterThan: "A expectativa de vida máxima deve ser maior que à mínima."
                 },
                 maleWeightMin : {
                     required : 'O peso mínimo do macho é obrigatório !',
-                    digits : 'Esse campo só aceita números !'
+                    pattern: 'Digite um número válido (inteiro ou decimal).'
                 },
                 maleWeightMax : {
                     required : 'O peso máximo do macho é obrigatório !',
-                    digits : 'Esse campo só aceita números !',
+                    pattern: 'Digite um número válido (inteiro ou decimal).',
                     greaterThan: "O peso máximo do macho deve ser maior que o peso mínimo !"
                 },
                 femaleWeightMin : {
                     required : 'O peso mínimo da fêmea é obrigatório !',
-                    digits : 'Esse campo só aceita números !'
+                    pattern: 'Digite um número válido (inteiro ou decimal).'
                 },
                 femaleWeightMax : {
                     required : 'O peso máximo da fêmea é obrigatório !',
-                    digits : 'Esse campo só aceita números !',
+                    pattern: 'Digite um número válido (inteiro ou decimal).',
                     greaterThan: "O peso máximo da fêmea deve ser maior que o peso mínimo !"
                 }
             },

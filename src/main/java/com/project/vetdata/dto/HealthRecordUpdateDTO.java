@@ -12,7 +12,7 @@ import java.time.LocalDate;
 
 public class HealthRecordUpdateDTO {
 
-    private Double age;
+    private Integer age;
     private String codPatient;
     private String color;
     private Boolean death;
@@ -27,7 +27,7 @@ public class HealthRecordUpdateDTO {
     public HealthRecordUpdateDTO() {
     }
 
-    public HealthRecordUpdateDTO(Double age, String codPatient, String color, Boolean death, Euthanasia euthanasia, Gender gender, String patient,
+    public HealthRecordUpdateDTO(Integer age, String codPatient, String color, Boolean death, Euthanasia euthanasia, Gender gender, String patient,
                                  DogSize size, String tutor, Double weight, Long breedId) {
         this.age = age;
         this.codPatient = codPatient;
@@ -43,7 +43,7 @@ public class HealthRecordUpdateDTO {
     }
 
     @Min(value = 0, message = "Campo deve ser maior que 0")
-    public Double getAge() {
+    public Integer getAge() {
         return age;
     }
 
@@ -94,7 +94,7 @@ public class HealthRecordUpdateDTO {
         return breedId;
     }
 
-    public void setAge(Double age) {
+    public void setAge(Integer age) {
         this.age = age;
     }
 

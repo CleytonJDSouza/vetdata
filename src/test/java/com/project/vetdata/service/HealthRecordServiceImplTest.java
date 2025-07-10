@@ -219,7 +219,7 @@ public class HealthRecordServiceImplTest {
         dto.setTutor("Cleyton");
         dto.setPatient("Torresmo");
         dto.setBreedId(1L);
-        dto.setAge(5.0);
+        dto.setAge(5);
         dto.setWeight(22.0);
         dto.setColor("Bege");
         dto.setSize(DogSize.MEDIUM);
@@ -242,7 +242,7 @@ public class HealthRecordServiceImplTest {
         record.setTutor("Cleyton");
         record.setPatient("Torresmo");
         record.setBreed(getFakeDogBreed());
-        record.setAge(5.0);
+        record.setAge(5);
         record.setWeight(22.0);
         record.setColor("Bege");
         record.setSize(DogSize.MEDIUM);
@@ -259,7 +259,7 @@ public class HealthRecordServiceImplTest {
         dto.setTutor("Andrea");
         dto.setPatient("Cacau");
         dto.setBreedId(1L);
-        dto.setAge(3.5);
+        dto.setAge(3);
         dto.setWeight(18.0);
         dto.setColor("Preto");
         dto.setSize(DogSize.SMALL);

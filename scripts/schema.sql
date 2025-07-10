@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `dog_breeds` (
 
 CREATE TABLE IF NOT EXISTS health_record (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    age DOUBLE UNSIGNED,
+    age int UNSIGNED,
     cod_patient VARCHAR(255),
     color VARCHAR(255),
     death BIT(1) DEFAULT 0,

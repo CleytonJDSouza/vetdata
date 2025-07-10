@@ -347,7 +347,7 @@ public class HospitalAdmissionServiceImplTest {
         record.setTutor("Cleyton");
         record.setPatient("Torresmo");
         record.setBreed(getFakeDogBreed());
-        record.setAge(5.0);
+        record.setAge(5);
         record.setWeight(22.0);
         record.setColor("Bege");
         record.setSize(DogSize.MEDIUM);
