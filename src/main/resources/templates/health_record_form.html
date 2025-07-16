@@ -422,9 +422,6 @@
         $('#health-record-form').validate({
             // Rules for form validation
             rules : {
-                codPatient : {
-                    required : true
-                },
                 patient : {
                     required : true
                 },
@@ -443,7 +440,7 @@
                 },
                 weight : {
                     required : true,
-                    digits : true
+                    pattern: /^[0-9]+(\.[0-9]+)?$/
                 },
                 gender : {
                     required : true
@@ -460,9 +457,6 @@
             },
             // Messages for form validation
             messages : {
-                codPatient : {
-                    required : 'Código do paciente é obrigatório !'
-                },
                 patient : {
                     required : 'Nome do paciente é obrigatório !'
                 },
@@ -481,7 +475,7 @@
                 },
                 weight : {
                     required : 'O peso do animal é obrigatório !',
-                    digits : 'Esse campo só aceita números !'
+                    pattern: 'Digite um número válido (inteiro ou decimal).'
                 },
                 gender : {
                     required : 'O genêro do animal é obrigatório !'

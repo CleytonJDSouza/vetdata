@@ -347,7 +347,7 @@ public class HospitalAdmissionServiceImplIT {
 
     private HealthRecord createFakeHealthRecord(DogBreed breed) {
         HealthRecord record = new HealthRecord();
-        record.setAge(5.0);
+        record.setAge(5);
         record.setCodPatient("C125");
         record.setColor("Branco");
         record.setDeath(false);

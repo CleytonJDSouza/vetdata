@@ -94,7 +94,7 @@ public class HealthRecordControllerIT {
         dto.setTutor("Cleyton");
         dto.setPatient("Torresmo");
         dto.setBreedId(savedBreed.getId());
-        dto.setAge(5.0);
+        dto.setAge(5);
         dto.setWeight(22.0);
         dto.setColor("Bege");
         dto.setSize(DogSize.MEDIUM);
@@ -134,7 +134,7 @@ public class HealthRecordControllerIT {
         dto.setTutor("");
         dto.setPatient("");
         dto.setBreedId(null);
-        dto.setAge(-5.0);
+        dto.setAge(-5);
         dto.setWeight(-22.0);
         dto.setColor("");
         dto.setSize(DogSize.MEDIUM);
@@ -165,7 +165,7 @@ public class HealthRecordControllerIT {
         record.setTutor("Aline");
         record.setPatient("Nutella");
         record.setBreed(savedBreed);
-        record.setAge(5.0);
+        record.setAge(5);
         record.setWeight(28.0);
         record.setColor("Marrom");
         record.setSize(DogSize.LARGE);
@@ -181,7 +181,7 @@ public class HealthRecordControllerIT {
         updateDTO.setTutor("Andrea");
         updateDTO.setPatient("Cacau");
         updateDTO.setBreedId(savedBreed.getId());
-        updateDTO.setAge(6.0);
+        updateDTO.setAge(6);
         updateDTO.setWeight(29.0);
         updateDTO.setColor("Bege");
         updateDTO.setSize(DogSize.LARGE);
@@ -212,7 +212,7 @@ public class HealthRecordControllerIT {
         assertEquals("Andrea", updated.getTutor());
         assertEquals("Cacau", updated.getPatient());
         assertEquals("Bege", updated.getColor());
-        assertEquals(6.0, updated.getAge());
+        assertEquals(6, updated.getAge());
         assertEquals(29.0, updated.getWeight());
     }
 
@@ -227,7 +227,7 @@ public class HealthRecordControllerIT {
         record.setTutor("Aline");
         record.setPatient("Nutella");
         record.setBreed(savedBreed);
-        record.setAge(5.0);
+        record.setAge(5);
         record.setWeight(28.0);
         record.setColor("Marrom");
         record.setSize(DogSize.LARGE);
@@ -242,7 +242,7 @@ public class HealthRecordControllerIT {
         updateDTO.setTutor("Andrea");
         updateDTO.setPatient("Cacau");
         updateDTO.setBreedId(savedBreed.getId());
-        updateDTO.setAge(6.0);
+        updateDTO.setAge(6);
         updateDTO.setWeight(29.0);
         updateDTO.setColor("Bege");
         updateDTO.setSize(DogSize.LARGE);
@@ -267,7 +267,7 @@ public class HealthRecordControllerIT {
         assertEquals("Aline", original.getTutor());
         assertEquals("Nutella", original.getPatient());
         assertEquals("Marrom", original.getColor());
-        assertEquals(5.0, original.getAge());
+        assertEquals(5, original.getAge());
         assertEquals(28.0, original.getWeight());
     }
 
@@ -282,7 +282,7 @@ public class HealthRecordControllerIT {
         record.setTutor("Aline");
         record.setPatient("Nutella");
         record.setBreed(savedBreed);
-        record.setAge(5.0);
+        record.setAge(5);
         record.setWeight(28.0);
         record.setColor("Marrom");
         record.setSize(DogSize.LARGE);
@@ -297,7 +297,7 @@ public class HealthRecordControllerIT {
         updateDTO.setTutor("Andrea");
         updateDTO.setPatient("Cacau");
         updateDTO.setBreedId(savedBreed.getId());
-        updateDTO.setAge(6.0);
+        updateDTO.setAge(6);
         updateDTO.setWeight(29.0);
         updateDTO.setColor("Bege");
         updateDTO.setSize(DogSize.LARGE);
@@ -322,7 +322,7 @@ public class HealthRecordControllerIT {
         assertEquals("Aline", original.getTutor());
         assertEquals("Nutella", original.getPatient());
         assertEquals("Marrom", original.getColor());
-        assertEquals(5.0, original.getAge());
+        assertEquals(5, original.getAge());
         assertEquals(28.0, original.getWeight());
     }
 
@@ -337,7 +337,7 @@ public class HealthRecordControllerIT {
         record1.setTutor("Aline");
         record1.setPatient("Nutella");
         record1.setBreed(savedBreed);
-        record1.setAge(5.0);
+        record1.setAge(5);
         record1.setWeight(28.0);
         record1.setColor("Marrom");
         record1.setSize(DogSize.LARGE);
@@ -351,7 +351,7 @@ public class HealthRecordControllerIT {
         record2.setTutor("Andrea");
         record2.setPatient("Cacau");
         record2.setBreed(savedBreed);
-        record2.setAge(3.0);
+        record2.setAge(3);
         record2.setWeight(26.5);
         record2.setColor("Preto");
         record2.setSize(DogSize.MEDIUM);
@@ -368,7 +368,7 @@ public class HealthRecordControllerIT {
                 .body("data[0].tutor", equalTo("Aline"))
                 .body("data[0].patient", equalTo("Nutella"))
                 .body("data[0].breedName", equalTo("Pug"))
-                .body("data[0].age", equalTo(5.0F))
+                .body("data[0].age", equalTo(savedRecord1.getAge()))
                 .body("data[0].weight", equalTo(28.0F))
                 .body("data[0].color", equalTo("Marrom"))
                 .body("data[0].size", equalTo("LARGE"))
@@ -381,7 +381,7 @@ public class HealthRecordControllerIT {
                 .body("data[1].tutor", equalTo("Andrea"))
                 .body("data[1].patient", equalTo("Cacau"))
                 .body("data[1].breedName", equalTo("Pug"))
-                .body("data[1].age", equalTo(3.0F))
+                .body("data[1].age", equalTo(savedRecord2.getAge()))
                 .body("data[1].weight", equalTo(26.5F))
                 .body("data[1].color", equalTo("Preto"))
                 .body("data[1].size", equalTo("MEDIUM"))
@@ -412,7 +412,7 @@ public class HealthRecordControllerIT {
         record.setTutor("Aline");
         record.setPatient("Cookie");
         record.setBreed(savedBreed);
-        record.setAge(7.0);
+        record.setAge(7);
         record.setWeight(30.0);
         record.setColor("Branco");
         record.setSize(DogSize.SMALL);
@@ -443,7 +443,7 @@ public class HealthRecordControllerIT {
         record.setTutor("Aline");
         record.setPatient("Cookie");
         record.setBreed(savedBreed);
-        record.setAge(7.0);
+        record.setAge(7);
         record.setWeight(30.0);
         record.setColor("Branco");
         record.setSize(DogSize.SMALL);
@@ -476,7 +476,7 @@ public class HealthRecordControllerIT {
         record.setTutor("Aline");
         record.setPatient("Cookie");
         record.setBreed(savedBreed);
-        record.setAge(7.0);
+        record.setAge(7);
         record.setWeight(30.0);
         record.setColor("Branco");
         record.setSize(DogSize.SMALL);
@@ -499,7 +499,7 @@ public class HealthRecordControllerIT {
                 .body("gender", equalTo("FEMALE"))
                 .body("size", equalTo("SMALL"))
                 .body("color", equalTo("Branco"))
-                .body("age", equalTo(7.0F))
+                .body("age", equalTo(savedRecord.getAge()))
                 .body("weight", equalTo(30.0F));
     }
 

@@ -17,7 +17,7 @@ public class HealthRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Double age;
+    private Integer age;
 
     @Column(name = "cod_patient")
     private String codPatient;
@@ -48,7 +48,7 @@ public class HealthRecord {
     public HealthRecord() {
     }
 
-    public HealthRecord(Long id, Double age, String codPatient, String color, boolean death,
+    public HealthRecord(Long id, Integer age, String codPatient, String color, boolean death,
                         Euthanasia euthanasia, Gender gender, String patient, DogSize size, String tutor,
                         Double weight, DogBreed breed) {
         this.id = id;
@@ -70,7 +70,7 @@ public class HealthRecord {
     }
 
 
-    public Double getAge() {
+    public Integer getAge() {
         return age;
     }
 
@@ -114,7 +114,7 @@ public class HealthRecord {
         return breed;
     }
 
-    public void setAge(Double age) {
+    public void setAge(Integer age) {
         this.age = age;
     }
 

@@ -53,7 +53,7 @@ public class HealthRecordRestControllerTest {
 
     @Test
     public void given_valid_healthRecord_when_createHealthRecord_then_returns_createdHealthRecord() throws Exception {
-        HealthRecordCreateDTO dto = new HealthRecordCreateDTO(3.5, "C123", "Preto", false, Euthanasia.NO, Gender.MALE, "Torresmo", DogSize.SMALL, "Cleyton", 12.0, 1L);
+        HealthRecordCreateDTO dto = new HealthRecordCreateDTO(3, "C123", "Preto", false, Euthanasia.NO, Gender.MALE, "Torresmo", DogSize.SMALL, "Cleyton", 12.0, 1L);
 
         HealthRecord savedRecord = new HealthRecord(10L, dto.getAge(), dto.getCodPatient(), dto.getColor(), dto.getDeath(), dto.getEuthanasia(),
                 dto.getGender(), dto.getPatient(), dto.getSize(), dto.getTutor(), dto.getWeight(), new DogBreed(1L, "123", "Labrador",
@@ -75,7 +75,7 @@ public class HealthRecordRestControllerTest {
     @Test
     public void given_invalid_healthRecord_when_createHealthRecord_then_returnsBadRequest() throws Exception {
         HealthRecordCreateDTO dto = new HealthRecordCreateDTO();
-        dto.setAge(-1.0);
+        dto.setAge(-1);
         dto.setCodPatient("");
         dto.setColor("");
         dto.setDeath(null);
@@ -103,7 +103,7 @@ public class HealthRecordRestControllerTest {
     @Test
     public void given_healthRecord_exists_and_is_updated_when_updateHealthRecord_then_returns_updatedRecord() throws Exception {
         HealthRecordUpdateDTO updateDTO = new HealthRecordUpdateDTO(
-                4.5, "P145", "Branco",
+                4, "P145", "Branco",
                 false, Euthanasia.NO, Gender.FEMALE, "Cacau", DogSize.MEDIUM,
                 "Andrea", 14.0, 2L
         );
@@ -137,7 +137,7 @@ public class HealthRecordRestControllerTest {
                 .andExpect(jsonPath("$.tutor").value("Andrea"))
                 .andExpect(jsonPath("$.breedId").value(2))
                 .andExpect(jsonPath("$.breedName").value("Poodle"))
-                .andExpect(jsonPath("$.age").value(4.5))
+                .andExpect(jsonPath("$.age").value(4))
                 .andExpect(jsonPath("$.color").value("Branco"))
                 .andExpect(jsonPath("$.euthanasia").value("NO"))
                 .andExpect(jsonPath("$.gender").value("FEMALE"))
@@ -149,7 +149,7 @@ public class HealthRecordRestControllerTest {
     @Test
     public void given_invalid_healthRecord_when_updateHealthRecord_then_returnsBadRequest() throws Exception {
         HealthRecordUpdateDTO updateDTO = new HealthRecordUpdateDTO();
-        updateDTO.setAge(-2.0);
+        updateDTO.setAge(-2);
         updateDTO.setCodPatient("");
         updateDTO.setColor("");
         updateDTO.setDeath(null);
@@ -176,7 +176,7 @@ public class HealthRecordRestControllerTest {
 
     @Test
     public void given_healthRecordDoesNotExist_when_updateHealthRecord_then_returnsNotFound() throws Exception {
-        HealthRecordUpdateDTO updateDTO = new HealthRecordUpdateDTO(4.5, "C456", "Branco",
+        HealthRecordUpdateDTO updateDTO = new HealthRecordUpdateDTO(4, "C456", "Branco",
                 false, Euthanasia.NO, Gender.FEMALE, "Cookie", DogSize.MEDIUM, "Aline", 14.0, 2L);
 
         when(healthRecordService.updateHealthRecord(eq(999L), any(HealthRecordUpdateDTO.class)))
@@ -191,11 +191,11 @@ public class HealthRecordRestControllerTest {
     @Test
     public void given_pageRequestAndHealthRecordsExist_when_getHealthRecordsPage_then_returnsHealthRecordsPage() throws Exception {
         List<HealthRecord> records = List.of(
-                new HealthRecord(1L, 3.0, "C001", "Preto", false, Euthanasia.NO,
+                new HealthRecord(1L, 3, "C001", "Preto", false, Euthanasia.NO,
                         Gender.FEMALE, "Cacau", DogSize.SMALL, "Andrea", 10.0,
                         new DogBreed(1L, "001", "Beagle", "Curioso", 10, 12,
                                 10.0, 15.0, 8.0, 12.0, false)),
-                new HealthRecord(2L, 4.0, "C002", "Marrom", false, Euthanasia.NO,
+                new HealthRecord(2L, 4, "C002", "Marrom", false, Euthanasia.NO,
                         Gender.MALE, "Nutella", DogSize.MEDIUM, "Aline", 14.0,
                         new DogBreed(2L, "002", "Boxer", "Brincalhão", 9, 11,
                                 25.0, 32.0, 22.0, 30.0, false))
@@ -230,7 +230,7 @@ public class HealthRecordRestControllerTest {
     @Test
     public void given_search_parameter_when_get_healthRecords_page_then_returns_filtered_healthRecords_page() throws Exception {
         List<HealthRecord> filteredRecords = List.of(
-                new HealthRecord(3L, 2.0, "C003", "Branco", false, Euthanasia.NO,
+                new HealthRecord(3L, 2, "C003", "Branco", false, Euthanasia.NO,
                         Gender.FEMALE, "Cacau", DogSize.SMALL, "Andrea", 11.0,
                         new DogBreed(3L, "003", "Shih Tzu", "Fofo e tranquilo", 10, 13,
                                 6.0, 8.0, 5.0, 7.0, false))
@@ -258,7 +258,7 @@ public class HealthRecordRestControllerTest {
     public void given_existing_healthRecordId_when_deleteHealthRecord_then_returns_noContent() throws Exception{
         Long healthRecordId = 1L;
         HealthRecord existingRecord = new HealthRecord(healthRecordId,
-                4.0,"C357","Preto", false, Euthanasia.NO, Gender.MALE, "Nutella", DogSize.MEDIUM, "Clovis", 12.0,
+                4,"C357","Preto", false, Euthanasia.NO, Gender.MALE, "Nutella", DogSize.MEDIUM, "Clovis", 12.0,
                 new DogBreed(1L, "001", "Labrador", "Companheiro", 10, 12,
                         25.0, 30.0, 22.0, 28.0, false));
 
@@ -284,7 +284,7 @@ public class HealthRecordRestControllerTest {
     public void given_existing_heathRecordId_when_getHealthRecordById_then_returns_record() throws Exception{
         Long healthRecordId = 1L;
         HealthRecord existingRecord = new HealthRecord(healthRecordId,
-                4.0,"C357","Preto", false, Euthanasia.NO, Gender.MALE, "Nutella", DogSize.MEDIUM, "Clovis", 12.0,
+                4,"C357","Preto", false, Euthanasia.NO, Gender.MALE, "Nutella", DogSize.MEDIUM, "Clovis", 12.0,
                 new DogBreed(1L, "001", "Labrador", "Companheiro", 10, 12,
                         25.0, 30.0, 22.0, 28.0, false));
 
