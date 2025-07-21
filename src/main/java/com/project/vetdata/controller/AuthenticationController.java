@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,6 +28,7 @@ import java.util.Map;
 @RequestMapping("/authentications")
 public class AuthenticationController {
 
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
     private final AuthenticationService authenticationService;
 
     public AuthenticationController(AuthenticationService authenticationService) {
@@ -41,6 +44,7 @@ public class AuthenticationController {
     })
     @PostMapping
     public ResponseEntity<AuthenticationResponseDTO> authenticate(@RequestBody @Valid AuthenticationRequestDTO dto, HttpSession session) {
+        try {
         AuthenticationResponseDTO response = authenticationService.authenticate(dto);
         if (response.status().equals(AuthenticationStatus.AUTHORIZED)) {
             session.setAttribute("user", response.name());
@@ -52,6 +56,10 @@ public class AuthenticationController {
             session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, context);
         }
         return ResponseEntity.ok(response);
+    } catch (Exception e) {
+            logger.error("Erro ao autenticar usuário com e-mail: {}, Error message: {}", dto.email(), e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @GetMapping("/user-info")
@@ -60,6 +68,7 @@ public class AuthenticationController {
         if (username != null) {
             return ResponseEntity.ok(Map.of("username", username.split(" ")[0]));
         } else {
+            logger.warn("Tentativa de acesso a /user-info sem usuário autenticado.");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário não autenticado");
         }
     }

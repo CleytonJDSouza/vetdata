@@ -165,6 +165,7 @@ public class DogBreedRestControllerTest {
         DogBreed updatedDogBreed = new DogBreed(12345L, null,"Bulldog", "Leal e Protetor", 9, 12,
                 22.0, 28.0, 20.0, 26.0, true);
 
+        when (dogBreedService.getDogBreedId(12345L)).thenReturn(Optional.of(updatedDogBreed));
         when(dogBreedService.updateDogBreed(anyLong(), any(DogBreedUpdateDTO.class))).thenReturn(updatedDogBreed);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/breeds/12345")
@@ -273,11 +274,7 @@ public class DogBreedRestControllerTest {
                         .param("page", "0")
                         .param("qtdRecordsPage", "10")
                         .param("sortBy", "name"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.total").value(0))
-                .andExpect(jsonPath("$.data").isEmpty())
-                .andExpect(jsonPath("$.page").value(0))
-                .andExpect(jsonPath("$.qtdRecordsPage").value(0));
+                .andExpect(status().isNoContent());
     }
 
 

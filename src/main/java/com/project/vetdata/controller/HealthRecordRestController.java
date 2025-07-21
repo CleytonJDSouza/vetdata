@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -29,6 +31,7 @@ import java.util.Map;
 @RequestMapping("/health-records")
 public class HealthRecordRestController {
 
+    private static final Logger logger = LoggerFactory.getLogger(HealthRecordRestController.class);
     private final HealthRecordService healthRecordService;
 
     public HealthRecordRestController(HealthRecordService healthRecordService) {
@@ -59,6 +62,7 @@ public class HealthRecordRestController {
     @PutMapping("/{id}")
     public ResponseEntity<HealthRecordResponseDTO> updateHealthRecord(@PathVariable Long id, @Valid @RequestBody HealthRecordUpdateDTO dto) {
         HealthRecord updated = healthRecordService.updateHealthRecord(id, dto);
+        logger.info("Prontuário com ID {} atualizado com sucesso.", updated.getId());
         return ResponseEntity.ok(new HealthRecordResponseDTO(updated));
     }
 
@@ -86,6 +90,7 @@ public class HealthRecordRestController {
         }
 
         if (pageHealthRecords.isEmpty()) {
+            logger.info("Nenhum prontuário encontrado com os critérios fornecidos.");
             return ResponseEntity.noContent().build();
         }
 
@@ -101,6 +106,8 @@ public class HealthRecordRestController {
         response.put("page", pageHealthRecords.getNumber());
         response.put("data", responseDTOs);
 
+        logger.info("Total de prontuários encontrados: {}", pageHealthRecords.getTotalElements());
+
         return ResponseEntity.ok(response);
     }
 
@@ -113,11 +120,15 @@ public class HealthRecordRestController {
     public ResponseEntity<Void> deleteHealthRecord(@PathVariable Long id) {
         return healthRecordService.getHealthRecordById(id)
                 .map(this::handleDelete)
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElseGet(() -> {
+                    logger.warn("Prontuário com ID {} não encontrado para remoção.", id);
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                });
     }
 
     private ResponseEntity<Void> handleDelete(HealthRecord record) {
         healthRecordService.deleteHealthRecord(record.getId());
+        logger.info("Prontuário com ID {} removido com sucesso.", record.getId());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -133,7 +144,10 @@ public class HealthRecordRestController {
     public ResponseEntity<?> getHealthRecordById(@PathVariable Long id) {
         return healthRecordService.getHealthRecordById(id)
                 .map(this::convertToResponseEntity)
-                .orElse(ResponseEntity.notFound().build());
+                .orElseGet(() -> {
+                    logger.warn("Prontuário com ID {} não encontrado.", id);
+                    return ResponseEntity.notFound().build();
+                });
     }
 
     private ResponseEntity<?> convertToResponseEntity(HealthRecord record) {

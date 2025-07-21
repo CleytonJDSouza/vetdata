@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +28,7 @@ import java.util.*;
 @RequestMapping("/breeds")
 public class DogBreedRestController {
 
+    private static final Logger logger = LoggerFactory.getLogger(DogBreedRestController.class);
     private final DogBreedService dogBreedService;
     private final DogBreedExternalService dogBreedExternalService;
 
@@ -54,12 +57,17 @@ public class DogBreedRestController {
                 ? dogBreedService.getBySearchTerm(searchByTerm, pageable)
                 : dogBreedService.getAllDogBreeds(pageable);
 
+        if (breedsPage.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
         Map<String, Object> response = Map.of(
                 "total", breedsPage.getTotalElements(),
                 "qtdRecordsPage", breedsPage.getSize(),
                 "page", breedsPage.getNumber(),
                 "data", breedsPage.getContent()
         );
+        logger.debug("Total de raças encontradas: {}", breedsPage.getTotalElements());
 
         return ResponseEntity.ok(response);
     }
@@ -74,8 +82,14 @@ public class DogBreedRestController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getDogBreedById(@PathVariable Long id) {
         return dogBreedService.getDogBreedId(id)
-                .map(this::convertToResponseEntity)
-                .orElse(ResponseEntity.notFound().build());
+                .map(dogBreed -> {
+                    logger.info("Raça com ID {} encontrada: {}", id, dogBreed.getName());
+                    return convertToResponseEntity(dogBreed);
+                })
+                .orElseGet(() -> {
+                    logger.warn("Raça com ID {} não encontrada", id);
+                    return ResponseEntity.notFound().build();
+                });
     }
 
     private ResponseEntity<?> convertToResponseEntity(DogBreed dogBreed) {
@@ -119,7 +133,10 @@ public class DogBreedRestController {
     public ResponseEntity<Void> deleteDogBreed(@PathVariable Long id) {
         return dogBreedService.getDogBreedId(id)
                 .map(this::handleDelete)
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElseGet(() -> {
+                    logger.warn("Tentativa de remover raça com ID {} que não foi encontrada", id);
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                });
     }
 
     private ResponseEntity<Void> handleDelete (DogBreed dogBreed) {
@@ -137,8 +154,15 @@ public class DogBreedRestController {
     })
     @PutMapping("/{id}")
     public ResponseEntity<DogBreed> updateDogBreed(@PathVariable Long id, @Valid @RequestBody DogBreedUpdateDTO dogBreedUpdateDTO) {
-        DogBreed updateDogBreed = dogBreedService.updateDogBreed(id, dogBreedUpdateDTO);
-        return ResponseEntity.ok(updateDogBreed);
+        return dogBreedService.getDogBreedId(id)
+                .map(dogBreed -> {
+                    DogBreed updated = dogBreedService.updateDogBreed(id, dogBreedUpdateDTO);
+                    return ResponseEntity.ok(updated);
+                })
+                .orElseGet(() -> {
+                    logger.warn("Tentativa de atualizar raça com ID {} que não existe", id);
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+                });
     }
 
 
@@ -153,32 +177,33 @@ public class DogBreedRestController {
         int importedCount = 0;
         int updateCount = 0;
 
-        while (true) {
-            List<DogBreedExternalDTO> breedsToImport = dogBreedExternalService.getBreedsByPage(pageNumber);
+            while (true) {
+                List<DogBreedExternalDTO> breedsToImport = dogBreedExternalService.getBreedsByPage(pageNumber);
 
-            if (breedsToImport.isEmpty()) {
-                break;
-            }
-
-            for (DogBreedExternalDTO breedDTO : breedsToImport) {
-                Optional<DogBreed> existingBreeds = dogBreedService.findByExternalApi(breedDTO.getIdExternalApi());
-                if (existingBreeds.isPresent()) {
-                    DogBreed existingBreed = existingBreeds.get();
-                    boolean needsUpdate = DogBreedExternalService.checkForUpdates(existingBreed, breedDTO);
-
-                    if(needsUpdate) {
-                        DogBreed updateBreed = DogBreedExternalService.updateBreedFromExternalDTO(existingBreed, breedDTO);
-                        DogBreedUpdateDTO updateDTO = dogBreedExternalService.convertToUpdateDTO(updateBreed);
-                        dogBreedService.updateDogBreed(existingBreed.getId(), updateDTO);
-                        updateCount++;
-                    }
-                } else {
-                    dogBreedExternalService.saveFromExternalAPI(Collections.singletonList(breedDTO));
-                    importedCount++;
+                if (breedsToImport.isEmpty()) {
+                    logger.info("Nenhuma raça encontrada na página {}. Fim da importação.", pageNumber);
+                    break;
                 }
+
+                for (DogBreedExternalDTO breedDTO : breedsToImport) {
+                    Optional<DogBreed> existingBreeds = dogBreedService.findByExternalApi(breedDTO.getIdExternalApi());
+                    if (existingBreeds.isPresent()) {
+                        DogBreed existingBreed = existingBreeds.get();
+                        boolean needsUpdate = DogBreedExternalService.checkForUpdates(existingBreed, breedDTO);
+
+                        if (needsUpdate) {
+                            DogBreed updateBreed = DogBreedExternalService.updateBreedFromExternalDTO(existingBreed, breedDTO);
+                            DogBreedUpdateDTO updateDTO = dogBreedExternalService.convertToUpdateDTO(updateBreed);
+                            dogBreedService.updateDogBreed(existingBreed.getId(), updateDTO);
+                            updateCount++;
+                        }
+                    } else {
+                        dogBreedExternalService.saveFromExternalAPI(Collections.singletonList(breedDTO));
+                        importedCount++;
+                    }
+                }
+                pageNumber++;
             }
-            pageNumber++;
-        }
-        return ResponseEntity.ok("Importação concluída. " + importedCount + " raças importadas, " + updateCount + " raças atualizadas.");
+            return ResponseEntity.ok("Importação concluída. " + importedCount + " raças importadas, " + updateCount + " raças atualizadas.");
     }
 }

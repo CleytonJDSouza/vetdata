@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 public class UserRestController {
+    private static final Logger logger = LoggerFactory.getLogger(UserRestController.class);
     private final UserService userService;
 
     public UserRestController(UserService userService) {
@@ -34,6 +37,7 @@ public class UserRestController {
     @PostMapping
     public ResponseEntity<User> createUser(@Valid @RequestBody UserCreateDTO userCreateDTO) {
         User createdUser = userService.createUser(userCreateDTO);
+        logger.info("Usuário criado com ID: {}", createdUser.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
@@ -46,7 +50,10 @@ public class UserRestController {
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         return userService.getUserById(id)
                 .map(this::handleDelete)
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElseGet(() -> {
+                    logger.warn("Usuário com ID {} não encontrado para remoção", id);
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                });
     }
 
     private ResponseEntity<Void> handleDelete(User user)  {
@@ -63,6 +70,7 @@ public class UserRestController {
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getAllUsers();
+        logger.info("Total de usuários encontrados: {}", users.size());
         return ResponseEntity.ok(users);
     }
 }
