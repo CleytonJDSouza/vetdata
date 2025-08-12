@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +26,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/diagnostics")
 public class DiagnosticRestController {
+
+    private static final Logger logger = LoggerFactory.getLogger(DiagnosticRestController.class);
     private final DiagnosticService service;
 
     public DiagnosticRestController(DiagnosticService service) {
@@ -39,8 +43,13 @@ public class DiagnosticRestController {
     })
     @PostMapping
     public ResponseEntity<Diagnostic> createDiagnostic(@Valid @RequestBody DiagnosticCreateDTO dto) {
-        Diagnostic createdDiagnostic = service.createDiagnostic(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdDiagnostic);
+        try {
+            Diagnostic createdDiagnostic = service.createDiagnostic(dto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdDiagnostic);
+        } catch (Exception e) {
+            logger.error("Erro ao criar diagnóstico para paciente descrição='{}'", dto.getDescription(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @Operation(summary = "Remover diagnóstico por ID")
@@ -52,12 +61,20 @@ public class DiagnosticRestController {
     public ResponseEntity<Void> deleteDiagnostic(@PathVariable Long id) {
         return service.getDiagnosticById(id)
                 .map(this::handleDelete)
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElseGet(() -> {
+                    logger.warn("Diagnóstico com ID {} não encontrado para remoção", id);
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                });
     }
 
-    private ResponseEntity<Void> handleDelete(Diagnostic diagnostic)  {
-        service.deleteDiagnostic(diagnostic.getId());
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    private ResponseEntity<Void> handleDelete(Diagnostic diagnostic) {
+        try {
+            service.deleteDiagnostic(diagnostic.getId());
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            logger.error("Erro ao remover diagnóstico com ID: {}", diagnostic.getId(), e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Operation(summary = "Listar todos os diagnósticos")
@@ -69,6 +86,7 @@ public class DiagnosticRestController {
     @GetMapping
     public ResponseEntity<List<Diagnostic>> getAllDiagnostics() {
         List<Diagnostic> diagnostics = service.getAllDiagnostics();
+        logger.debug("Listando todos os diagnósticos. Total encontrados: {}", diagnostics.size());
         return ResponseEntity.ok(diagnostics);
     }
 
@@ -101,6 +119,8 @@ public class DiagnosticRestController {
                 "page", diagnosticsPage.getNumber(),
                 "data", diagnosticsPage.getContent()
         );
+
+        logger.debug("Total de diagnósticos encontrados: {}", diagnosticsPage.getTotalElements());
 
         return ResponseEntity.ok(response);
     }

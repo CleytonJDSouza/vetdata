@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -24,6 +26,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/post-operatives")
 public class PostOperativeRestController {
+    private static final Logger logger = LoggerFactory.getLogger(PostOperativeRestController.class);
     private final PostOperativeService service;
 
     public PostOperativeRestController(PostOperativeService service) {
@@ -52,7 +55,10 @@ public class PostOperativeRestController {
     public ResponseEntity<Void> deletePostOperative(@PathVariable Long id) {
         return service.getPostOperativeById(id)
                 .map(this::handleDelete)
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElseGet(() -> {
+                    logger.warn("Pós-operatório com ID {} não encontrado!", id);
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                });
     }
 
     private ResponseEntity<Void> handleDelete(PostOperative postOperative)  {
@@ -86,14 +92,18 @@ public class PostOperativeRestController {
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(required = false) String searchByTerm
     ) {
+
         Pageable pageable = PageRequest.of(page, qtdRecordsPage, Sort.by(sortBy));
         Page<PostOperative> postOperativesPage = StringUtils.hasText(searchByTerm)
                 ? service.getBySearchTerm(searchByTerm, pageable)
                 : service.getAllPostOperativesPaginated(pageable);
 
         if (postOperativesPage.isEmpty()) {
+            logger.info("Nenhum resultado encontrado para a busca paginada.");
             return ResponseEntity.noContent().build();
         }
+
+        logger.info("Busca paginada retornou {} registros", postOperativesPage.getTotalElements());
 
         Map<String, Object> response = Map.of(
                 "total", postOperativesPage.getTotalElements(),
